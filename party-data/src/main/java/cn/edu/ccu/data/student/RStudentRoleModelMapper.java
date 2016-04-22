@@ -6,6 +6,8 @@ import cn.edu.ccu.model.student.RStudentRoleModel;
 import cn.edu.ccu.model.student.RStudentRoleModelKey;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @PartyDB
 public interface RStudentRoleModelMapper {
     int deleteByPrimaryKey(RStudentRoleModelKey key);
@@ -21,4 +23,5 @@ public interface RStudentRoleModelMapper {
     int updateByPrimaryKey(RStudentRoleModel record);
 
     Integer selectRoleIdByStudentId(@Param("studentId") Integer id);
+
 }

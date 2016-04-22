@@ -12,18 +12,26 @@
     <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
     <result column="role_id" property="roleId" jdbcType="INTEGER" />
   </resultMap>
+    <resultMap id="withRole" type="cn.edu.ccu.model.course.TaskModel" extends="BaseResultMap">
+        <association property="sRoleModel" javaType="cn.edu.ccu.model.student.SRoleModel">
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="name"/>
+        </association>
+    </resultMap>
   <sql id="Base_Column_List" >
     id, name, start_time, end_time, target_score, target_time, create_time, last_modify_time, 
     role_id
   </sql>
 
     <select id="select" resultMap="BaseResultMap" parameterType="Map">
-        select
-        <include refid="Base_Column_List" />
-        from task
+        SELECT
+        id, t.name NAME, start_time, end_time, target_score, target_time, t.create_time, t.last_modify_time,
+        t.role_id role_id,r.`name` role_name
+        FROM task t JOIN s_role r ON t.`role_id`=r.`role_id`
         <where>
 
         </where>
+        order by start_time DESC,end_time DESC
         <!-- split page -->
         <if test="rowStart != null and rowCount != null">
             LIMIT #{rowStart}, #{rowCount}

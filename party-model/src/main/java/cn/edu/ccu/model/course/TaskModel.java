@@ -1,5 +1,7 @@
 package cn.edu.ccu.model.course;
 
+import cn.edu.ccu.model.student.SRoleModel;
+
 import java.util.Date;
 
 public class TaskModel {
@@ -20,6 +22,16 @@ public class TaskModel {
     private Date lastModifyTime;
 
     private Integer roleId;
+
+    private SRoleModel sRoleModel;
+
+    public SRoleModel getsRoleModel() {
+        return sRoleModel;
+    }
+
+    public void setsRoleModel(SRoleModel sRoleModel) {
+        this.sRoleModel = sRoleModel;
+    }
 
     public Integer getId() {
         return id;
