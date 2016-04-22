@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.student.StuLogModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.ccu.model.student.StuLogModel" >
+    <id column="log_id" property="logId" jdbcType="INTEGER" />
+    <result column="log_type" property="logType" jdbcType="VARCHAR" />
+    <result column="create_userid" property="createUserid" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.edu.ccu.model.student.StuLogModel" extends="BaseResultMap" >
+    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    log_id, log_type, create_userid, create_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    description
+  </sql>
+
+    <resultMap id="log4user" type="cn.edu.ccu.model.student.StuLogModel" extends="ResultMapWithBLOBs">
+        <association property="studentModel" javaType="cn.edu.ccu.model.student.StudentModel">
+            <result column="name" property="name" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+    <select id="selectByMap" resultMap="log4user" parameterType="Map">
+        select sl.*,u.name
+        from sys_log sl left join studnet u on sl.create_userid=u.id
+        <where>
+            1=1
+            <if test="logType != null and logType != ''">
+                and log_type= #{logType}
+            </if>
+        </where>
+        order by sl.create_time desc
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="selectByCount" resultType="Integer" parameterType="Map">
+        select count(1)
+        from sys_log
+        <where>
+            1=1
+            <if test="logType != null and logType != ''">
+                and log_type = #{logType}
+            </if>
+        </where>
+    </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from student_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from student_log
+    where log_id = #{logId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.ccu.model.student.StuLogModel" >
+    insert into student_log (log_id, log_type, create_userid, 
+      create_time, description)
+    values (#{logId,jdbcType=INTEGER}, #{logType,jdbcType=VARCHAR}, #{createUserid,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.ccu.model.student.StuLogModel" >
+    insert into student_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        log_id,
+      </if>
+      <if test="logType != null" >
+        log_type,
+      </if>
+      <if test="createUserid != null" >
+        create_userid,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="logId != null" >
+        #{logId,jdbcType=INTEGER},
+      </if>
+      <if test="logType != null" >
+        #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserid != null" >
+        #{createUserid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.student.StuLogModel" >
+    update student_log
+    <set >
+      <if test="logType != null" >
+        log_type = #{logType,jdbcType=VARCHAR},
+      </if>
+      <if test="createUserid != null" >
+        create_userid = #{createUserid,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.edu.ccu.model.student.StuLogModel" >
+    update student_log
+    set log_type = #{logType,jdbcType=VARCHAR},
+      create_userid = #{createUserid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      description = #{description,jdbcType=LONGVARCHAR}
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.student.StuLogModel" >
+    update student_log
+    set log_type = #{logType,jdbcType=VARCHAR},
+      create_userid = #{createUserid,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where log_id = #{logId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.system.ModuleModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.ccu.model.system.ModuleModel" >
+    <id column="module_id" property="moduleId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="entry_url" property="entryUrl" jdbcType="VARCHAR" />
+    <result column="modulegroup_id" property="modulegroupId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    module_id, name, description, entry_url, modulegroup_id, create_time, last_modify_time
+  </sql>
+
+    <select id="selectByUserId" resultMap="BaseResultMap" parameterType="Integer">
+      SELECT DISTINCT
+      m.module_id module_id, m.name NAME, m.description description, m.entry_url entry_url, m.modulegroup_id modulegroup_id, m.create_time create_time, m.last_modify_time last_modify_time
+		FROM
+		`r_user_role` sur
+		JOIN `r_role_module` srm ON sur.`role_id` = srm.`role_id`
+		JOIN `module` m ON m.`module_id` = srm.`module_id`
+		WHERE sur.user_id = #{userid}
+    </select>
+
+    <select id="SelectByRoleId" resultMap="BaseResultMap" parameterType="Integer">
+      SELECT DISTINCT
+      m.module_id module_id, m.name NAME, m.description description, m.entry_url entry_url, m.modulegroup_id modulegroup_id, m.create_time create_time, m.last_modify_time last_modify_time
+		FROM
+		`r_role_module` srm
+		JOIN `module` m ON m.`module_id` = srm.`module_id`
+		WHERE srm.role_id = #{roleId}
+    </select>
+
+    <select id="list" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from `module`
+    </select>
+
+
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from module
+    where module_id = #{moduleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from module
+    where module_id = #{moduleId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.ccu.model.system.ModuleModel" >
+    insert into module (module_id, name, description, 
+      entry_url, modulegroup_id, create_time, 
+      last_modify_time)
+    values (#{moduleId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{entryUrl,jdbcType=VARCHAR}, #{modulegroupId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{lastModifyTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.ccu.model.system.ModuleModel" >
+    insert into module
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="moduleId != null" >
+        module_id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="entryUrl != null" >
+        entry_url,
+      </if>
+      <if test="modulegroupId != null" >
+        modulegroup_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="moduleId != null" >
+        #{moduleId,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="entryUrl != null" >
+        #{entryUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="modulegroupId != null" >
+        #{modulegroupId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.system.ModuleModel" >
+    update module
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="entryUrl != null" >
+        entry_url = #{entryUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="modulegroupId != null" >
+        modulegroup_id = #{modulegroupId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where module_id = #{moduleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.system.ModuleModel" >
+    update module
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      entry_url = #{entryUrl,jdbcType=VARCHAR},
+      modulegroup_id = #{modulegroupId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where module_id = #{moduleId,jdbcType=INTEGER}
+  </update>
+</mapper>

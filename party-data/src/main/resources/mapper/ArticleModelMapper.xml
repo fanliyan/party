@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.article.ArticleModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.ccu.model.article.ArticleModel" >
+    <id column="article_id" property="articleId" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="summary" property="summary" jdbcType="VARCHAR" />
+    <result column="cover_url" property="coverUrl" jdbcType="VARCHAR" />
+    <result column="user_id" property="userId" jdbcType="INTEGER" />
+    <result column="countclick" property="countclick" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
+    <result column="channel_count" property="channelCount" jdbcType="INTEGER" />
+    <result column="title_index" property="titleIndex" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.edu.ccu.model.article.ArticleModel" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    article_id, title, summary, cover_url, user_id, countclick, status, create_time, 
+    last_modify_time, publish_time, channel_count, title_index
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+
+    <!--文章列表查询-->
+    <select id="selectArticleByRequirement" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        FROM `article` a
+        <where>
+            <if test="userId !=null">
+                a.user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="status !=null">
+                AND   a.`status` = #{status,jdbcType=TINYINT}
+            </if>
+            <!-- 默认不显示草稿状态 -->
+            <if test="status ==null">
+                AND   a.`status` != -1
+            </if>
+            <if test="publishTimeStart !=null">
+                <![CDATA[
+             AND   a.`publish_time` >= #{publishTimeStart,jdbcType=TIMESTAMP}
+                 ]]>
+            </if>
+            <if test="publishTimeEnd !=null">
+                <![CDATA[
+            AND    a.`publish_time` <= #{publishTimeEnd,jdbcType=TIMESTAMP}
+                ]]>
+            </if>
+            <if test="title !=null">
+                AND    a.`title` like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="channelId != null" >
+                <![CDATA[
+                AND   a.`channel_count` & #{channelId} = #{channelId}
+                ]]>
+            </if>
+        </where>
+        <if test="orderBy ==null or orderBy ==0">
+            order by a.`publish_time` desc
+        </if>
+        <if test="orderBy !=null and orderBy ==1">
+            <!-- 热门文章排序 权重按点赞数 + 点击数 / 50  排序 同时当权重一致时按发布时间 为第二排序规则  -->
+            order by a.`publish_time` DESC
+        </if>
+        <!--分组 -->
+        <if test="pageNo != null and pageSize != null">
+            LIMIT #{pageNo}, #{pageSize}
+        </if>
+    </select>
+    <!--文章列表查询总数-->
+    <select id="selectArticleByRequirementCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM `article` a
+        <where>
+            <if test="userId !=null">
+                a.user_id = #{userId,jdbcType=INTEGER}
+            </if>
+            <if test="status !=null">
+                AND   a.`status` = #{status,jdbcType=TINYINT}
+            </if>
+            <!-- 默认不显示草稿状态 -->
+            <if test="status ==null">
+                AND   a.`status` != -1
+            </if>
+            <if test="publishTimeStart !=null">
+                <![CDATA[
+             AND   a.`publish_time` >= #{publishTimeStart,jdbcType=TIMESTAMP}
+                 ]]>
+            </if>
+            <if test="publishTimeEnd !=null">
+                <![CDATA[
+            AND    a.`publish_time` <= #{publishTimeEnd,jdbcType=TIMESTAMP}
+                ]]>
+            </if>
+            <if test="title !=null">
+                AND    a.`title` like CONCAT('%',#{title,jdbcType=VARCHAR},'%')
+            </if>
+            <if test="channelId != null" >
+                <![CDATA[
+                 AND   a.`channel_count` & #{channelId} = #{channelId}
+                ]]>
+            </if>
+        </where>
+    </select>
+
+    <!--更新文章阅读数-->
+    <update id="updateArticleClickCountPlus1ByArticleId">
+        <![CDATA[
+  	update `article` set `countclick`=
+
+	CASE
+	 WHEN (`countclick`+ #{count,jdbcType=INTEGER})< 0
+	 	THEN 0
+	 ELSE
+	 	`countclick`+ #{count,jdbcType=INTEGER}
+	 END
+  	where
+  	`article_id` =#{articleId,jdbcType=INTEGER}
+  	]]>
+    </update>
+
+    <select id="selectTitleByIndex" resultType="int" >
+        select count(1) from article
+        <where>
+            `title_index`= MD5(#{title,jdbcType=VARCHAR})
+            <if test="notIncludeId">
+                and `article_id` !=#{notIncludeId,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from article
+    where article_id = #{articleId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from article
+    where article_id = #{articleId,jdbcType=INTEGER}
+  </delete>
+  <!--<insert id="insert" parameterType="cn.edu.ccu.model.article.ArticleModel" >-->
+    <!--insert into article (article_id, title, summary, -->
+      <!--cover_url, user_id, countclick, -->
+      <!--status, create_time, last_modify_time, -->
+      <!--publish_time, channel_count, title_index, -->
+      <!--content)-->
+    <!--values (#{articleId,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}, -->
+      <!--#{coverUrl,jdbcType=VARCHAR}, #{userId,jdbcType=INTEGER}, #{countclick,jdbcType=INTEGER}, -->
+      <!--#{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, -->
+      <!--#{publishTime,jdbcType=TIMESTAMP}, #{channelCount,jdbcType=INTEGER}, #{titleIndex,jdbcType=VARCHAR}, -->
+      <!--#{content,jdbcType=LONGVARCHAR})-->
+  <!--</insert>-->
+  <insert id="insertSelective" parameterType="cn.edu.ccu.model.article.ArticleModel" useGeneratedKeys="true" keyProperty="articleId" >
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="articleId != null" >
+        article_id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="summary != null" >
+        summary,
+      </if>
+      <if test="coverUrl != null" >
+        cover_url,
+      </if>
+      <if test="userId != null" >
+        user_id,
+      </if>
+      <if test="countclick != null" >
+        countclick,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+      <if test="publishTime != null" >
+        publish_time,
+      </if>
+      <if test="channelCount != null" >
+        channel_count,
+      </if>
+      <if test="title != null" >
+        title_index,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="articleId != null" >
+        #{articleId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null" >
+        #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="coverUrl != null" >
+        #{coverUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="countclick != null" >
+        #{countclick,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishTime != null" >
+        #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelCount != null" >
+        #{channelCount,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        MD5(#{title,jdbcType=VARCHAR}),
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.article.ArticleModel" >
+    update article
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="summary != null" >
+        summary = #{summary,jdbcType=VARCHAR},
+      </if>
+      <if test="coverUrl != null" >
+        cover_url = #{coverUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null" >
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="countclick != null" >
+        countclick = #{countclick,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishTime != null" >
+        publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelCount != null" >
+        channel_count = #{channelCount,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        title_index =  MD5(#{title,jdbcType=VARCHAR}),
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where article_id = #{articleId,jdbcType=INTEGER}
+  </update>
+  <!--<update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.edu.ccu.model.article.ArticleModel" >-->
+    <!--update article-->
+    <!--set title = #{title,jdbcType=VARCHAR},-->
+      <!--summary = #{summary,jdbcType=VARCHAR},-->
+      <!--cover_url = #{coverUrl,jdbcType=VARCHAR},-->
+      <!--user_id = #{userId,jdbcType=INTEGER},-->
+      <!--countclick = #{countclick,jdbcType=INTEGER},-->
+      <!--status = #{status,jdbcType=TINYINT},-->
+      <!--create_time = #{createTime,jdbcType=TIMESTAMP},-->
+      <!--last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},-->
+      <!--publish_time = #{publishTime,jdbcType=TIMESTAMP},-->
+      <!--channel_count = #{channelCount,jdbcType=INTEGER},-->
+      <!--title_index = #{titleIndex,jdbcType=VARCHAR},-->
+      <!--content = #{content,jdbcType=LONGVARCHAR}-->
+    <!--where article_id = #{articleId,jdbcType=INTEGER}-->
+  <!--</update>-->
+  <!--<update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.article.ArticleModel" >-->
+    <!--update article-->
+    <!--set title = #{title,jdbcType=VARCHAR},-->
+      <!--summary = #{summary,jdbcType=VARCHAR},-->
+      <!--cover_url = #{coverUrl,jdbcType=VARCHAR},-->
+      <!--user_id = #{userId,jdbcType=INTEGER},-->
+      <!--countclick = #{countclick,jdbcType=INTEGER},-->
+      <!--status = #{status,jdbcType=TINYINT},-->
+      <!--create_time = #{createTime,jdbcType=TIMESTAMP},-->
+      <!--last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},-->
+      <!--publish_time = #{publishTime,jdbcType=TIMESTAMP},-->
+      <!--channel_count = #{channelCount,jdbcType=INTEGER},-->
+      <!--title_index = #{titleIndex,jdbcType=VARCHAR}-->
+    <!--where article_id = #{articleId,jdbcType=INTEGER}-->
+  <!--</update>-->
+</mapper>
