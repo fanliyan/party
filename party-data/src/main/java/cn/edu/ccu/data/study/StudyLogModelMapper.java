@@ -4,6 +4,7 @@ import cn.edu.ccu.data.PartyDB;
 import cn.edu.ccu.model.study.StudyLogModel;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 @PartyDB
@@ -23,6 +24,11 @@ public interface StudyLogModelMapper {
 
     int selectIsInStudy(
             @Param("courseId") Integer courseId,@Param("wareId") Integer wareId,@Param("userId") Integer userId);
+
+    List<StudyLogModel> selectLogByCode(
+            @Param("courseId") Integer courseId, @Param("wareId") Integer wareId, @Param("userId") Integer userId,
+            @Param("code") Integer code,@Param("startTime") Date startTime,@Param("endTime") Date endTime);
+
 
 
 }

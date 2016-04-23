@@ -1,7 +1,7 @@
 <#import "/master/master-frame.ftl" as master />
 <#import "/control/common/splitPage.ftl" as splitPage1 />
 
-<@master.masterFrame pageTitle=["商城数据维护","banner管理","banner列表"]>
+<@master.masterFrame pageTitle=["课程管理","课程","课程列表"]>
 
 <div class="panel panel-default table-responsive">
 

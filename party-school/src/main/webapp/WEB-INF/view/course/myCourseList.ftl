@@ -107,7 +107,7 @@
                     <p class="text-muted">了解更多党校知识</p>
                 </div>
                 <a href="${basePath}/course/choose"
-                   class="btn btn-lg btn-danger pull-right m-top-xs fadeInLeftLarge no-animation animated-element animation-delay1">立即选课</a>
+                   class="btn btn-lg btn-danger pull-right m-top-xs no-animation animated-element">立即选课</a>
             </div>
         </div>
     </div>

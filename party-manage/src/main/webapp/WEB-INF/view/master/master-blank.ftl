@@ -54,8 +54,12 @@
 	<!-- Gritter -->
 	<link href="${basePath}/resources/css/gritter/jquery.gritter.css" rel="stylesheet">
 	<!-- Morris -->
-	<link href="${basePath}/resources/css/morris.css" rel="stylesheet"/>	
-	<!-- Jquery -->
+	<link href="${basePath}/resources/css/morris.css" rel="stylesheet"/>
+
+    <!-- timepicker -->
+    <link href="${basePath}/resources/js/timepicker/jquery-ui-timepicker-addon.min.css" rel="stylesheet" type="text/css"/>
+
+    <!-- Jquery -->
 	<script src="${basePath}/resources/js/jquery-1.10.2.min.js"></script>
 	
 	<!-- Dropzone -->
@@ -125,7 +129,12 @@
 	<script src="${basePath}/resources/js/ymb.menu.js"></script>
 	<script src="${basePath}/resources/js/ymb.ueditor.insertossimage.js"></script>
 	<script src="${basePath}/resources/js/ymb.selectAndUploadFile.js"></script>
-	
+
+    <!-- timepicker -->
+    <script src="${basePath}/resources/js/timepicker/jquery-ui-timepicker-addon.min.js" type="text/javascript"></script>
+    <script src="${basePath}/resources/js/timepicker/jquery-ui-timepicker-zh-CN.js" type="text/javascript"></script>
+
+
   </body>
 </html>
 </#macro>

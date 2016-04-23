@@ -4,6 +4,7 @@ import cn.edu.ccu.model.study.StudyLogModel;
 import cn.edu.ccu.model.study.VideoStudyWSRequest;
 import cn.edu.ccu.model.study.VideoStudyWSResponse;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +28,10 @@ public interface IStudy {
     VideoStudyWSResponse pushContent(VideoStudyWSRequest videoStudyWSRequest);
 
 
+    boolean isStudyingOtherThing(Integer courseId, Integer wareId, Integer userId);
 
-   boolean isStudyingOtherThing(Integer courseId,Integer wareId,Integer userId);
+
+    //按时间段算
+    boolean calculateOneCourseStudy(Integer userId, Integer courseId, Date startTime,Date endTime);
+
 }

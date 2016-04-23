@@ -165,14 +165,14 @@
                 obj.video.element.pause();
                 obj.plugin.webSocket.close();
             },
-            ended: function () {
-                obj.video.videoEnd();
-            }
+            // ended: function () {
+            //     obj.video.videoEnd();
+            // }
 
         },
         listen: function () {
 
-            obj.video.element.addEventListener("ended", obj.lCallBack.ended); //播放结束
+            // obj.video.element.addEventListener("ended", obj.lCallBack.ended); //播放结束
 
             window.onbeforeunload = obj.lCallBack.closeWindow;
             window.onunload = obj.lCallBack.closeWindow;

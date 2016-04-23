@@ -10,10 +10,12 @@ import cn.edu.ccu.model.course.TaskListRequest;
 import cn.edu.ccu.model.course.TaskListResponse;
 import cn.edu.ccu.model.course.TaskModel;
 import cn.edu.ccu.utils.common.extention.IntegerExtention;
+import cn.edu.ccu.utils.common.extention.StringExtention;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,17 +43,19 @@ public class TaskController extends BaseController {
     @RequestMapping("/list")
     public ModelAndView list(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                              TaskModel taskModel, SplitPageRequest pageRequest,
-                             String startTime, String endTime) throws Exception {
+                             String startTimeString,
+                             String endTimeString) throws Exception {
         ModelAndView mav = Common.getLoginModelAndView(httpRequest);
 
         TaskListRequest request = new TaskListRequest();
 
-        if (startTime != null)
-            taskModel.setStartTime(sdf.parse(startTime));
-        if (endTime != null)
-            taskModel.setEndTime(sdf.parse(endTime));
+        if (!StringExtention.isTrimNullOrEmpty(startTimeString))
+            taskModel.setStartTime(sdf.parse(startTimeString));
+        if (!StringExtention.isTrimNullOrEmpty(endTimeString))
+            taskModel.setEndTime(sdf.parse(endTimeString));
 
         request.setTaskModel(taskModel);
+        pageRequest.setReturnCount(true);
         request.setSplitPageRequest(pageRequest);
 
         TaskListResponse response = iTask.listByPage(request);
@@ -93,10 +97,19 @@ public class TaskController extends BaseController {
     @ResponseBody
     Map<String, Object> addOrUpdateArticleCategoriesType(
             HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-            TaskModel model) throws Exception {
+            TaskModel model,
+            @RequestParam("startTimeString") String startTimeString,
+            @RequestParam("endTimeString") String endTimeString) throws Exception {
 
         Map<String, Object> map = new HashMap<>();
         boolean i;
+
+        //时间转换
+        if (startTimeString != null)
+            model.setStartTime(sdf.parse(startTimeString));
+        if (endTimeString != null)
+            model.setEndTime(sdf.parse(endTimeString));
+
         if (httpRequest.getParameter("isUpdate") == null) {
             i = iTask.addTask(model);
         } else {

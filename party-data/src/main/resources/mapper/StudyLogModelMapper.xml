@@ -26,6 +26,24 @@
         and (status != 400 and status != 304)
     </select>
 
+    <select id="selectLogByCode" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from study_log
+        where user_id = #{userId} and course_id = #{courseId} and ware_id = #{wareId}
+        and status = #{code}
+        <if test="startTime !=null">
+            <![CDATA[
+             AND   `start_time` >= #{startTime,jdbcType=TIMESTAMP}
+                 ]]>
+        </if>
+        <if test="endTime !=null">
+            <![CDATA[
+            AND   `end_time` <= #{endTime,jdbcType=TIMESTAMP}
+                ]]>
+        </if>
+    </select>
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

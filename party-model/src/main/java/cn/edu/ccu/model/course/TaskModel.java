@@ -25,6 +25,23 @@ public class TaskModel {
 
     private SRoleModel sRoleModel;
 
+    //==================================================================================
+
+
+    private boolean finish;
+
+    public boolean isFinish() {
+        return finish;
+    }
+
+    public void setFinish(boolean finish) {
+        this.finish = finish;
+    }
+
+
+    //==================================================================================
+
+
     public SRoleModel getsRoleModel() {
         return sRoleModel;
     }

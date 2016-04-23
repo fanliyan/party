@@ -46,11 +46,12 @@ public class CourseBusiness implements ICourse {
         if (IntegerExtention.hasValueAndMaxZero(id)) {
 
             CourseModel courseModel = courseModelMapper.selectByPrimaryKey(id);
+            if (courseModel != null) {
+                List<CourseWareModel> courseWareModelList = courseWareModelMapper.selectByCourseId(id);
+                courseModel.setCourseWareModelList(courseWareModelList);
 
-            List<CourseWareModel> courseWareModelList = courseWareModelMapper.selectByCourseId(id);
-            courseModel.setCourseWareModelList(courseWareModelList);
-
-            return courseModel;
+                return courseModel;
+            }
         }
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
@@ -79,6 +80,12 @@ public class CourseBusiness implements ICourse {
                 map.put("courseType", courseModel);
         }
 
+
+        if (courseListRequest.getSplitPageRequest() != null && courseListRequest.getSplitPageRequest().isReturnCount()) {
+            UtilsBusiness.pubMapforSplitPage(courseListRequest.getSplitPageRequest(), map);
+        }
+
+
         List<CourseModel> courseModelList = courseModelMapper.select(map);
 
         //插入课件信息
@@ -103,7 +110,7 @@ public class CourseBusiness implements ICourse {
 
     }
 
-    public CourseListResponse myCourseList(Integer id) {
+    public CourseListResponse myCourseList(Integer id,boolean splitPage) {
 
         if (IntegerExtention.hasValueAndMaxZero(id)) {
             List<Integer> ids = rCourseStudentModelMapper.selectCourseByStudentId(id);
@@ -111,7 +118,12 @@ public class CourseBusiness implements ICourse {
             if (ids != null && ids.size() > 0) {
                 CourseListRequest courseListRequest = new CourseListRequest();
                 courseListRequest.setIds(ids);
-                courseListRequest.setSplitPageRequest(new SplitPageRequest());
+
+                SplitPageRequest splitPageRequest = null;
+                if(splitPage){
+                    splitPageRequest=  new SplitPageRequest();
+                }
+                courseListRequest.setSplitPageRequest(splitPageRequest);
 
                 return this.listByPage(courseListRequest, true);
             }
@@ -121,6 +133,10 @@ public class CourseBusiness implements ICourse {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
+    public CourseListResponse myCourseList(Integer id) {
+
+        return this.myCourseList(id,true);
+    }
 
     @Transactional(TransactionManagerName.partyTransactionManager)
     public boolean addCourse(CourseModel courseModel, String[] courseWare) {
@@ -235,6 +251,15 @@ public class CourseBusiness implements ICourse {
         if (rCourseStudentModel == null)
             throw new BusinessException(ErrorCodeEnum.operationError);
 
+    }
+
+
+    public List<CourseWareModel> getWareListByCourseId(Integer courseId) {
+
+        if (IntegerExtention.hasValueAndMaxZero(courseId))
+            return courseWareModelMapper.selectByCourseId(courseId);
+
+        return null;
     }
 
 

@@ -4,6 +4,9 @@ import cn.edu.ccu.model.course.CourseListRequest;
 import cn.edu.ccu.model.course.CourseListResponse;
 import cn.edu.ccu.model.course.CourseModel;
 import cn.edu.ccu.model.course.CourseWareModel;
+import cn.edu.ccu.utils.common.extention.IntegerExtention;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2016/4/18.
@@ -34,4 +37,7 @@ public interface ICourse {
 
 
      CourseWareModel getWareById(Integer id) ;
+
+
+    List<CourseWareModel> getWareListByCourseId(Integer courseId);
 }

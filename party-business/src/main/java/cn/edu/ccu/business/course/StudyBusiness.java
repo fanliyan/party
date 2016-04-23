@@ -1,13 +1,12 @@
 package cn.edu.ccu.business.course;
 
 import cn.edu.ccu.data.study.StudyLogModelMapper;
+import cn.edu.ccu.ibusiness.course.ICourse;
 import cn.edu.ccu.ibusiness.course.IStudy;
-import cn.edu.ccu.ibusiness.system.ISysLog;
+import cn.edu.ccu.model.course.CourseModel;
+import cn.edu.ccu.model.course.CourseWareModel;
 import cn.edu.ccu.model.exception.BusinessException;
-import cn.edu.ccu.model.study.StudyLogModel;
-import cn.edu.ccu.model.study.VideoStudyRequestCode;
-import cn.edu.ccu.model.study.VideoStudyWSRequest;
-import cn.edu.ccu.model.study.VideoStudyWSResponse;
+import cn.edu.ccu.model.study.*;
 import cn.edu.ccu.utils.common.ErrorCodeEnum;
 import cn.edu.ccu.utils.common.LogHelper;
 import cn.edu.ccu.utils.common.SecurityHelper;
@@ -17,13 +16,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by Administrator on 2016/4/20.
@@ -31,6 +26,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class StudyBusiness implements IStudy {
 
+    @Autowired
+    private ICourse iCourse;
 
     @Autowired
     private StudyLogModelMapper studyLogModelMapper;
@@ -148,7 +145,7 @@ public class StudyBusiness implements IStudy {
                             //用户退出记录DB
                             //如果已经学习完成则不修改数据 仍为完成状态
                             StudyLogModel model = studyLogModelMapper.selectByPrimaryKey(record.getId());
-                            if(!model.getStatus().equals(VideoStudyRequestCode.ON_STOP)){
+                            if (!model.getStatus().equals(VideoStudyRequestCode.ON_STOP)) {
                                 record.setEndTime(new Date());
                                 record.setStatus(VideoStudyRequestCode.END);
                             }
@@ -224,7 +221,7 @@ public class StudyBusiness implements IStudy {
         StudyLogModel studyLogModel = studyLogModelMapper.selectByPrimaryKey(model.getId());
 
         //如果已经学习完成 不需要进行业务处理
-        if(studyLogModel.getStatus().equals(VideoStudyRequestCode.ON_STOP)){
+        if (studyLogModel.getStatus().equals(VideoStudyRequestCode.ON_STOP)) {
             response.setCode(1);
             return response;
         }
@@ -309,22 +306,60 @@ public class StudyBusiness implements IStudy {
     }
 
 
-   public boolean isStudyingOtherThing(Integer courseId,Integer wareId,Integer userId){
+    public boolean isStudyingOtherThing(Integer courseId, Integer wareId, Integer userId) {
 
 
-        if(IntegerExtention.hasValueAndMaxZero(courseId)
-                &&IntegerExtention.hasValueAndMaxZero(wareId)
-                &&IntegerExtention.hasValueAndMaxZero(userId)){
-             int i = studyLogModelMapper.selectIsInStudy(courseId,wareId,userId);
+        if (IntegerExtention.hasValueAndMaxZero(courseId)
+                && IntegerExtention.hasValueAndMaxZero(wareId)
+                && IntegerExtention.hasValueAndMaxZero(userId)) {
+            int i = studyLogModelMapper.selectIsInStudy(courseId, wareId, userId);
 
-            if(i>0){
-                LogHelper.Error(String.format("用户%s学习异常---同时%s个视频",userId,i));
+            if (i > 0) {
+                LogHelper.Error(String.format("用户%s学习异常---同时%s个视频", userId, i));
             }
 
-            return i>0;
+            return i > 0;
         }
 
         throw new BusinessException(ErrorCodeEnum.requestParamError);
+    }
+
+
+    //查询单门课程进度
+    public boolean calculateOneCourseStudy(Integer userId, Integer courseId, Date startTime,Date endTime) {
+
+
+        //查询课程详情 （包括课件
+        CourseModel courseModel = iCourse.selectDetailById(courseId);
+//
+//        double score = 0;
+//        double time = 0;
+
+        int i = 0;
+
+        //获取某个课程的
+        List<CourseWareModel> courseWareModelList = courseModel.getCourseWareModelList();
+        if (courseWareModelList != null) {
+            for (CourseWareModel courseWareModel : courseWareModelList) {
+
+                //查询已学完课件
+                List<StudyLogModel> studyLogModelList = studyLogModelMapper.selectLogByCode(
+                        courseId, courseWareModel.getId(), userId, VideoStudyRequestCode.ON_STOP,
+                        startTime,endTime);
+                if (studyLogModelList != null && studyLogModelList.size() > 0) {
+//                    time += Double.parseDouble(courseWareModel.getTime());
+                    i++;
+                }
+            }
+
+            //学完全部课程
+            if (i == courseWareModelList.size()) {
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

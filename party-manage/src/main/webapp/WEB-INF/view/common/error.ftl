@@ -16,7 +16,7 @@
 				<a class="btn btn-success m-bottom-sm" href="${basePath}/main/index"><i class="fa fa-home"></i> 回首页</a>
 
 				</#if>
-				<a class="btn btn-success m-bottom-sm" href="mailto:liwei@htke.com"><i class="fa fa-envelope"></i> 联系技术部</a>
+				<a class="btn btn-success m-bottom-sm" href="mailto:"><i class="fa fa-envelope"></i> 联系技术部</a>
 			</div><!-- /.col -->
 		</div><!-- /.row -->
 	</div><!-- /.padding-md -->

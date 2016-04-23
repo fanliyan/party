@@ -39,6 +39,7 @@ public class CourseTypeController extends BaseController {
 
         CourseTypeListRequest request = new CourseTypeListRequest();
         request.setCourseTypeModel(courseTypeModel);
+        pageRequest.setReturnCount(true);
         request.setSplitPageRequest(pageRequest);
 
         CourseTypeListResponse response = iCourseType.listByPage(request);

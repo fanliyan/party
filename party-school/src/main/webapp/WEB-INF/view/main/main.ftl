@@ -43,7 +43,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center">
+                <div class="feature-icon text-center" onclick="location.href='${basePath}/task/mytask'">
                     <i class="fa fa-tasks fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">
@@ -61,7 +61,7 @@
                 <p></p>
             </div><!-- /.col -->
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center">
+                <div class="feature-icon text-center" onclick="location.href='${basePath}/note/list'">
                     <i class="fa fa-pencil fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">

@@ -23,4 +23,7 @@ public interface TaskModelMapper {
     List<TaskModel> select(Map map);
 
     int count(Map map);
+
+
+    List<TaskModel> selectByRole(Map map);
 }

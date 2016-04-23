@@ -23,13 +23,28 @@
     role_id
   </sql>
 
-    <select id="select" resultMap="BaseResultMap" parameterType="Map">
+    <select id="select" resultMap="withRole" parameterType="Map">
         SELECT
         id, t.name NAME, start_time, end_time, target_score, target_time, t.create_time, t.last_modify_time,
         t.role_id role_id,r.`name` role_name
         FROM task t JOIN s_role r ON t.`role_id`=r.`role_id`
         <where>
-
+          <if test="name != null">
+              and t.name like concat("%",#{name},"%")
+          </if>
+            <if test="roleId != null">
+                and t.role_id = #{roleId}
+            </if>
+            <if test="startTime !=null">
+                <![CDATA[
+             AND (  `start_time` >= #{startTime,jdbcType=TIMESTAMP} or `start_time` is null)
+                 ]]>
+            </if>
+            <if test="endTime !=null">
+                <![CDATA[
+            AND  (  `end_time` <= #{endTime,jdbcType=TIMESTAMP} or `end_time` is null)
+                ]]>
+            </if>
         </where>
         order by start_time DESC,end_time DESC
         <!-- split page -->
@@ -39,10 +54,49 @@
     </select>
     <select id="count" resultType="int" parameterType="Map">
         select
+        count(1)
+        from task
+        <where>
+            <if test="name != null">
+                and name like concat("%",#{name},"%")
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="startTime !=null">
+                <![CDATA[
+             AND (  `start_time` >= #{startTime,jdbcType=TIMESTAMP} or `start_time` is null)
+                 ]]>
+            </if>
+            <if test="endTime !=null">
+                <![CDATA[
+            AND  (  `end_time` <= #{endTime,jdbcType=TIMESTAMP} or `end_time` is null)
+                ]]>
+            </if>
+        </where>
+    </select>
+    <select id="selectByRole" resultMap="BaseResultMap" parameterType="Map">
+        select
         <include refid="Base_Column_List" />
         from task
         <where>
-
+            role_id = #{id}
+            <if test="startTime !=null">
+                <![CDATA[
+             AND (  `start_time` >= #{startTime,jdbcType=TIMESTAMP} or `start_time` is null)
+                 ]]>
+            </if>
+            <if test="endTime !=null">
+                <![CDATA[
+            AND  (  `end_time` <= #{endTime,jdbcType=TIMESTAMP} or `end_time` is null)
+                ]]>
+            </if>
+            <if test="time !=null">
+                <![CDATA[
+            AND  (  `end_time` >= #{time,jdbcType=TIMESTAMP} or `end_time` is null)
+            AND  (  `start_time` <= #{time,jdbcType=TIMESTAMP} or `start_time` is null)
+                ]]>
+            </if>
         </where>
     </select>
 

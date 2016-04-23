@@ -8,7 +8,6 @@ import cn.edu.ccu.ibusiness.article.IArticle;
 import cn.edu.ccu.ibusiness.article.IArticleChannel;
 import cn.edu.ccu.ibusiness.article.IArticleModifyLog;
 import cn.edu.ccu.ibusiness.system.IUser;
-import cn.edu.ccu.ibusiness.word.ISensitiveWords;
 import cn.edu.ccu.model.RequestHead;
 import cn.edu.ccu.model.SplitPageRequest;
 import cn.edu.ccu.model.SplitPageResponse;
@@ -20,9 +19,6 @@ import cn.edu.ccu.utils.common.constants.ArticleModifyLogStatus;
 import cn.edu.ccu.utils.common.constants.ArticleStatus;
 import cn.edu.ccu.utils.common.extention.IntegerExtention;
 import cn.edu.ccu.utils.common.extention.StringExtention;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -253,11 +249,14 @@ public class ArticleBusiness implements IArticle {
         }
 
         //校验敏感词
-        if(SensitiveWordsBusiness.wordsIsSensitive(article.getContent())){
-            throw new BusinessException("请检查是否带有敏感词汇");
+        if(SensitiveWordsBusiness.wordsIsSensitive(article.getTitle())){
+            throw new BusinessException("请检查标题是否带有敏感词汇");
         }
         if(SensitiveWordsBusiness.wordsIsSensitive(article.getSummary())){
-            throw new BusinessException("请检查是否带有敏感词汇");
+            throw new BusinessException("请检查摘要是否带有敏感词汇");
+        }
+        if(SensitiveWordsBusiness.wordsIsSensitive(article.getContent())){
+            throw new BusinessException("请检查内容是否带有敏感词汇");
         }
 
         //标题 唯一性校验
