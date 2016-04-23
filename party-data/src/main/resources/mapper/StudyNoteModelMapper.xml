@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.note.StudyNoteModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.ccu.model.note.StudyNoteModel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="student_id" property="studentId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.edu.ccu.model.note.StudyNoteModel" extends="BaseResultMap" >
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+    <resultMap id="withStudent" type="cn.edu.ccu.model.note.StudyNoteModel" extends="BaseResultMap">
+        <association property="studentModel" javaType="cn.edu.ccu.model.student.StudentModel">
+            <id column="student_id" property="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="withStudentAndBlob" type="cn.edu.ccu.model.note.StudyNoteModel" extends="ResultMapWithBLOBs">
+        <association property="studentModel" javaType="cn.edu.ccu.model.student.StudentModel">
+            <id column="student_id" property="id"/>
+            <result column="name" property="name"/>
+        </association>
+    </resultMap>
+  <sql id="Base_Column_List" >
+    id, title, status, student_id, create_time, last_modify_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    content
+  </sql>
+
+    <select id="select" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from study_note
+        <where>
+            <if test="studentId !=null">
+                AND   `student_id` = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="status !=null">
+                AND   `status` = #{status,jdbcType=TINYINT}
+            </if>
+            <if test="review !=null">
+                AND   `status` in (1,2)
+            </if>
+        </where>
+        ORDER BY create_time DESC,last_modify_time desc,id desc
+        <!--分组 -->
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="selectWithStudent" resultMap="withStudent" parameterType="Map">
+        select
+        n.id, n.title, n.status, n.student_id, n.create_time, n.last_modify_time,
+        s.name
+        from study_note n join student s on s.id=n.student_id
+        <where>
+            <if test="studentId !=null">
+                AND   `student_id` = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="status !=null">
+                AND   n.`status` = #{status,jdbcType=TINYINT}
+            </if>
+            <if test="review !=null">
+                AND   n.`status` in (1,2)
+            </if>
+        </where>
+        ORDER BY n.create_time DESC,n.last_modify_time desc,n.id desc
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="count" resultType="int" parameterType="Map">
+        select
+        count(1)
+        from study_note
+        <where>
+            <if test="studentId !=null">
+                AND   `student_id` = #{studentId,jdbcType=INTEGER}
+            </if>
+            <if test="status !=null">
+                AND   `status` = #{status,jdbcType=TINYINT}
+            </if>
+            <if test="review !=null">
+                AND   `status` in (1,2)
+            </if>
+        </where>
+    </select>
+
+    <select id="getByIdAndStudentId" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from study_note
+        where id = #{id,jdbcType=INTEGER} and student_id=#{studentId}
+    </select>
+
+    <select id="getByIdWithStudent" resultMap="withStudentAndBlob" parameterType="int">
+        select
+        n.id, n.title, n.status, n.student_id, n.create_time, n.last_modify_time,n.content,
+        s.name
+        from study_note n join student s on s.id=n.student_id
+        where n.id = #{id,jdbcType=INTEGER} and n.status=2
+    </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from study_note
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from study_note
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.ccu.model.note.StudyNoteModel" >
+    insert into study_note (id, title, status, 
+      student_id, create_time, last_modify_time, 
+      content)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, 
+      #{studentId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.ccu.model.note.StudyNoteModel" >
+    insert into study_note
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="studentId != null" >
+        student_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="studentId != null" >
+        #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.note.StudyNoteModel" >
+    update study_note
+    <set >
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="studentId != null" >
+        student_id = #{studentId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.edu.ccu.model.note.StudyNoteModel" >
+    update study_note
+    set title = #{title,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      student_id = #{studentId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.note.StudyNoteModel" >
+    update study_note
+    set title = #{title,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      student_id = #{studentId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.faq.FAQModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.ccu.model.faq.FAQModel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="question" property="question" jdbcType="VARCHAR" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="answer_time" property="answerTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="ask_user_id" property="askUserId" jdbcType="INTEGER" />
+    <result column="answer_user_id" property="answerUserId" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+    <resultMap id="withUser" type="cn.edu.ccu.model.faq.FAQModel" extends="BaseResultMap">
+        <association property="studentModel" javaType="cn.edu.ccu.model.student.StudentModel">
+            <id column="ask_user_id" property="id"/>
+            <result column="ask_user_name" property="name"/>
+        </association>
+        <association property="userModel" javaType="cn.edu.ccu.model.user.UserModel">
+            <id column="answer_user_id" property="userId"/>
+            <result column="answer_user_name" property="name"/>
+        </association>
+    </resultMap>
+  <sql id="Base_Column_List" >
+    id, question, answer, answer_time, status, ask_user_id, answer_user_id, create_time, 
+    last_modify_time
+  </sql>
+
+
+    <select id="selectWithUser" parameterType="Map" resultMap="withUser">
+        SELECT
+        f.id, f.question, f.answer, f.answer_time, f.status, f.ask_user_id, f.answer_user_id, f.create_time,
+        f.last_modify_time,s.`name` ask_user_name,u.`name` answer_user_name
+        FROM faq f LEFT  JOIN student s ON  f.`ask_user_id`=s.`id`
+        LEFT JOIN USER u ON f.`answer_user_id`=u.`user_id`
+        <where>
+            <if test="status != null">
+                f.status = #{status}
+            </if>
+            <if test="studentId != null">
+                f.ask_user_id = #{studentId}
+            </if>
+            <if test="userId != null">
+                f.answer_user_id = #{userId}
+            </if>
+        </where>
+        order by f.create_time DESC,f.answer_time desc
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="select" parameterType="Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from faq
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="studentId != null">
+                ask_user_id = #{studentId}
+            </if>
+            <if test="userId != null">
+                answer_user_id = #{userId}
+            </if>
+        </where>
+        order by create_time DESC,answer_time desc
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="count" parameterType="Map" resultType="int">
+        select
+        count(1)
+        from faq
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="studentId != null">
+                ask_user_id = #{studentId}
+            </if>
+            <if test="userId != null">
+                answer_user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from faq
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from faq
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.ccu.model.faq.FAQModel" >
+    insert into faq (id, question, answer, 
+      answer_time, status, ask_user_id, 
+      answer_user_id, create_time, last_modify_time
+      )
+    values (#{id,jdbcType=INTEGER}, #{question,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, 
+      #{answerTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, #{askUserId,jdbcType=INTEGER}, 
+      #{answerUserId,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.ccu.model.faq.FAQModel" >
+    insert into faq
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="question != null" >
+        question,
+      </if>
+      <if test="answer != null" >
+        answer,
+      </if>
+      <if test="answerTime != null" >
+        answer_time,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="askUserId != null" >
+        ask_user_id,
+      </if>
+      <if test="answerUserId != null" >
+        answer_user_id,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="question != null" >
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="answerTime != null" >
+        #{answerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="askUserId != null" >
+        #{askUserId,jdbcType=INTEGER},
+      </if>
+      <if test="answerUserId != null" >
+        #{answerUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.faq.FAQModel" >
+    update faq
+    <set >
+      <if test="question != null" >
+        question = #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="answerTime != null" >
+        answer_time = #{answerTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="askUserId != null" >
+        ask_user_id = #{askUserId,jdbcType=INTEGER},
+      </if>
+      <if test="answerUserId != null" >
+        answer_user_id = #{answerUserId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.faq.FAQModel" >
+    update faq
+    set question = #{question,jdbcType=VARCHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      answer_time = #{answerTime,jdbcType=TIMESTAMP},
+      status = #{status,jdbcType=TINYINT},
+      ask_user_id = #{askUserId,jdbcType=INTEGER},
+      answer_user_id = #{answerUserId,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
