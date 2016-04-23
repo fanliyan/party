@@ -40,7 +40,9 @@
 
     <!-- Jquery -->
     <script src="${basePath}/resources/js/jquery-1.10.2.min.js"></script>
-
+    <script language="javascript">
+        $.basePath = "${basePath}";
+    </script>
 </head>
 <body  class="${bodyClass}">
 

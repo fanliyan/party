@@ -70,7 +70,7 @@
                 <p></p>
             </div><!-- /.col -->
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center">
+                <div class="feature-icon text-center"  >
                     <i class="fa fa-bars fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">
@@ -113,7 +113,7 @@
                 <p></p>
             </div><!-- /.col -->
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center">
+                <div class="feature-icon text-center" onclick="location.href='${basePath}/faq/list'">
                     <i class="fa fa-comments-o fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">

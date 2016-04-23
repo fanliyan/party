@@ -38,10 +38,10 @@
                         <textarea class="form-control parsley-validated"
                                   id="summary" name="summary" rows="3"
                                   placeholder="输入摘要"
-                                  data-parsley-maxlength="1000"
-                                  data-parsley-maxlength-message="内容不能超过1000字"
+                                  data-parsley-maxlength="500"
+                                  data-parsley-maxlength-message="摘要不能超过500字"
                                   data-parsley-required="true"
-                                  data-parsley-required-message="内容不可为空"
+                                  data-parsley-required-message="摘要不可为空"
                                 ><#if article??>${article.summary!}</#if></textarea>
                 </div>
                 <!-- /.col -->
