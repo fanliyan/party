@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.exam.QuestionModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.ccu.model.exam.QuestionModel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="question" property="question" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="right_answer" property="rightAnswer" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="weight" property="weight" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="FLOAT" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.edu.ccu.model.exam.QuestionModel" extends="BaseResultMap" >
+    <result column="answers" property="answers" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+    <resultMap id="listResultMap" type="cn.edu.ccu.model.exam.QuestionModel" >
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="question" property="question" jdbcType="VARCHAR" />
+        <result column="type" property="type" jdbcType="INTEGER" />
+        <result column="status" property="status" jdbcType="TINYINT" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+        <result column="create_user" property="createUser" jdbcType="INTEGER" />
+        <result column="role_id" property="roleId" jdbcType="INTEGER" />
+        <result column="weight" property="weight" jdbcType="INTEGER" />
+        <result column="score" property="score" jdbcType="DOUBLE" />
+
+        <association property="userModel" javaType="cn.edu.ccu.model.user.UserModel">
+            <id column="create_user" property="userId"/>
+            <result column="create_user_name" property="name"/>
+        </association>
+        <association property="sRoleModel" javaType="cn.edu.ccu.model.student.SRoleModel">
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="name"/>
+        </association>
+    </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name,question,right_answer, type, status, create_time, last_modify_time, create_user,
+    role_id, weight,score
+  </sql>
+  <sql id="Blob_Column_List" >
+    answers
+  </sql>
+
+
+    <select id="selectWithUser" resultMap="listResultMap" parameterType="Map">
+        SELECT
+        q.id, q.name, q.type, q.status, q.create_time, q.last_modify_time, q.create_user,q.score,
+        q.role_id, q.weight ,u.`name` create_user_name,r.`name` role_name,us.name create_user_name
+        FROM question q LEFT JOIN USER u ON u.`user_id`=q.`create_user`
+        LEFT JOIN `s_role` r ON q.`role_id`=r.`role_id`
+        LEFT JOIN `user` us on us.user_id=q.create_user
+        <where>
+            <if test="type != null">
+              and  q.type = #{type}
+            </if>
+            <if test="roleId != null">
+                and  q.role_id = #{roleId}
+            </if>
+            <if test="name != null">
+                and  q.name like concat("%",#{name},"%")
+            </if>
+            <if test="status != null">
+                and  q.status = #{status}
+            </if>
+            <if test="userId != null">
+                and  q.create_user = #{userId}
+            </if>
+            <if test="weight != null">
+                and  q.weight = #{weight}
+            </if>
+            <if test="score != null">
+                and  q.score = #{score}
+            </if>
+        </where>
+        order by q.create_time desc,q.last_modify_time desc
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="select" resultMap="listResultMap" parameterType="Map">
+        SELECT
+        id, name, type, status, create_user, create_time, last_modify_time,score
+        from question
+        <where>
+            <if test="type != null">
+                and  type = #{type}
+            </if>
+            <if test="roleId != null">
+                and role_id = #{roleId}
+            </if>
+            <if test="name != null">
+                and name like concat("%",#{name},"%")
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="userId != null">
+                and create_user = #{userId}
+            </if>
+            <if test="weight != null">
+                and  weight = #{weight}
+            </if>
+            <if test="score != null">
+                and  score = #{score}
+            </if>
+        </where>
+        ORDER BY create_time DESC,last_modify_time desc
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="search" resultMap="BaseResultMap" parameterType="Map">
+        SELECT
+        id, name, type, status, create_time, last_modify_time,score from question
+        <where>
+            status != -1
+            <if test="text != null">
+                and ( name like concat("%",#{text},"%")
+                or id like concat("%",#{text},"%")
+                or question  concat("%",#{text},"%") )
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+        ORDER by create_time desc,last_modify_time DESC
+    </select>
+    <select id="count" resultType="int" parameterType="Map">
+        SELECT
+          count(1)
+        from question
+        <where>
+            <if test="type != null">
+                and  type = #{type}
+            </if>
+            <if test="roleId != null">
+                and  role_id = #{roleId}
+            </if>
+            <if test="name != null">
+                and name like concat("%",#{name},"%")
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="userId != null">
+                and  create_user = #{userId}
+            </if>
+            <if test="weight != null">
+                and weight = #{weight}
+            </if>
+            <if test="score != null">
+                and  score = #{score}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByIds" resultMap="BaseResultMap" parameterType="List">
+        select
+        id, name,question, type, status, create_time, last_modify_time, create_user, role_id, weight,score
+        from question
+        WHERE id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="selectDetailByIds" resultMap="listResultMap" parameterType="List">
+        SELECT
+        q.id, q.name, q.type, q.status, q.create_time, q.last_modify_time, q.create_user,q.score,
+        q.role_id, q.weight ,u.`name` create_user_name,r.`name` role_name,us.name create_user_name
+        FROM question q LEFT JOIN USER u ON u.`user_id`=q.`create_user`
+        LEFT JOIN `s_role` r ON q.`role_id`=r.`role_id`
+        LEFT JOIN `user` us on us.user_id=q.create_user
+        WHERE q.id IN
+        <foreach collection="list" item="id" open="(" separator="," close=")" >
+            #{id}
+        </foreach>
+    </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from question
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from question
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.ccu.model.exam.QuestionModel" >
+    insert into question (id, name, question,type,
+      right_answer, status, create_time, 
+      last_modify_time, create_user, role_id, 
+      weight, answers,score)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR},#{question}, #{type,jdbcType=INTEGER},
+      #{rightAnswer,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{lastModifyTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, 
+      #{weight,jdbcType=INTEGER}, #{answers,jdbcType=LONGVARCHAR},#{score})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.ccu.model.exam.QuestionModel" >
+    insert into question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+        <if test="question != null">
+            question,
+        </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="rightAnswer != null" >
+        right_answer,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="weight != null" >
+        weight,
+      </if>
+      <if test="answers != null" >
+        answers,
+      </if>
+        <if test="score != null">
+            score,
+        </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+        <if test="question != null">
+            #{question},
+        </if>
+      <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="rightAnswer != null" >
+        #{rightAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="weight != null" >
+        #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="answers != null" >
+        #{answers,jdbcType=LONGVARCHAR},
+      </if>
+        <if test="score != null">
+            #{score},
+        </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.exam.QuestionModel" >
+    update question
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+        <if test="question != null">
+            question = #{question},
+        </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="rightAnswer != null" >
+        right_answer = #{rightAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="weight != null" >
+        weight = #{weight,jdbcType=INTEGER},
+      </if>
+      <if test="answers != null" >
+        answers = #{answers,jdbcType=LONGVARCHAR},
+      </if>
+        <if test="score != null">
+            score = #{score}
+        </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.edu.ccu.model.exam.QuestionModel" >
+    update question
+    set name = #{name,jdbcType=VARCHAR},
+    question=#{question},
+      type = #{type,jdbcType=INTEGER},
+      right_answer = #{rightAnswer,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      weight = #{weight,jdbcType=INTEGER},
+      answers = #{answers,jdbcType=LONGVARCHAR},
+      score = #{score}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.exam.QuestionModel" >
+    update question
+    set name = #{name,jdbcType=VARCHAR},
+    question = #{question},
+      type = #{type,jdbcType=INTEGER},
+      right_answer = #{rightAnswer,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      weight = #{weight,jdbcType=INTEGER},
+      score = #{score}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

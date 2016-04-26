@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.exam.ExamModelMapper" >
+  <resultMap id="BaseResultMap" type="cn.edu.ccu.model.exam.ExamModel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="INTEGER" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="role_id" property="roleId" jdbcType="INTEGER" />
+    <result column="score" property="score" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.edu.ccu.model.exam.ExamModelWithBLOBs" extends="BaseResultMap" >
+    <result column="single_choice" property="singleChoice" jdbcType="LONGVARCHAR" />
+    <result column="multiple_choice" property="multipleChoice" jdbcType="LONGVARCHAR" />
+    <result column="tof" property="tof" jdbcType="LONGVARCHAR" />
+  </resultMap>
+
+    <resultMap id="withUser" type="cn.edu.ccu.model.exam.ExamModel" extends="BaseResultMap">
+        <association property="userModel" javaType="cn.edu.ccu.model.user.UserModel">
+            <id column="create_user" property="userId"/>
+            <result column="create_user_name" property="name"/>
+        </association>
+        <association property="sRoleModel" javaType="cn.edu.ccu.model.student.SRoleModel">
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="name"/>
+        </association>
+    </resultMap>
+
+  <sql id="Base_Column_List" >
+    id, name, description, time, start_time, end_time, create_user, role_id, score, status,
+    create_time, last_modify_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    single_choice, multiple_choice, tof
+  </sql>
+
+    <select id="selectWithUser" resultMap="withUser" parameterType="Map">
+        SELECT
+        e.id, e.name, e.description, e.time, e.start_time, e.end_time, e.create_user, e.role_id, e.score, e.status,
+        e.create_time, e.last_modify_time,us.`name` create_user_name,s.`name` role_name
+        FROM exam e LEFT JOIN `user` us ON e.`create_user`=us.`user_id`
+        LEFT JOIN s_role s ON e.`role_id`=s.`role_id`
+        <where>
+          <if test="status != null">
+              e.status = #{status}
+          </if>
+            <if test="name != null">
+                e.name LIKE concat("%",#{name},"%")
+            </if>
+            <if test="userId != null">
+                e.create_user = #{userId}
+            </if>
+            <if test="roleId != null">
+                e.role_id = #{roleId}
+            </if>
+            <if test="score != null">
+                e.score = #{score}
+            </if>
+            <if test="startTime != null">
+                <![CDATA[
+                e.start_time >= #{startTime}
+            ]]>
+            </if>
+            <if test="endTime != null">
+                <![CDATA[
+                e.end_time <= #{endTime}
+                ]]>
+            </if>
+        </where>
+        ORDER BY e.create_time DESC
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="select" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List" />
+        from exam
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="name != null">
+                name LIKE concat("%",#{name},"%")
+            </if>
+            <if test="userId != null">
+                create_user = #{userId}
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId}
+            </if>
+            <if test="score != null">
+                score = #{score}
+            </if>
+            <if test="startTime != null">
+                <![CDATA[
+                start_time >= #{startTime}
+            ]]>
+            </if>
+            <if test="endTime != null">
+                <![CDATA[
+                end_time <= #{endTime}
+                ]]>
+            </if>
+        </where>
+        ORDER BY create_time DESC
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="count" resultType="int" parameterType="Map">
+        select
+        count(1)
+        from exam
+        <where>
+            <if test="status != null">
+                status = #{status}
+            </if>
+            <if test="name != null">
+                name LIKE concat("%",#{name},"%")
+            </if>
+            <if test="userId != null">
+                create_user = #{userId}
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId}
+            </if>
+            <if test="score != null">
+                score = #{score}
+            </if>
+            <if test="startTime != null">
+                <![CDATA[
+                start_time >= #{startTime}
+            ]]>
+            </if>
+            <if test="endTime != null">
+                <![CDATA[
+                end_time <= #{endTime}
+                ]]>
+            </if>
+        </where>
+    </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from exam
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from exam
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.edu.ccu.model.exam.ExamModelWithBLOBs" >
+    insert into exam (id, name, description, 
+      time, start_time, end_time, 
+      create_user, role_id, score, 
+      status, create_time, last_modify_time,
+      single_choice, multiple_choice, tof
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{time,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{score,jdbcType=DOUBLE},
+      #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP},
+      #{singleChoice,jdbcType=LONGVARCHAR}, #{multipleChoice,jdbcType=LONGVARCHAR}, #{tof,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.edu.ccu.model.exam.ExamModelWithBLOBs" >
+    insert into exam
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="description != null" >
+        description,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="roleId != null" >
+        role_id,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+      <if test="singleChoice != null" >
+        single_choice,
+      </if>
+      <if test="multipleChoice != null" >
+        multiple_choice,
+      </if>
+      <if test="tof != null" >
+        tof,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="singleChoice != null" >
+        #{singleChoice,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="multipleChoice != null" >
+        #{multipleChoice,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tof != null" >
+        #{tof,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.exam.ExamModelWithBLOBs" >
+    update exam
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=INTEGER},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null" >
+        role_id = #{roleId,jdbcType=INTEGER},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="singleChoice != null" >
+        single_choice = #{singleChoice,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="multipleChoice != null" >
+        multiple_choice = #{multipleChoice,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="tof != null" >
+        tof = #{tof,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.edu.ccu.model.exam.ExamModelWithBLOBs" >
+    update exam
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      time = #{time,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      score = #{score,jdbcType=DOUBLE},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      single_choice = #{singleChoice,jdbcType=LONGVARCHAR},
+      multiple_choice = #{multipleChoice,jdbcType=LONGVARCHAR},
+      tof = #{tof,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.exam.ExamModel" >
+    update exam
+    set name = #{name,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      time = #{time,jdbcType=INTEGER},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      create_user = #{createUser,jdbcType=INTEGER},
+      role_id = #{roleId,jdbcType=INTEGER},
+      score = #{score,jdbcType=DOUBLE},
+      status = #{status,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
