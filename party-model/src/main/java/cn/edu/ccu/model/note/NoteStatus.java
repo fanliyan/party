@@ -1,7 +1,7 @@
 package cn.edu.ccu.model.note;
 
 /**
- * Created by Administrator on 2016/4/22.
+ * Created by kuangye on 2016/4/22.
  */
 public class NoteStatus {
 

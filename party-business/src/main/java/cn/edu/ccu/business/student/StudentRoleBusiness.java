@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/22.
+ * Created by kuangye on 2016/4/22.
  */
 @Service
 public class StudentRoleBusiness implements IStudentRole {

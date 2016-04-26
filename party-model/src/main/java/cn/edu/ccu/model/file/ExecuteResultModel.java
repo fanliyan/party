@@ -2,7 +2,7 @@ package cn.edu.ccu.model.file;
 
 /**
  * 
- * @author Administrator
+ * @author kuangye
  *@Description 执行某一个动作返回结果
  */
 public class ExecuteResultModel {

@@ -19,7 +19,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/12.
+ * Created by kuangye on 2016/4/12.
  */
 @Service
 public class RUserRoleBusiness implements IUserRole {

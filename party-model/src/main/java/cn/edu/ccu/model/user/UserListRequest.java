@@ -4,7 +4,7 @@ import cn.edu.ccu.model.SplitPageRequest;
 import cn.edu.ccu.model.user.UserModel;
 
 /**
- * Created by Administrator on 2016/4/12.
+ * Created by kuangye on 2016/4/12.
  */
 public class UserListRequest {
 

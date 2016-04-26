@@ -1,7 +1,7 @@
 package cn.edu.ccu.utils.common.constants;
 
 /**
- * Created by Administrator on 2016/4/11.
+ * Created by kuangye on 2016/4/11.
  */
 public class SRoleConstant {
 

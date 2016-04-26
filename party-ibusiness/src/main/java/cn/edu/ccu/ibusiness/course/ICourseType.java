@@ -7,7 +7,7 @@ import cn.edu.ccu.model.course.CourseTypeModel;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/19.
+ * Created by kuangye on 2016/4/19.
  */
 public interface ICourseType {
 

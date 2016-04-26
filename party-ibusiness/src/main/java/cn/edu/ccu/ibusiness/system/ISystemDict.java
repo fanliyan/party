@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2016/4/12.
+ * Created by kuangye on 2016/4/12.
  */
 public interface ISystemDict {
     List<SysDictModel> listByDictType(String dictType);

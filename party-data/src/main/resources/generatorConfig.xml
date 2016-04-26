@@ -13,7 +13,7 @@
 		</javaTypeResolver>
 
 		<!-- javabeen生成的地方 -->
-		<javaModelGenerator targetPackage="cn.edu.ccu.data.faq" targetProject="src\main\java">
+		<javaModelGenerator targetPackage="cn.edu.ccu.data.exam" targetProject="src\main\java">
 			<property name="enableSubPackages" value="true" />
 			<property name="trimStrings" value="true" />
 		</javaModelGenerator>
@@ -23,7 +23,7 @@
 			<property name="enableSubPackages" value="false" />
 		</sqlMapGenerator>
 	
-		<javaClientGenerator type="XMLMAPPER" targetPackage="cn.edu.ccu.data.faq" targetProject="src\main\java">
+		<javaClientGenerator type="XMLMAPPER" targetPackage="cn.edu.ccu.data.exam" targetProject="src\main\java">
 			<property name="enableSubPackages" value="false" />
 		</javaClientGenerator>
 
@@ -71,6 +71,11 @@
 
         <!-- faq -->
         <!--<table tableName="faq" domainObjectName="FAQModel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />-->
+
+        <!-- exam -->
+        <!--<table tableName="exam" domainObjectName="ExamModel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />-->
+        <!--<table tableName="question" domainObjectName="QuestionModel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />-->
+        <!--<table tableName="score" domainObjectName="ScoreModel" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false" />-->
 
 
     </context>

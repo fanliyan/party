@@ -4,7 +4,7 @@ import cn.edu.ccu.model.RequestHead;
 import cn.edu.ccu.model.student.*;
 
 /**
- * Created by Administrator on 2016/4/10.
+ * Created by kuangye on 2016/4/10.
  */
 public interface IStudent {
 

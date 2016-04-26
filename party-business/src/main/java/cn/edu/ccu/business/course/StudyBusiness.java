@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 import java.util.*;
 
 /**
- * Created by Administrator on 2016/4/20.
+ * Created by kuangye on 2016/4/20.
  */
 @Service
 public class StudyBusiness implements IStudy {

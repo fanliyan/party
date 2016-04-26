@@ -7,7 +7,7 @@ import java.io.StringWriter;
 
 /**
  * 日志辅助类 记录本地日志
- * @author Administrator
+ * @author kuangye
  *
  */
 public class LogHelper {

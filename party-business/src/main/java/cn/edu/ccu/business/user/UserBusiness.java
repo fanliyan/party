@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 
 /**
- * Created by Administrator on 2016/3/26.
+ * Created by kuangye on 2016/3/26.
  */
 @Service
 public class UserBusiness implements IUser {

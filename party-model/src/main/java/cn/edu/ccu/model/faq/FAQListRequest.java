@@ -3,7 +3,7 @@ package cn.edu.ccu.model.faq;
 import cn.edu.ccu.model.SplitPageRequest;
 
 /**
- * Created by Administrator on 2016/4/23.
+ * Created by kuangye on 2016/4/23.
  */
 public class FAQListRequest {
 

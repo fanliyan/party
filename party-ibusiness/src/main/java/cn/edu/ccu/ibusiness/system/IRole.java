@@ -8,7 +8,7 @@ import cn.edu.ccu.model.system.RoleModel;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/12.
+ * Created by kuangye on 2016/4/12.
  */
 public interface IRole {
     List<RoleModel> listRolesByUserId(Integer userId);

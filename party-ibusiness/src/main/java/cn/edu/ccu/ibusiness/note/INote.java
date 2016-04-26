@@ -5,7 +5,7 @@ import cn.edu.ccu.model.note.NoteListResponse;
 import cn.edu.ccu.model.note.StudyNoteModel;
 
 /**
- * Created by Administrator on 2016/4/22.
+ * Created by kuangye on 2016/4/22.
  */
 public interface INote {
 

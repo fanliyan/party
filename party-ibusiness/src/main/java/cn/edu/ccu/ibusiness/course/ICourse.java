@@ -9,7 +9,7 @@ import cn.edu.ccu.utils.common.extention.IntegerExtention;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/18.
+ * Created by kuangye on 2016/4/18.
  */
 public interface ICourse {
 

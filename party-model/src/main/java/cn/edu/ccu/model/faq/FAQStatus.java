@@ -1,7 +1,7 @@
 package cn.edu.ccu.model.faq;
 
 /**
- * Created by Administrator on 2016/4/23.
+ * Created by kuangye on 2016/4/23.
  */
 public class FAQStatus {
     //提出

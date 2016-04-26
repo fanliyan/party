@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by Administrator on 2016/4/19.
+ * Created by kuangye on 2016/4/19.
  */
 @Controller
 @RequestMapping("/course")

@@ -5,7 +5,7 @@ import cn.edu.ccu.model.SplitPageResponse;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/22.
+ * Created by kuangye on 2016/4/22.
  */
 public class NoteListResponse {
 

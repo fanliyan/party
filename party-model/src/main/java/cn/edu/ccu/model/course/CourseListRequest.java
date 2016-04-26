@@ -5,7 +5,7 @@ import cn.edu.ccu.model.SplitPageRequest;
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/4/18.
+ * Created by kuangye on 2016/4/18.
  */
 public class CourseListRequest {
 

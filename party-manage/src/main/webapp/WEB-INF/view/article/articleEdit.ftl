@@ -75,7 +75,6 @@
 
             <div class="form-group">
                 <label class="col-md-1 control-label"><span style="color: red">*</span>发布时间</label>
-
                 <div class="col-md-5">
                     <div class="input-group">
                         <input id="publishTime" name="publishTimeString" placeholder="请点击选择发布时间" class="form-control"

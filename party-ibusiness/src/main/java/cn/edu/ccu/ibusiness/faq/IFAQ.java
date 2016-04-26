@@ -5,7 +5,7 @@ import cn.edu.ccu.model.faq.FAQListResponse;
 import cn.edu.ccu.model.faq.FAQModel;
 
 /**
- * Created by Administrator on 2016/4/23.
+ * Created by kuangye on 2016/4/23.
  */
 public interface IFAQ {
 
