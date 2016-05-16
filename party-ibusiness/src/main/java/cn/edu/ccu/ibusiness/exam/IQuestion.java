@@ -15,16 +15,22 @@ public interface IQuestion {
 
     QuestionModel getById(Integer id);
 
-    boolean addQuestion(QuestionModel questionModel,String[] answerNameArray, String[] rightAnswerArray);
+    QuestionModel getByMap(QuestionModel questionModel);
 
-    boolean updateQuestion(QuestionModel questionModel,String[] answerNameArray, String[] rightAnswerArray);
+    boolean addQuestion(QuestionModel questionModel, String[] answerNameArray, String[] rightAnswerArray);
+
+    boolean updateQuestion(QuestionModel questionModel, String[] answerNameArray, String[] rightAnswerArray);
 
     boolean deleteQuestion(Integer id);
 
 
-    List<QuestionModel> getByIds(List<Integer> ids,boolean getDetail);
+    List<QuestionModel> getByIds(List<Integer> ids, boolean getDetail);
 
     //根据 关键字+类型 搜索问题
-    List<QuestionModel> searchQuestion(String text,Integer type);
+    List<QuestionModel> searchQuestion(String text, Integer type);
+
+
+    //考试用
+    List<QuestionModel> getByIdsForExam(List<Integer> ids, boolean getRightAnswer);
 
 }

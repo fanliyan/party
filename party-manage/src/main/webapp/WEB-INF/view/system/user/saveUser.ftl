@@ -9,11 +9,11 @@
 				<div class="form-group">
 					<label class="col-md-4 control-label text-right">姓名</label>
 					<div class="col-md-8 ">
-						<input name="userName" type="text" class="form-control input-sm" id="" placeholder="必填,字符最大长度20"
+						<input name="name" type="text" class="form-control input-sm" id="" placeholder="必填,字符最大长度20"
 							 data-parsley-trigger="blur"
 							 data-parsley-required="true"
 							 data-parsley-required-message="姓名不可为空"
-							 value="${(user.userName)!}"
+							 value="${(user.name)!}"
 							/>
 					</div>
 				</div>
@@ -33,23 +33,23 @@
 					</div>
 				</div>
 		
+				<#--<div class="form-group">-->
+					<#--<label class="col-md-4 control-label text-right">姓名</label>-->
+					<#--<div class="col-md-8">-->
+						<#--<p class="form-control-static"></p>-->
+						<#--<input name="nickName" type="text" class="form-control input-sm" value="${(user.nickName)!}"/>-->
+					<#--</div>-->
+				<#--</div>-->
 				<div class="form-group">
-					<label class="col-md-4 control-label text-right">昵称</label>
+					<label class="col-md-4 control-label text-right">账号</label>
 					<div class="col-md-8">
-						<p class="form-control-static"></p>
-						<input name="nickName" type="text" class="form-control input-sm" value="${(user.nickName)!}"/>
+						<input name="account" type="text" class="form-control input-sm" value="${(user.account)!}"/>
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="col-md-4 control-label text-right">手机</label>
+					<label class="col-md-4 control-label text-right">密码</label>
 					<div class="col-md-8">
-						<input name="phone" type="text" class="form-control input-sm" value="${(user.phone)!}"/>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-4 control-label text-right">邮箱</label>
-					<div class="col-md-8">
-						<input name="email" type="text" class="form-control input-sm" value="${(user.email)!}"/>
+						<input name="password" type="text" class="form-control input-sm" value="${(user.password)!}"/>
 					</div>
 				</div>
 			</div>

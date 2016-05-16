@@ -1,6 +1,7 @@
 package cn.edu.ccu.data.exam;
 
 import cn.edu.ccu.data.PartyDB;
+import cn.edu.ccu.model.common.TableModel;
 import cn.edu.ccu.model.exam.ExamModel;
 import cn.edu.ccu.model.exam.ExamModelWithBLOBs;
 
@@ -30,4 +31,13 @@ public interface ExamModelMapper {
     List<ExamModel> select(Map map);
 
     int count(Map map);
+
+
+    ExamModelWithBLOBs selectByMap(Map map);
+
+
+    //统计相关
+
+    //查询 某考试 某角色 学生 分数排名
+    List<TableModel> getAExamTop(Map map);
 }

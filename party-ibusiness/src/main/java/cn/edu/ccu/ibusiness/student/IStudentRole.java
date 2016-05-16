@@ -10,4 +10,7 @@ import java.util.List;
 public interface IStudentRole {
 
     List<SRoleModel> studentRoleList();
+
+
+    boolean updateRole(Integer userId, Integer roleId,Integer oldRole);
 }

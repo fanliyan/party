@@ -8,7 +8,8 @@
     <div class="alert-inner">
         <div class="" style="color: red;text-align: center;">
         <#--<div class="alert-message" >-->
-            注意：爬虫文章默认草稿状态 列表默认不显示草稿文章
+            <#--注意：爬虫文章默认草稿状态 列表默认不显示草稿文章-->
+            注意： 列表默认不显示草稿文章
         </div>
     </div>
 </div>

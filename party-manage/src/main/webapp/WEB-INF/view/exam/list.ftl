@@ -45,6 +45,16 @@
                     </select>
                 </div>
             </div><!-- /form-group -->
+            <div class="form-group" style="margin-right:10px;">
+                <label class="control-label">考试类型</label>
+                <div>
+                    <select class="form-control chzn-select" id="type" name="type" data-placeholder="选择考试类型">
+                        <option value="">请选择</option>
+                        <option value="0" <#if (exam.type)??&&exam.type==0>selected</#if>>单次考试</option>
+                        <option value="1" <#if (exam.type)??&&exam.type==-1>selected</#if>>多次考试</option>
+                    </select>
+                </div>
+            </div><!-- /form-group -->
 
 
             <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-search" style="font-size:16px;"></i>
@@ -61,6 +71,7 @@
                 <th>ID</th>
                 <th>问题名称</th>
                 <th>描述</th>
+                <th>考试类型</th>
                 <th>分值</th>
                 <th>状态</th>
                 <th>创建人</th>
@@ -77,6 +88,9 @@
                         <td>${exam.id!}</td>
                         <td>${exam.name!}</td>
                         <td>${exam.description!}</td>
+                        <td>
+                            <#if exam.type==0><span class="label label-success">单次</span><#else><span class="label label-warning">多次</span></#if>
+                        </td>
                         <td>${exam.score!}</td>
                         <td>
                             <#if exam.status==0>
@@ -112,7 +126,7 @@
                     </#list>
                 <#else>
                 <tr>
-                    <td colspan=9 class="text-center">没有数据</td>
+                    <td colspan=10 class="text-center">没有数据</td>
                 </tr>
                 </#if>
             </tbody>

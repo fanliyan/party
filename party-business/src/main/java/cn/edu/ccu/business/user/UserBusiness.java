@@ -53,15 +53,15 @@ public class UserBusiness implements IUser {
 //    private IEmail iEmailBusiness;
 
 
-    // 注册加密
-    private static final String REGISTER_HAT = "YMB2&|^.";
-    private static final String REGISTER_KEY = "654789YyMmBb~!@#";
-    // 找回密码加密
-    private static final String FIND_PWD_HAT = "yMb4&|^.";
-    private static final String FIND_PWD_KEY = "852741YyMmBb~!@#";
-    // 邮箱绑定加密
-    private static final String BINDING_HAT = "YmB6&|^.";
-    private static final String BINDING_KEY = "753429YyMmBb~!@#";
+//    // 注册加密
+//    private static final String REGISTER_HAT = "YMB2&|^.";
+//    private static final String REGISTER_KEY = "654789YyMmBb~!@#";
+//    // 找回密码加密
+//    private static final String FIND_PWD_HAT = "yMb4&|^.";
+//    private static final String FIND_PWD_KEY = "852741YyMmBb~!@#";
+//    // 邮箱绑定加密
+//    private static final String BINDING_HAT = "YmB6&|^.";
+//    private static final String BINDING_KEY = "753429YyMmBb~!@#";
 
 
     public UserModel getUserById(int id) {
@@ -916,13 +916,18 @@ public class UserBusiness implements IUser {
         UserModel userModel = userModelMapper.selectByPrimaryKey(userId);
 
         //不序列化
+        userModel.setAccount(null);
         userModel.setPassword(null);
         userModel.setLastLoginIp(null);
         userModel.setLoginCount(null);
         userModel.setLoginFailCount(null);
         userModel.setStatus(null);
         userModel.setCreateTime(null);
+        userModel.setLastLoginTime(null);
         userModel.setLastModifyTime(null);
+
+        userModel.setGender(null);
+        userModel.setBirthday(null);
 
         return userModel;
     }
@@ -963,47 +968,22 @@ public class UserBusiness implements IUser {
 //    public int updateAvatarPic(String avatarPic, Integer userid) {
 //        return userModelMapper.updateAvatarPic(avatarPic, userid);
 //    }
+    @Override
+    public int addUser(UserModel user) throws Exception {
+        if (StringExtention.isNullOrEmpty(user.getAccount()))
+            throw new BusinessException("账号不能为空");
+        if (StringExtention.isNullOrEmpty(user.getPassword()))
+            throw new BusinessException("密码不能为空");
+        if (StringExtention.isNullOrEmpty(user.getName()))
+            throw new BusinessException("姓名不能为空");
 
-//    @Override
-//    public int addUser(UserModel user) throws Exception {
-//        if (!StringExtention.isNullOrEmpty(user.getAccount())) {
-//            Map<String, Object> map = new HashMap<>();
-//            map.put("accountId", user.getPhone());
-//            UserBindAccount account = userBindAccountMapper.selectByMap(map);
-//            if (account != null) {
-//                throw new BusinessException("相同手机号码已经存在");
-//            }
-//        }
-//        if (!StringExtention.isNullOrEmpty(user.getEmail())) {
-//            Map<String, Object> map = new HashMap<String, Object>();
-//            map.put("accountId", user.getEmail());
-//            UserBindAccount account = userBindAccountMapper.selectByMap(map);
-//            if (account != null) {
-//                throw new BusinessException("相同邮箱号码已经存在");
-//            }
-//        }
-//        user.setPassword(" ");
-//        int result = ymbUserModelMapper.insertSelective(user);
-//        if (result > 0) {
-//            if (!StringExtention.isNullOrEmpty(user.getPhone())) {
-//                UserBindAccount account = new UserBindAccount();
-//                account.setAccountId(user.getPhone());
-//                account.setAccountGroup(AccountGroup.YiMinBang);
-//                account.setAccountType(AccountType.Phone);
-//                account.setUserid(user.getUserid());
-//                userBindAccountMapper.insertSelective(account);
-//            }
-//            if (!StringExtention.isNullOrEmpty(user.getEmail())) {
-//                UserBindAccount account = new UserBindAccount();
-//                account.setAccountId(user.getEmail());
-//                account.setAccountGroup(AccountGroup.YiMinBang);
-//                account.setAccountType(AccountType.Email);
-//                account.setUserid(user.getUserid());
-//                userBindAccountMapper.insertSelective(account);
-//            }
-//        }
-//        return result;
-//    }
+        UserModel model = userModelMapper.selectByKey(user.getAccount(), null);
+        if (model != null) {
+            throw new BusinessException("相同账号已经存在");
+        }
+
+        return userModelMapper.insertSelective(user);
+    }
 
 //
 //    @Override

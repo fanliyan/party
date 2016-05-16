@@ -2,6 +2,11 @@
 <#import "/control/common/splitPage.ftl" as splitPage1 />
 
 <link href="${basePath}/resources/css/video/video-js.css" rel="stylesheet">
+<style>
+    video::-webkit-media-controls {
+        display:none !important;
+    }
+</style>
 <@master.masterFrame >
 <div id="portfolio" class="bg-light">
     <div class="section-header">
@@ -21,8 +26,8 @@
                                     <div class="panel-body">
                                         <div class="image-wrapper">
 
-                                            <video id="video" class="video-js"  preload="auto"
-                                                   width="500em" height="400em"
+                                            <video id="video" class="video-js vjs-default-skin vjs-big-play-centered"  preload="auto"
+                                                   width="500em" height="400em" controls
                                                    poster="" data-setup="{}">
                                                 <source src="${courseWare.url}" type='video/mp4'>
                                                 <p class="vjs-no-js">
@@ -39,7 +44,7 @@
 
                                         <div class="seperator"></div>
                                         <#--<button class="btn btn-info">开始学习</button>-->
-                                        <button class="btn">退出</button>
+                                        <a class="btn" href="${basePath}/main/index">退出</a>
 
                                     </div>
                                 </div>

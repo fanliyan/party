@@ -1,5 +1,4 @@
 <#global basePath=springMacroRequestContext.contextPath>
-<#global defaultAvatar=basePath+"/resources/img/default_avatar.png">
 
 <#macro masterBlank title="网上党校" bodyClass="" >
 <!DOCTYPE html>
@@ -29,12 +28,19 @@
     <link href="${basePath}/resources/css/endless.min.css" rel="stylesheet">
     <link href="${basePath}/resources/css/endless-landing.min.css" rel="stylesheet">
 
+    <!-- Chosen -->
+    <link href="${basePath}/resources/css/chosen/chosen.min.css" rel="stylesheet"/>
+
     <!-- Parsley -->
     <link href="${basePath}/resources/css/parsley/parsley.css" rel="stylesheet">
 
     <!-- alertify -->
     <link href="${basePath}/resources/css/alertify/alertify.core.css" rel="stylesheet">
     <link href="${basePath}/resources/css/alertify/alertify.bootstrap.css" rel="stylesheet">
+
+    <!-- jquer ui -->
+    <link href="${basePath}/resources/css/jqueryui/flick/jquery-ui.min.css" rel="stylesheet"/>
+    <link href="${basePath}/resources/css/jqueryui/flick/jquery.ui.theme.css" rel="stylesheet"/>
 
 
 
@@ -91,11 +97,19 @@
 <!-- Endless -->
 <script src="${basePath}/resources/js/endless/endless.js"></script>
 
+<!-- Chosen -->
+<script src='${basePath}/resources/js/chosen.jquery.min.js'></script>
+
 <!-- Parsley -->
 <script src="${basePath}/resources/js/parsley.min.js"></script>
 
 <!-- alertify -->
 <script src="${basePath}/resources/js/alertify/alertify.min.js"></script>
+
+<!-- jquery ui -->
+<script src="${basePath}/resources/js/i18n/jquery-ui-i18n.js"></script>
+<script src="${basePath}/resources/js/jquery.ui.core.js"></script>
+<script src="${basePath}/resources/js/jquery.ui.datepicker.min.js"></script>
 
 <!-- common -->
 <script src="${basePath}/resources/js/party/common.js"></script>
@@ -179,7 +193,7 @@
             <!-- /.col -->
             <div class="col-sm-3 padding-md">
                 <p class="font-lg">联系我们</p>
-                Email : endless.themes@gmail.com
+                Email : ???@gmail.com
                 <div class="seperator"></div>
                 <a class="btn btn-info" href="mailto:"><i class="fa fa-envelope"></i> 投诉建议</a>
             </div><!-- /.col -->
@@ -191,7 +205,26 @@
 
 
 
-<#macro masterBlank123 >
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<#macro masterBlank_demo >
 <!DOCTYPE html>
 <html lang="zh-cn">
   
@@ -226,13 +259,12 @@
 	<!-- Parsley -->
 	<link href="${basePath}/resources/css/parsley/parsley.css" rel="stylesheet">
 	
-	<!-- Chosen -->
-	<link href="${basePath}/resources/css/chosen/chosen.min.css" rel="stylesheet"/>
-	
-	
 	<!-- Endless -->
 	<link href="${basePath}/resources/css/endless.min.css" rel="stylesheet">
 	<link href="${basePath}/resources/css/endless-skin.css" rel="stylesheet">
+
+    <!-- Chosen -->
+    <link href="${basePath}/resources/css/chosen/chosen.min.css" rel="stylesheet"/>
 	
 	<!-- jquer ui -->
 	<link href="${basePath}/resources/css/jqueryui/flick/jquery-ui.min.css" rel="stylesheet"/>

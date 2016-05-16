@@ -88,18 +88,22 @@
 							<td>
 								<#if user.status==0>
 									<span class="label label-success">正常</span>
-								<#else>
+								<#elseif user.status==-3>
+                                    <span class="label label-warning">待审核</span>
+                                <#else>
 									<span class="label label-danger">已锁定</span>
 								</#if>
 							</td>
 							<td>
 								<a class="btn btn-xs btn-warning" href="${basePath}/student/info?userId=${user.id}"><i class="fa fa-info-circle fa-lg"></i> 查看</a>
 								<a class="btn btn-xs btn-success" href="${basePath}/student/grantRole?userId=${user.id}"><i class="fa fa-wrench fa-lg"></i> 分配角色</a>
-								<#if user.status==0>
-									<a class="btn btn-xs btn-danger" href="javascript:void(0);" onclick="$.editLock(${user.id},-1);"><i class="fa fa-lock fa-lg"></i> 锁定</a>
-								<#else>
-									<a class="btn btn-xs btn-success" href="javascript:void(0);" onclick="$.editLock(${user.id},0);"><i class="fa fa-unlock fa-lg"></i> 解锁</a>
-								</#if>
+								<#if user.status==-3>
+                                    <a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="$.editLock(${user.id},0);"><i class="fa fa-lock fa-lg"></i> 通过</a>
+                                <#elseif  user.status==0>
+                                    <a class="btn btn-xs btn-danger" href="javascript:void(0);" onclick="$.editLock(${user.id},-1);"><i class="fa fa-lock fa-lg"></i> 锁定</a>
+                                <#else>
+                                    <a class="btn btn-xs btn-success" href="javascript:void(0);" onclick="$.editLock(${user.id},0);"><i class="fa fa-unlock fa-lg"></i> 解锁</a>
+                                </#if>
 							</td>
 						</tr>
 					</#list>
@@ -116,15 +120,14 @@
 			cache: true,
 			type: "POST",
 			url:"${basePath}/student/editLock",
-			data:"userId=" + userId+"&status="+status,// 你的formid
+			data:"id=" + userId+"&status="+status,// 你的formid
 			async: false,
 			error: function(request) {
 				alertify.alert("错误：服务器异常！");
 			},
 			success: function(data) {
 				if(data.success){
-					var pageNo=$(".pagination li.active").text();
-					$.GoPage(pageNo);
+					location.reload();
 				}
 				else{
 					alertify.alert("错误:" + data.message);

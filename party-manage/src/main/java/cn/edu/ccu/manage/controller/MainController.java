@@ -22,7 +22,6 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -369,12 +368,12 @@ public class MainController extends BaseController {
 //        return mav;
 //    }
 
-    @RequestMapping(value = "/tofindpwd", method = RequestMethod.GET)
-    @AuthMethod(mustLogin = false)
-    public ModelAndView toFindpwd(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception {
-        ModelAndView mav = new ModelAndView("main/sendcode");
-        return mav;
-    }
+//    @RequestMapping(value = "/tofindpwd", method = RequestMethod.GET)
+//    @AuthMethod(mustLogin = false)
+//    public ModelAndView toFindpwd(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception {
+//        ModelAndView mav = new ModelAndView("main/sendcode");
+//        return mav;
+//    }
 
     @RequestMapping(value = "/updateprofile", method = RequestMethod.POST)
     public

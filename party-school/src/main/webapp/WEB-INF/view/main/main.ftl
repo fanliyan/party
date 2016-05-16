@@ -70,7 +70,7 @@
                 <p></p>
             </div><!-- /.col -->
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center"  >
+                <div class="feature-icon text-center"  onclick="location.href='${basePath}/statistic'">
                     <i class="fa fa-bars fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">
@@ -86,7 +86,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center">
+                <div class="feature-icon text-center" onclick="location.href='${basePath}/question/list'">
                     <i class="fa fa-folder-open-o fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">
@@ -95,7 +95,7 @@
                 <p></p>
             </div><!-- /.col -->
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center">
+                <div class="feature-icon text-center" onclick="location.href='${basePath}/exam/list'">
                     <i class="fa fa-star-o fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">
@@ -104,7 +104,7 @@
                 <p></p>
             </div><!-- /.col -->
             <div class="col-sm-3 content-padding">
-                <div class="feature-icon text-center">
+                <div class="feature-icon text-center" onclick="location.href='${basePath}/profile/list'">
                     <i class="fa fa-folder fa-4x"></i>
                 </div>
                 <div class="text-center font-lg">
@@ -126,14 +126,14 @@
 </div>
 <div class="bg-white text-center content-padding">
     <div class="container">
-        <h3>The Perfect Canvas For Your Design</h3>
-        <h5 class="text-muted">Super Powerful & Easy to Use Theme</h5>
-        <div class="seperator"></div>
-        <div class="seperator"></div>
+        <#--<h3>The Perfect Canvas For Your Design</h3>-->
+        <#--<h5 class="text-muted">Super Powerful & Easy to Use Theme</h5>-->
+        <#--<div class="seperator"></div>-->
+        <#--<div class="seperator"></div>-->
         <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur bibendum ornare dolor, quis ullamcorper ligula sodales at. Nulla tellus elit, varius non commodo eget, mattis vel eros. In sed ornare nulla. Donec consectetur, velit a pharetra ultricies, diam lorem lacinia risus, ac commodo orci erat eu massa. Sed sit amet nulla ipsum. Donec felis mauris, vulputate sed tempor at, aliquam a ligula. Pellentesque non pulvinar nisi...
+            ${notify!}
         </p>
-        <a href="https://wrapbootstrap.com/theme/endless-responsive-admin-template-WB00J6977" class="btn btn-lg btn-success animated-element fadeInUp no-animation">PURCHASE NOW</a>
+        <#--<a href="https://wrapbootstrap.com/theme/endless-responsive-admin-template-WB00J6977" class="btn btn-lg btn-success animated-element fadeInUp no-animation">PURCHASE NOW</a>-->
     </div>
 </div>
 <div id="portfolio"  class="bg-light">

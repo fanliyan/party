@@ -33,7 +33,7 @@
                     </div>
                     <div class="form-group">
                         <label class="label-checkbox inline">
-                            <input type="checkbox" name="rememberUserid" class="regular-checkbox chk-delete" />
+                            <input type="checkbox" name="rememberUserid" <#if userId??>checked="checked"</#if> class="regular-checkbox chk-delete" />
                             <span class="custom-checkbox info bounceIn animation-delay4"></span>
                         </label>
                         记住我

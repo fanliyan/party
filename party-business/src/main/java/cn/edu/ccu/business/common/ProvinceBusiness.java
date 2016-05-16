@@ -7,6 +7,7 @@ import cn.edu.ccu.utils.common.extention.StringExtention;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,14 +19,42 @@ public class ProvinceBusiness implements IProvince {
     @Autowired
     private ProvinceModelMapper provinceModelMapper;
 
-    public List<ProvinceModel> selectProvinceList() {
+
+    private static List<ProvinceModel> provinceList = new ArrayList<>();
+
+    /* @PostConstruct */
+    protected void init() {
+        synchronized (provinceList) {
+            provinceList = list();
+        }
+    }
+
+    private List<ProvinceModel> list() {
         return provinceModelMapper.select();
+    }
+
+
+    public List<ProvinceModel> selectProvinceList() {
+
+        if(provinceList.size()<=0){
+            this.init();
+        }
+        return provinceList;
     }
 
 
     public ProvinceModel getProvinceByCode(String code) {
         if(!StringExtention.isTrimNullOrEmpty(code)){
-            return provinceModelMapper.getProvinceByCode(code);
+
+            if(provinceList.size()<=0){
+                this.init();
+            }
+
+            for(ProvinceModel provinceModel:provinceList)
+                if(provinceModel.getCode().equals(code))
+                    return provinceModel;
+
+//            return provinceModelMapper.getProvinceByCode(code);
         }
         return null;
     }

@@ -28,4 +28,9 @@ public interface IUserRole {
     int editByUserRoleIds(Integer userid, Integer roleIds[], Byte level, RequestHead requestHead);
 
     List<RUserRoleModel> listByUserId(Integer userid);
+
+
+
+    List<Integer> getUserIdByRole(Integer roleId);
+
 }

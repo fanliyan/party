@@ -49,7 +49,7 @@ public interface IArticle {
     ArticleListResponse articleList(ArticleModel model, SplitPageRequest pageRequest, Date publishTimeStart, Date publishTimeEnd, Integer orderby, Boolean returnUserInfo) throws Exception;
 
     //API根据请求查询文章
-    ArticleGetResponse selectArticleById(ArticleGetRequest request, RequestHead requestHead) throws Exception;
+    ArticleGetResponse selectArticleById(ArticleGetRequest request) throws Exception;
 
     //添加文章
     boolean addArticle(

@@ -26,6 +26,21 @@ public class FileUploadBusinessFactory {
         add("jpeg");
     }};
 
+    static final List<String> DOC_FORMAT = new ArrayList<String>() {{
+        add("txt");
+        add("doc");
+        add("docx");
+        add("ppt");
+        add("pptx");
+        add("xls");
+        add("xlsx");
+
+        add("rar");
+        add("zip");
+
+        add("txt");
+    }};
+
     public static FileAbstract create(InputStream inputStream, String fileName) {
         if (fileName != null && fileName.lastIndexOf('.') >= 0) {
             String format = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
@@ -35,6 +50,8 @@ public class FileUploadBusinessFactory {
                 return new VideoUpload(inputStream, fileName);
             } else if (PIC_FORMAT.contains(format)) {
                 return new PictureUpload(inputStream, fileName);
+            }else if (DOC_FORMAT.contains(format)){
+                return new DocUpload(inputStream, fileName);
             }
         }
         throw new BusinessException(-1, "暂不支持此格式上传");

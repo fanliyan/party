@@ -1,5 +1,7 @@
 package cn.edu.ccu.model.user;
 
+import cn.edu.ccu.model.common.BranchModel;
+import cn.edu.ccu.model.common.DepartmentModel;
 import cn.edu.ccu.model.system.ModuleModel;
 import cn.edu.ccu.model.system.RoleModel;
 
@@ -33,6 +35,11 @@ public class UserModel {
 
     private Date lastModifyTime;
 
+    private Integer branchId;
+
+    private Byte departmentType;
+
+
 
     /**
      * 用户所包含的模块
@@ -45,6 +52,15 @@ public class UserModel {
     private List<RoleModel> hasRoles;
 
 
+    private BranchModel branchModel;
+
+    public BranchModel getBranchModel() {
+        return branchModel;
+    }
+
+    public void setBranchModel(BranchModel branchModel) {
+        this.branchModel = branchModel;
+    }
 
     public List<ModuleModel> getHasModules() {
         return hasModules;
@@ -61,6 +77,8 @@ public class UserModel {
     public void setHasRoles(List<RoleModel> hasRoles) {
         this.hasRoles = hasRoles;
     }
+
+
 
     public Integer getUserId() {
         return userId;
@@ -164,5 +182,21 @@ public class UserModel {
 
     public void setLastModifyTime(Date lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
+    }
+
+    public Integer getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(Integer branchId) {
+        this.branchId = branchId;
+    }
+
+    public Byte getDepartmentType() {
+        return departmentType;
+    }
+
+    public void setDepartmentType(Byte departmentType) {
+        this.departmentType = departmentType;
     }
 }

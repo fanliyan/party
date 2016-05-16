@@ -190,12 +190,11 @@ public class ArticleBusiness implements IArticle {
      * API获取文章详情 （会增加点击数）
      *
      * @param request     ArticleGetRequest
-     * @param requestHead RequestHead
      * @return ArticleGetResponse
      * @throws Exception
      */
     @Override
-    public ArticleGetResponse selectArticleById(ArticleGetRequest request, RequestHead requestHead) throws Exception {
+    public ArticleGetResponse selectArticleById(ArticleGetRequest request) throws Exception {
 
         ArticleGetResponse response = new ArticleGetResponse();
         if (request != null && IntegerExtention.hasValueAndMaxZero(request.getArticleId())) {

@@ -36,5 +36,11 @@ public interface QuestionModelMapper {
 
     List<QuestionModel> selectDetailByIds(List<Integer> list);
 
+    QuestionModel selectByMap(Map map);
 
+
+    //=================================
+    //考试用
+    //有正确答案
+    List<QuestionModel> selectByIdsWithRightAnswer(List<Integer> list);
 }

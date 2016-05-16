@@ -42,7 +42,7 @@ public class ExamController extends BaseController {
     @Autowired
     private ISRole isRole;
 
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:MM:ss");
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @AuthMethod
     @RequestMapping("/list")

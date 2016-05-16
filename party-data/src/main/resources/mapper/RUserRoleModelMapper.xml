@@ -11,6 +11,10 @@
     user_id, role_id, create_time, last_modify_time
   </sql>
 
+    <select id="selectUserIdByRole" resultType="int" parameterType="java.lang.Integer">
+        select user_id from r_user_role where role_id = #{id}
+    </select>
+
     <select id="selectRolesByUserId" resultMap="BaseResultMap" parameterType="int">
         select
         <include refid="Base_Column_List" />

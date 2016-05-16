@@ -59,7 +59,6 @@
 				cache: true,
 				type: "POST",
 				url:"${basePath}/message/notification",
-				//data:"customerId=" + customerId,
 				async: false,
 				dataType: 'JSON',
 				error: function(request) {

@@ -90,15 +90,15 @@
     <!-- error page -->
     <error-page>
         <error-code>404</error-code>
-        <location>/error/show?message=404</location>
+        <location>/html/error.html</location>
     </error-page>
     <error-page>
         <error-code>405</error-code>
-        <location>/error/show?message=405</location>
+        <location>/html/error.html</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/error/show?message=500</location>
+        <location>/html/error.html</location>
     </error-page>
 
 

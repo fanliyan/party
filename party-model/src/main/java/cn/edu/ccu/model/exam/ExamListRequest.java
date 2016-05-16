@@ -7,12 +7,22 @@ import cn.edu.ccu.model.SplitPageRequest;
  */
 public class ExamListRequest {
 
+    private boolean inTime;
+
     private boolean withUser;
 
     private ExamModel examModel;
 
     private SplitPageRequest splitPageRequest;
 
+
+    public boolean isInTime() {
+        return inTime;
+    }
+
+    public void setInTime(boolean inTime) {
+        this.inTime = inTime;
+    }
 
     public boolean isWithUser() {
         return withUser;

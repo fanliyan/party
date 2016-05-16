@@ -44,6 +44,40 @@
         </if>
     </select>
 
+    <resultMap id="statisticRM" type="cn.edu.ccu.model.common.TableModel">
+        <result column="name" property="name"/>
+        <result column="count" property="count"/>
+    </resultMap>
+
+    <select id="studyCourseTop" parameterType="Map" resultMap="statisticRM">
+        SELECT b.name NAME,COUNT(b.user_id) count FROM (
+        SELECT DISTINCT
+        sl.user_id,sl.course_id ,c.`course_name`,s.`name`
+        FROM `study_log` sl
+        LEFT JOIN course c ON c.`course_id`=sl.`course_id`
+        LEFT JOIN student s ON s.`id`=sl.`user_id`
+        WHERE sl.status = 304
+        GROUP BY sl.course_id,sl.`user_id`
+        HAVING COUNT(DISTINCT sl.`ware_id`)= (SELECT COUNT(1) FROM course_ware cw WHERE cw.`course_id` =sl.course_id)
+         )AS b
+         GROUP BY b.user_id
+         ORDER BY count DESC
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+
+    <select id="watchCount" resultMap="statisticRM">
+        SELECT c.`course_name` name,COUNT(sl.`id`) count
+        FROM study_log sl
+        LEFT JOIN course c ON c.`course_id`=sl.`course_id`
+
+        WHERE sl.`start_time` IS NOT NULL
+        GROUP BY sl.`course_id`
+        order by count DESC
+    </select>
+
+
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />

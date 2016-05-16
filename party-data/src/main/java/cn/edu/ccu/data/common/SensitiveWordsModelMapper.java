@@ -4,6 +4,7 @@ import cn.edu.ccu.data.PartyDB;
 import cn.edu.ccu.model.common.SensitiveWordsModel;
 
 import java.util.List;
+import java.util.Map;
 
 @PartyDB
 public interface SensitiveWordsModelMapper {
@@ -20,5 +21,10 @@ public interface SensitiveWordsModelMapper {
     int updateByPrimaryKey(SensitiveWordsModel record);
 
     List<String> getAllSensitiveWords();
+
+
+    List<SensitiveWordsModel> select(Map map);
+
+    int count(Map map);
 
 }

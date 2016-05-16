@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by kuangye on 2016/4/23.
@@ -36,7 +33,7 @@ public class QuestionBusiness implements IQuestion {
     @Autowired
     private QuestionModelMapper questionModelMapper;
 
-    static ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 由于问题有三种类型
@@ -74,6 +71,9 @@ public class QuestionBusiness implements IQuestion {
                 map.put("score", questionModel.getScore());
             }
         }
+        if (questionListRequest.isInTime()) {
+            map.put("inTime", new Date());
+        }
 
         List<QuestionModel> questionModelList;
         if (questionListRequest.isWithUserRole()) {
@@ -102,7 +102,31 @@ public class QuestionBusiness implements IQuestion {
         if (IntegerExtention.hasValueAndMaxZero(id)) {
 
             QuestionModel questionModel = questionModelMapper.selectByPrimaryKey(id);
-            return this.changeJsonToList(questionModel);
+            this.changeJsonToList(questionModel);
+
+            return questionModel;
+        }
+
+        throw new BusinessException(ErrorCodeEnum.requestParamError);
+    }
+
+
+    //根据不同类型 用json 转换
+    public QuestionModel getByMap(QuestionModel questionModel) {
+
+        if (questionModel != null && IntegerExtention.hasValueAndMaxZero(questionModel.getId())) {
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("id", questionModel.getId());
+            if (questionModel.getStatus() != null)
+                map.put("status", questionModel.getStatus());
+            if (IntegerExtention.hasValueAndMaxZero(questionModel.getRoleId()))
+                map.put("roleId", questionModel.getRoleId());
+
+            QuestionModel model = questionModelMapper.selectByMap(map);
+            this.changeJsonToList(model);
+
+            return model;
         }
 
         throw new BusinessException(ErrorCodeEnum.requestParamError);
@@ -394,10 +418,8 @@ public class QuestionBusiness implements IQuestion {
 
             questionModelList = questionModelMapper.selectDetailByIds(ids);
 
-            for (QuestionModel questionModel : questionModelList) {
-
-                questionModel = this.changeJsonToList(questionModel);
-            }
+            for (QuestionModel questionModel : questionModelList)
+                this.changeJsonToList(questionModel);
 
             return questionModelList;
 
@@ -409,14 +431,16 @@ public class QuestionBusiness implements IQuestion {
 
     }
 
+    //根据不同类型 用json 转换 (默认返回正确答案
+    private void changeJsonToList(QuestionModel questionModel) {
+        this.changeJsonToList(questionModel, true);
+    }
+
 
     //根据不同类型 用json 转换
-    private QuestionModel changeJsonToList(QuestionModel questionModel) {
+    private void changeJsonToList(QuestionModel questionModel, boolean getRightAnswer) {
         try {
             if (questionModel != null) {
-
-                ChoiceModel choiceModel = new ChoiceModel(questionModel);
-
 
                 //都得读
                 List<Choice> choiceList = objectMapper.readValue(questionModel.getAnswers(),
@@ -430,38 +454,46 @@ public class QuestionBusiness implements IQuestion {
                     //单选
                     case QuestionType.SINGLE_CHOICE:
 
-                        choiceModel.setChoiceModelList(choiceList);
-                        //单个正确答案
-                        rightAnswerList.add(questionModel.getRightAnswer());
+                        questionModel.setChoiceModelList(choiceList);
 
-                        choiceModel.setRightAnswerList(rightAnswerList);
+                        if (getRightAnswer) {
+                            //单个正确答案
+                            rightAnswerList.add(questionModel.getRightAnswer());
+                        }
 
-                        return choiceModel;
+                        questionModel.setRightAnswerList(rightAnswerList);
 
-                    //多选
+                        return;
+
+                        //多选
                     case QuestionType.MULTIPLE_CHOICE:
 
-                        choiceModel.setChoiceModelList(choiceList);
-                        //多个正确答案
-                        rightAnswerList = objectMapper.readValue(questionModel.getRightAnswer(),
-                                new TypeReference<List<String>>() {
-                                });
+                        questionModel.setChoiceModelList(choiceList);
 
-                        choiceModel.setRightAnswerList(rightAnswerList);
+                        if (getRightAnswer) {
+                            //多个正确答案
+                            rightAnswerList = objectMapper.readValue(questionModel.getRightAnswer(),
+                                    new TypeReference<List<String>>() {
+                                    });
+                            questionModel.setRightAnswerList(rightAnswerList);
+                        }
 
 
-                        return choiceModel;
+                        return;
 
-                    //判断
+                        //判断
                     case QuestionType.TRUE_OR_FALSE:
 
-                        choiceModel.setChoiceModelList(choiceList);
-                        //单个正确答案
-                        rightAnswerList.add(questionModel.getRightAnswer());
+                        questionModel.setChoiceModelList(choiceList);
 
-                        choiceModel.setRightAnswerList(rightAnswerList);
+                        if (getRightAnswer) {
+                            //单个正确答案
+                            rightAnswerList.add(questionModel.getRightAnswer());
 
-                        return choiceModel;
+                            questionModel.setRightAnswerList(rightAnswerList);
+                        }
+
+                        return;
                 }
             }
         } catch (IOException e) {
@@ -483,4 +515,17 @@ public class QuestionBusiness implements IQuestion {
     }
 
 
+    public List<QuestionModel> getByIdsForExam(List<Integer> ids, boolean getRightAnswer) {
+
+        if (ids != null && ids.size() > 0) {
+            List<QuestionModel> questionModelList = questionModelMapper.selectByIdsWithRightAnswer(ids);
+
+            for (QuestionModel questionModel : questionModelList)
+                this.changeJsonToList(questionModel, getRightAnswer);
+
+            return questionModelList;
+        }
+
+        throw new BusinessException(ErrorCodeEnum.requestParamError);
+    }
 }

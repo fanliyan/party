@@ -21,4 +21,7 @@ public interface IStudent {
 
     StudentListResponse listByPage(StudentListRequest studentListRequest);
 
+
+
+   boolean changeStatus(Integer userId,Byte status);
 }

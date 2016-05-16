@@ -1,6 +1,5 @@
 package cn.edu.ccu.index.controller;
 
-import cn.edu.ccu.index.utils.Message;
 import cn.edu.ccu.index.utils.WebProperties;
 import cn.edu.ccu.model.exception.BusinessException;
 import cn.edu.ccu.utils.common.LogHelper;
@@ -78,7 +77,11 @@ public class BaseController {
             }
 
         } else {
-            Message.showError(request, response, map.get("message").toString());
+            try {
+                response.sendRedirect(request.getContextPath()+"/html/error.html");
+            }catch (IOException e){
+                e.printStackTrace();
+            }
         }
     }
 

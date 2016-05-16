@@ -1,9 +1,6 @@
 package cn.edu.ccu.model.student;
 
-import cn.edu.ccu.model.common.AreaModel;
-import cn.edu.ccu.model.common.CityModel;
-import cn.edu.ccu.model.common.NationModel;
-import cn.edu.ccu.model.common.ProvinceModel;
+import cn.edu.ccu.model.common.*;
 
 import java.util.Date;
 
@@ -22,23 +19,39 @@ public class StudentModel {
 
     private Integer nationId;
 
-    private Date lastLoginTime;
+    private Byte status;
 
-    private Integer loginCount;
+    private String areaCode;
 
     private Integer loginFailCount;
 
-    private Byte status;
+    private String lastLoginIp;
+
+    private Date lastLoginTime;
 
     private Date createTime;
 
     private Date lastModifyTime;
 
-    private String areaCode;
+    private String idCard;
+
+    private Integer branchId;
+
+    private String phone;
+
+    private String introducer;
+
+    private Date keyActiveMemberTime;
+
+    private Date probationaryMemberTime;
+
+    private Date cardCarryingMemberTime;
 
     private String studentCode;
 
-    private String lastLoginIp;
+    private Integer loginCount;
+
+
 
 
     private SRoleModel sRoleModel;
@@ -49,6 +62,15 @@ public class StudentModel {
 
     private NationModel nationModel;
 
+    private BranchModel branchModel;
+
+    public BranchModel getBranchModel() {
+        return branchModel;
+    }
+
+    public void setBranchModel(BranchModel branchModel) {
+        this.branchModel = branchModel;
+    }
 
     public AreaModel getAreaModel() {
         return areaModel;
@@ -89,6 +111,9 @@ public class StudentModel {
     public void setsRoleModel(SRoleModel sRoleModel) {
         this.sRoleModel = sRoleModel;
     }
+
+
+
 
     public Integer getId() {
         return id;
@@ -146,20 +171,20 @@ public class StudentModel {
         this.nationId = nationId;
     }
 
-    public Date getLastLoginTime() {
-        return lastLoginTime;
+    public Byte getStatus() {
+        return status;
     }
 
-    public void setLastLoginTime(Date lastLoginTime) {
-        this.lastLoginTime = lastLoginTime;
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 
-    public Integer getLoginCount() {
-        return loginCount;
+    public String getAreaCode() {
+        return areaCode;
     }
 
-    public void setLoginCount(Integer loginCount) {
-        this.loginCount = loginCount;
+    public void setAreaCode(String areaCode) {
+        this.areaCode = areaCode == null ? null : areaCode.trim();
     }
 
     public Integer getLoginFailCount() {
@@ -170,12 +195,20 @@ public class StudentModel {
         this.loginFailCount = loginFailCount;
     }
 
-    public Byte getStatus() {
-        return status;
+    public String getLastLoginIp() {
+        return lastLoginIp;
     }
 
-    public void setStatus(Byte status) {
-        this.status = status;
+    public void setLastLoginIp(String lastLoginIp) {
+        this.lastLoginIp = lastLoginIp == null ? null : lastLoginIp.trim();
+    }
+
+    public Date getLastLoginTime() {
+        return lastLoginTime;
+    }
+
+    public void setLastLoginTime(Date lastLoginTime) {
+        this.lastLoginTime = lastLoginTime;
     }
 
     public Date getCreateTime() {
@@ -194,12 +227,60 @@ public class StudentModel {
         this.lastModifyTime = lastModifyTime;
     }
 
-    public String getAreaCode() {
-        return areaCode;
+    public String getIdCard() {
+        return idCard;
     }
 
-    public void setAreaCode(String areaCode) {
-        this.areaCode = areaCode;
+    public void setIdCard(String idCard) {
+        this.idCard = idCard == null ? null : idCard.trim();
+    }
+
+    public Integer getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(Integer branchId) {
+        this.branchId = branchId;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone == null ? null : phone.trim();
+    }
+
+    public String getIntroducer() {
+        return introducer;
+    }
+
+    public void setIntroducer(String introducer) {
+        this.introducer = introducer == null ? null : introducer.trim();
+    }
+
+    public Date getKeyActiveMemberTime() {
+        return keyActiveMemberTime;
+    }
+
+    public void setKeyActiveMemberTime(Date keyActiveMemberTime) {
+        this.keyActiveMemberTime = keyActiveMemberTime;
+    }
+
+    public Date getProbationaryMemberTime() {
+        return probationaryMemberTime;
+    }
+
+    public void setProbationaryMemberTime(Date probationaryMemberTime) {
+        this.probationaryMemberTime = probationaryMemberTime;
+    }
+
+    public Date getCardCarryingMemberTime() {
+        return cardCarryingMemberTime;
+    }
+
+    public void setCardCarryingMemberTime(Date cardCarryingMemberTime) {
+        this.cardCarryingMemberTime = cardCarryingMemberTime;
     }
 
     public String getStudentCode() {
@@ -210,11 +291,11 @@ public class StudentModel {
         this.studentCode = studentCode == null ? null : studentCode.trim();
     }
 
-    public String getLastLoginIp() {
-        return lastLoginIp;
+    public Integer getLoginCount() {
+        return loginCount;
     }
 
-    public void setLastLoginIp(String lastLoginIp) {
-        this.lastLoginIp = lastLoginIp == null ? null : lastLoginIp.trim();
+    public void setLoginCount(Integer loginCount) {
+        this.loginCount = loginCount;
     }
 }

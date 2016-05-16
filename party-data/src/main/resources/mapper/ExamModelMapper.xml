@@ -5,6 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="TINYINT" />
     <result column="time" property="time" jdbcType="INTEGER" />
     <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
     <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
@@ -33,7 +34,7 @@
     </resultMap>
 
   <sql id="Base_Column_List" >
-    id, name, description, time, start_time, end_time, create_user, role_id, score, status,
+    id, name, description,type, time, start_time, end_time, create_user, role_id, score, status,
     create_time, last_modify_time
   </sql>
   <sql id="Blob_Column_List" >
@@ -42,35 +43,43 @@
 
     <select id="selectWithUser" resultMap="withUser" parameterType="Map">
         SELECT
-        e.id, e.name, e.description, e.time, e.start_time, e.end_time, e.create_user, e.role_id, e.score, e.status,
+        e.id, e.name, e.description, e.type , e.time, e.start_time, e.end_time, e.create_user, e.role_id, e.score, e.status,
         e.create_time, e.last_modify_time,us.`name` create_user_name,s.`name` role_name
         FROM exam e LEFT JOIN `user` us ON e.`create_user`=us.`user_id`
         LEFT JOIN s_role s ON e.`role_id`=s.`role_id`
         <where>
           <if test="status != null">
-              e.status = #{status}
+            and  e.status = #{status}
           </if>
             <if test="name != null">
-                e.name LIKE concat("%",#{name},"%")
+                and   e.name LIKE concat("%",#{name},"%")
+            </if>
+            <if test="type != null">
+                and e.type = #{type}
             </if>
             <if test="userId != null">
-                e.create_user = #{userId}
+                and  e.create_user = #{userId}
             </if>
             <if test="roleId != null">
-                e.role_id = #{roleId}
+                and  (e.role_id = #{roleId} or e.role_id is null)
             </if>
             <if test="score != null">
-                e.score = #{score}
+                and  e.score = #{score}
             </if>
             <if test="startTime != null">
                 <![CDATA[
-                e.start_time >= #{startTime}
+             and   e.start_time >= #{startTime}
             ]]>
             </if>
             <if test="endTime != null">
                 <![CDATA[
-                e.end_time <= #{endTime}
+              and  e.end_time <= #{endTime}
                 ]]>
+            </if>
+            <if test="inTime != null">
+                <![CDATA[
+             and ((e.start_time <= #{inTime} or e.start_time is null) && (e.end_time >= #{inTime} or e.end_time is null))
+            ]]>
             </if>
         </where>
         ORDER BY e.create_time DESC
@@ -84,29 +93,37 @@
         from exam
         <where>
             <if test="status != null">
-                status = #{status}
+                and   status = #{status}
             </if>
             <if test="name != null">
-                name LIKE concat("%",#{name},"%")
+                and  name LIKE concat("%",#{name},"%")
+            </if>
+            <if test="type != null">
+                and type = #{type}
             </if>
             <if test="userId != null">
-                create_user = #{userId}
+                and create_user = #{userId}
             </if>
             <if test="roleId != null">
-                role_id = #{roleId}
+                and  (role_id = #{roleId} or role_id is null)
             </if>
             <if test="score != null">
-                score = #{score}
+                and score = #{score}
             </if>
             <if test="startTime != null">
                 <![CDATA[
-                start_time >= #{startTime}
+               and start_time >= #{startTime}
             ]]>
             </if>
             <if test="endTime != null">
                 <![CDATA[
-                end_time <= #{endTime}
+               and end_time <= #{endTime}
                 ]]>
+            </if>
+            <if test="inTime != null">
+                <![CDATA[
+             and ((start_time <= #{inTime} or start_time is null) && (end_time >= #{inTime} or end_time is null))
+            ]]>
             </if>
         </where>
         ORDER BY create_time DESC
@@ -120,32 +137,84 @@
         from exam
         <where>
             <if test="status != null">
-                status = #{status}
+                and  status = #{status}
             </if>
             <if test="name != null">
-                name LIKE concat("%",#{name},"%")
+                and  name LIKE concat("%",#{name},"%")
+            </if>
+            <if test="type != null">
+                and type = #{type}
             </if>
             <if test="userId != null">
-                create_user = #{userId}
+                and  create_user = #{userId}
             </if>
             <if test="roleId != null">
-                role_id = #{roleId}
+                and  (role_id = #{roleId} or role_id is null)
             </if>
             <if test="score != null">
-                score = #{score}
+                and  score = #{score}
             </if>
             <if test="startTime != null">
                 <![CDATA[
-                start_time >= #{startTime}
+               and start_time >= #{startTime}
             ]]>
             </if>
             <if test="endTime != null">
                 <![CDATA[
-                end_time <= #{endTime}
+              and  end_time <= #{endTime}
                 ]]>
+            </if>
+            <if test="inTime != null">
+                <![CDATA[
+             and ((start_time <= #{inTime} or start_time is null) && (end_time >= #{inTime} or end_time is null))
+            ]]>
             </if>
         </where>
     </select>
+
+    <select id="selectByMap" resultMap="ResultMapWithBLOBs" parameterType="Map">
+        select
+        <include refid="Base_Column_List" />
+        ,
+        <include refid="Blob_Column_List" />
+        from exam
+        <where>
+              id = #{id} and (role_id = #{roleId} or role_id is null)
+              <if test="inTime != null">
+                  <![CDATA[
+             and ((start_time <= #{inTime} or start_time is null) && (end_time >= #{inTime} or end_time is null))
+            ]]>
+              </if>
+        </where>
+    </select>
+
+
+    <!--<resultMap id="studyCourseTopRM" type="cn.edu.ccu.model.common.TableModel">-->
+        <!--<result column="name" property="name"/>-->
+        <!--<result column="score" property="count"/>-->
+    <!--</resultMap>-->
+
+    <!--<select id="getAExamTop" parameterType="Map" resultType="studyCourseTopRM">-->
+        <!--SELECT * FROM-->
+        <!--(SELECT stu.`id`,stu.`name` NAME,s.score ,e.`name` exam_name-->
+        <!--FROM student stu-->
+        <!--LEFT JOIN score s ON s.`user_id`= stu.`id`-->
+        <!--LEFT JOIN exam e ON e.`id`=s.`exam_id`-->
+        <!--LEFT JOIN r_student_role rsr ON rsr.`student_id` =stu.`id`-->
+        <!--<where>-->
+            <!--<if test="roleId != null">-->
+                <!--rsr.`role_id` = #{roleId}-->
+            <!--</if>-->
+            <!--<if test="examId != null">-->
+                <!--AND e.`id` = #{examId}-->
+            <!--</if>-->
+        <!--</where>-->
+        <!--ORDER BY s.score DESC-->
+        <!--) a-->
+        <!--GROUP BY `id`-->
+
+
+    <!--</select>-->
 
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
@@ -160,13 +229,13 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="cn.edu.ccu.model.exam.ExamModelWithBLOBs" >
-    insert into exam (id, name, description, 
+    insert into exam (id, name, description, type,
       time, start_time, end_time, 
       create_user, role_id, score, 
       status, create_time, last_modify_time,
       single_choice, multiple_choice, tof
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{type},
       #{time,jdbcType=INTEGER}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{createUser,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}, #{score,jdbcType=DOUBLE},
       #{status,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP},
@@ -185,6 +254,9 @@
       <if test="description != null" >
         description,
       </if>
+        <if test="type != null">
+            type,
+        </if>
       <if test="time != null" >
         time,
       </if>
@@ -232,6 +304,9 @@
       <if test="description != null" >
         #{description,jdbcType=VARCHAR},
       </if>
+        <if test="type != null">
+            #{type},
+        </if>
       <if test="time != null" >
         #{time,jdbcType=INTEGER},
       </if>
@@ -279,6 +354,9 @@
       <if test="description != null" >
         description = #{description,jdbcType=VARCHAR},
       </if>
+        <if test="type != null">
+            type = #{type},
+        </if>
       <if test="time != null" >
         time = #{time,jdbcType=INTEGER},
       </if>
@@ -294,6 +372,9 @@
       <if test="roleId != null" >
         role_id = #{roleId,jdbcType=INTEGER},
       </if>
+        <if test="roleId == null" >
+            role_id = null,
+        </if>
       <if test="score != null" >
         score = #{score,jdbcType=DOUBLE},
       </if>
@@ -322,6 +403,7 @@
     update exam
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
+      type = #{type},
       time = #{time,jdbcType=INTEGER},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},
@@ -340,6 +422,7 @@
     update exam
     set name = #{name,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
+      type = #{type},
       time = #{time,jdbcType=INTEGER},
       start_time = #{startTime,jdbcType=TIMESTAMP},
       end_time = #{endTime,jdbcType=TIMESTAMP},

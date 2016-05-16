@@ -1,9 +1,11 @@
 package cn.edu.ccu.model.exam;
 
+import cn.edu.ccu.model.student.StudentModel;
+
 import java.util.Date;
 
 public class ScoreModel {
-    private Integer id;
+    private String id;
 
     private Integer userId;
 
@@ -11,17 +13,44 @@ public class ScoreModel {
 
     private Double score;
 
+    private Date startTime;
+
+    private Date endTime;
+
     private Date createTime;
 
     private Date lastModifyTime;
 
     private String detail;
 
-    public Integer getId() {
+
+    private ExamModel examModel;
+
+    private StudentModel studentModel;
+
+    public ExamModel getExamModel() {
+        return examModel;
+    }
+
+    public void setExamModel(ExamModel examModel) {
+        this.examModel = examModel;
+    }
+
+    public StudentModel getStudentModel() {
+        return studentModel;
+    }
+
+    public void setStudentModel(StudentModel studentModel) {
+        this.studentModel = studentModel;
+    }
+
+
+
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -47,6 +76,22 @@ public class ScoreModel {
 
     public void setScore(Double score) {
         this.score = score;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 
     public Date getCreateTime() {

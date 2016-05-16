@@ -141,23 +141,23 @@ public class UserController extends BaseController {
         return map;
     }
 
-//    @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
-//    public @ResponseBody Map<String, Object> save(HttpServletRequest request, UserModel user) throws Exception {
-//        Map<String, Object> map = new HashMap<>();
-//        int result = 0;
+    @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
+    public @ResponseBody Map<String, Object> save(HttpServletRequest request, UserModel user) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        int result = 0;
 //        if (IntegerExtention.hasValueAndMaxZero(user.getUserId())) {
 //            iUser.editUser(user);
 //        } else {
-//            result = iUser.addUser(user);
+            result = iUser.addUser(user);
 //        }
-//        if (result > 0) {
-//            map.put("success", true);
-//        } else {
-//            map.put("success", false);
-//            map.put("message", "保存失败");
-//        }
-//        return map;
-//    }
+        if (result > 0) {
+            map.put("success", true);
+        } else {
+            map.put("success", false);
+            map.put("message", "保存失败");
+        }
+        return map;
+    }
 
     @RequestMapping("/add")
     public ModelAndView add(HttpServletRequest httpRequest, HttpServletResponse httpResponse, UserModel user, SplitPageRequest pageRequest) throws Exception {

@@ -104,7 +104,51 @@ public class FileController extends BaseController {
                 }
             }
         } catch (Exception e) {
-            throw new BusinessException("获取图片失败");
+            throw new BusinessException("获取视频失败");
+        }
+
+
+    }
+
+    @AuthMethod(mustLogin = false)
+    @RequestMapping(value = "/doc/{y}/{m}/{d}/{name}", method = RequestMethod.GET)
+    public void doc(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse,
+                      @PathVariable("y") String y, @PathVariable("m") String m, @PathVariable("d") String d,
+                      @PathVariable("name") String name) throws Exception {
+
+        try {
+            //获取后缀
+            String uri = httpServletRequest.getRequestURI();
+            String suffix = uri.substring(uri.lastIndexOf("."), uri.length());
+
+            byte[] buffer = new byte[1024];
+            InputStream is = new FileInputStream(new File(FileHelper.getPicturePath()
+                    + "/doc/" + y + File.separator + m + File.separator + d
+                    + File.separator + name + suffix));
+            OutputStream ps = null;
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            httpServletResponse.setContentType("application/*");
+            try {
+                ps = httpServletResponse.getOutputStream();
+                int i;
+                while ((i = is.read(buffer)) > 0) {
+                    ps.write(buffer, 0, i);
+                }
+                ps.flush();
+            } catch (IOException e) {
+                //
+            } finally {
+                if (ps != null) {
+                    try {
+                        is.close();
+                        ps.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new BusinessException("获取文件失败");
         }
 
 

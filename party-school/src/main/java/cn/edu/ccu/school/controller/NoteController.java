@@ -58,6 +58,7 @@ public class NoteController extends BaseController {
     }
 
     //笔记分享
+    @AuthMethod
     @RequestMapping("/sharelist")
     public ModelAndView shareList(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                              String title, SplitPageRequest pageRequest) throws Exception {
@@ -81,6 +82,7 @@ public class NoteController extends BaseController {
     }
 
     //查看
+    @AuthMethod
     @RequestMapping("/read/{id}")
     public ModelAndView read(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
                                   @PathVariable("id") Integer id) throws Exception {

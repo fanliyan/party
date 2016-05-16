@@ -1,5 +1,5 @@
 <#import "/master/master-frame.ftl" as master />
-<@master.masterFrame pageTitle=["客户","用户管理","用户详情"]>
+<@master.masterFrame pageTitle=["系统管理","系统消息","消息详情"]>
 <div class="padding-md col-md-6 col-md-offset-3">
 	<div class="row">
 		<div class="panel panel-default">

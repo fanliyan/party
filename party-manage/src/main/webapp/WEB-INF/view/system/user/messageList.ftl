@@ -39,7 +39,7 @@
 		<#if listResponse.messages ?? && listResponse.messages?size gt 0>
 		<@splitPage1.splitPage pageCount=listResponse.splitPage.pageCount pageNo=listResponse.splitPage.pageNo formId="searchForm" recordCount=listResponse.splitPage.recordCount />
 		</#if>
-		<form id="searchForm" action="${basePath}/main/msgList" method="post">
+		<form id="searchForm" action="${basePath}/message/msgList" method="post">
 		</form>
 	</div><!-- /panel -->
 </@master.masterFrame>

@@ -128,7 +128,8 @@
 	<script src="${basePath}/resources/js/ymb.common.js"></script>
 	<script src="${basePath}/resources/js/ymb.menu.js"></script>
 	<script src="${basePath}/resources/js/ymb.ueditor.insertossimage.js"></script>
-	<script src="${basePath}/resources/js/ymb.selectAndUploadFile.js"></script>
+    <script src="${basePath}/resources/js/ymb.ueditor.insertossfile.js"></script>
+    <script src="${basePath}/resources/js/ymb.selectAndUploadFile.js"></script>
 
     <!-- timepicker -->
     <script src="${basePath}/resources/js/timepicker/jquery-ui-timepicker-addon.min.js" type="text/javascript"></script>

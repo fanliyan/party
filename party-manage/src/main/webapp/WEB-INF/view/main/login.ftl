@@ -37,10 +37,10 @@
 					</div>
 	
 					<div class="seperator"></div>
-					<div class="form-group">
-						忘记了密码?
-						<a href="${basePath}/main/tofindpwd">点击找回</a>
-					</div>
+					<#--<div class="form-group">-->
+						<#--忘记了密码?-->
+						<#--<a href="${basePath}/main/tofindpwd">点击找回</a>-->
+					<#--</div>-->
 
 					<hr/>
 					<a class="btn btn-success btn-sm bounceIn animation-delay5 pull-right" href="###" id="submitButton"><i class="fa fa-sign-in"></i> 登 录</a>

@@ -4,11 +4,14 @@ import cn.edu.ccu.ibusiness.common.IArea;
 import cn.edu.ccu.ibusiness.common.ICity;
 import cn.edu.ccu.ibusiness.common.INation;
 import cn.edu.ccu.ibusiness.common.IProvince;
+import cn.edu.ccu.ibusiness.student.ISRole;
 import cn.edu.ccu.ibusiness.student.IStudent;
+import cn.edu.ccu.ibusiness.student.IStudentRole;
 import cn.edu.ccu.manage.controller.BaseController;
 import cn.edu.ccu.manage.utils.AuthController;
 import cn.edu.ccu.manage.utils.Common;
 import cn.edu.ccu.model.SplitPageRequest;
+import cn.edu.ccu.model.student.SRoleModel;
 import cn.edu.ccu.model.student.StudentListRequest;
 import cn.edu.ccu.model.student.StudentListResponse;
 import cn.edu.ccu.model.student.StudentModel;
@@ -22,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,6 +38,10 @@ public class StudentController extends BaseController {
 
     @Autowired
     private IStudent iStudent;
+    @Autowired
+    private ISRole isRole;
+    @Autowired
+    private IStudentRole iStudentRole;
 
     @Autowired
     private INation iNation;
@@ -57,10 +65,10 @@ public class StudentController extends BaseController {
         mav.addObject("listResponse", listResponse);
         mav.addObject("student", studentModel);
 
-        mav.addObject("nationlist",iNation.selectNationList());
-        mav.addObject("provincelist",iProvince.selectProvinceList());
-        mav.addObject("citylist",iCity.selectCityList());
-        mav.addObject("arealist",iArea.selectAreaList());
+        mav.addObject("nationlist", iNation.selectNationList());
+        mav.addObject("provincelist", iProvince.selectProvinceList());
+        mav.addObject("citylist", iCity.selectCityList());
+        mav.addObject("arealist", iArea.selectAreaList());
 
         mav.setViewName("student/list");
         return mav;
@@ -76,67 +84,47 @@ public class StudentController extends BaseController {
         return mav;
     }
 
-//    @RequestMapping("/grantRole")
-//    public ModelAndView grantRole(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Integer userId) throws Exception {
-//
-//        ModelAndView mav = Common.getLoginModelAndView(httpRequest);
-//        UserModel loginUser = (UserModel) mav.getModel().get("loginUserModel");
-//
-//        UserModel user = iUser.getUserById(userId);
-//        List<RoleModel> allRoles = iRole.list();
-//        List<RoleModel> userRoles = iRole.listRolesDetailByUserId(userId);
-//        user.setHasRoles(userRoles);
-//        mav.addObject("user", user);
-//        mav.addObject("allRoles", allRoles);
-//        mav.setViewName("system/user/grantUserRole");
-//        return mav;
-//    }
+    @RequestMapping("/grantRole")
+    public ModelAndView grantRole(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Integer userId) throws Exception {
 
-//    @RequestMapping(value = "/editLock", method = RequestMethod.POST)
-//    public
-//    @ResponseBody
-//    Map<String, Object> editLock(HttpServletRequest request, UserModel user) throws Exception {
-//        Map<String, Object> map = new HashMap<>();
-//        int result;
-//        if (user.getStatus() == -1) {
-//            user.setLoginFailCount(0);
-//        }
-//        result = iStudent.updateUser(user);
-//        map.put("success", result > 0);
-//
-//        return map;
-//    }
-//
-//    @RequestMapping(value = "/editRole", method = RequestMethod.POST)
-//    public
-//    @ResponseBody
-//    Map<String, Object> editRole(HttpServletRequest request, Integer userId, Integer roleId[], Byte level) throws Exception {
-//        Map<String, Object> map = new HashMap<>();
-//        ModelAndView mav = Common.getLoginModelAndView(request);
-//        UserModel loginUser = (UserModel) mav.getModel().get("loginUserModel");
-//
-//        boolean flag = true;
-//
-//        List<RoleModel> allRoles = iRole.list();
-//        for (int i = 0; roleId != null && i < roleId.length; i++) {
-//            //获取所选项 对应roleModel
-//            for (RoleModel roleModel : allRoles) {
-//                if (roleModel.getRoleId().equals(roleId[i])) {
-//                    //是否能手动分配
-//                    if (AuthList.contains(AuthList.UNREMOVABLE_ROLE, roleModel.getRoleId())) {
-//                        map.put("success", false);
-//                        map.put("message", roleModel.getName() + " 不能手动分配");
-//                        flag = false;
-//                        break;
-//                    }
-//                }
-//            }
-//        }
-//        if (flag) {
-//            iUserRole.editByUserRoleIds(userId, roleId, level, super.getRequestHead(request));
-//            map.put("success", true);
-//        }
-//
-//        return map;
-//    }
+        ModelAndView mav = Common.getLoginModelAndView(httpRequest);
+
+        List<SRoleModel> roleModelList = isRole.list();
+        SRoleModel userRole = iStudent.getStudentDetailById(userId).getsRoleModel();
+
+        mav.addObject("userId", userId);
+        mav.addObject("roleModel", userRole);
+        mav.addObject("allRoles", roleModelList);
+        mav.setViewName("student/grantUserRole");
+        return mav;
+    }
+
+    @RequestMapping(value = "/editLock", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, Object> editLock(HttpServletRequest request, StudentModel user) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        if (user.getStatus() == -1) {
+            user.setLoginFailCount(0);
+        }
+       boolean result = iStudent.changeStatus(user.getId(),user.getStatus());
+        map.put("success", result );
+
+        return map;
+    }
+
+    @RequestMapping(value = "/editRole", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, Object> editRole(HttpServletRequest request, Integer userId, Integer roleId) throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+
+        SRoleModel userRole = iStudent.getStudentDetailById(userId).getsRoleModel();
+        boolean tag = iStudentRole.updateRole(userId, roleId, userRole.getRoleId());
+        map.put("success", tag);
+
+        return map;
+    }
 }

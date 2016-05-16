@@ -17,6 +17,26 @@
         from sensitive_words
     </select>
 
+    <select id="select" resultMap="BaseResultMap" parameterType="Map">
+        select
+        <include refid="Base_Column_List" />
+        from sensitive_words
+        <if test="word !=null">
+            where word LIKE concat("%",#{word},"%")
+        </if>
+        <if test="rowStart != null and rowCount != null">
+            LIMIT #{rowStart}, #{rowCount}
+        </if>
+    </select>
+    <select id="count" resultType="int" parameterType="Map">
+        select
+        count(1)
+        from sensitive_words
+        <if test="word !=null">
+            where word LIKE concat("%",#{word},"%")
+        </if>
+    </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

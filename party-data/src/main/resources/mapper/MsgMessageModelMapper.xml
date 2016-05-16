@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.edu.ccu.data.message.MsgMessageModelMapper">
+	<resultMap id="BaseResultMap" type="cn.edu.ccu.model.message.MsgMessageModel">
+		<id column="message_id" property="messageId" jdbcType="BIGINT" />
+		<result column="send_userid" property="sendUserid" jdbcType="VARCHAR" />
+		<result column="receive_userid" property="receiveUserid" jdbcType="VARCHAR" />
+		<result column="is_read" property="isRead" jdbcType="BIT" />
+		<result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+		<result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+		<result column="msg_type" property="msgType" jdbcType="INTEGER" />
+		<result column="title" property="title" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="cn.edu.ccu.model.message.MsgMessageModel" extends="BaseResultMap">
+		<result column="content" property="content" jdbcType="LONGVARCHAR" />
+	</resultMap>
+	<!--<resultMap id="pushResultMap" type="com.yiminbang.model.pushnotification.PushNotificationModel">-->
+		<!--<id column="message_id" property="messageId" jdbcType="BIGINT" />-->
+		<!--<result column="content" property="message" jdbcType="VARCHAR" />-->
+		<!--<result column="receive_userid" property="uid" jdbcType="VARCHAR" />-->
+		<!--<result column="device_token" property="deviceToken" jdbcType="VARCHAR" />-->
+		<!--<result column="msg_type" property="messageType" jdbcType="INTEGER" />-->
+		<!--<result column="type_name" property="messageTypeName" jdbcType="VARCHAR" />-->
+		<!--<result column="device_id" property="deviceId" jdbcType="VARCHAR" />-->
+		<!--<result column="device_system" property="deviceSystem" jdbcType="VARCHAR" />-->
+		<!--<result column="is_alert" property="isAlert" jdbcType="BIT" />-->
+		<!--<result column="is_badge" property="isBadge" jdbcType="BIT" />-->
+		<!--<result column="is_sound" property="isSound" jdbcType="BIT" />-->
+		<!--<result column="push_format" property="pushFormat" jdbcType="VARCHAR" />-->
+	<!--</resultMap>-->
+	<sql id="Base_Column_List">
+		message_id, send_userid, receive_userid, is_read, create_time, last_modify_time,
+		msg_type,title
+	</sql>
+	<sql id="Blob_Column_List">
+		content
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from msg_message
+		where message_id = #{messageId,jdbcType=BIGINT}
+	</select>
+	<select id="selectMessageListCount" resultType="int" parameterType="java.lang.Integer">
+		select count(1) from msg_message where receive_userid = #{receiveUserid,jdbcType=BIGINT} order by create_time desc
+	</select>
+	<select id="selectMessageCount" resultType="int" parameterType="Map">
+		select count(1) from msg_message where 1=1
+		<if test="isRead != null">
+			and is_read=#{isRead}
+		</if>
+		<if test="receiveUserid != null">
+			and receive_userid = #{receiveUserid,jdbcType=BIGINT}
+		</if>
+	</select>
+	<!--<select id="listPushMessage" resultMap="pushResultMap">-->
+		<!--SELECT message_id,content, receive_userid,d.`device_token`,m.`msg_type`,mt.`type_name`,mt.push_format, d.`device_id`,d.`device_system`, d.`is_alert`,d.`is_badge`,d.`is_sound`-->
+		<!--FROM msg_message m LEFT JOIN `msg_type` mt ON m.`msg_type` =mt.`msg_type` LEFT JOIN `app_user_device` ud ON m.receive_userid = ud.`userid`-->
+		<!--LEFT JOIN `app_device` d ON ud.`device_id`=d.`device_id`-->
+		<!--WHERE NOT EXISTS (SELECT `id` FROM `app_message_push_log` WHERE `userid` = ud.`userid` AND `device_id` =ud.`device_id` AND `message_id` = m.`message_id`) -->
+		<!--AND m.`is_read` =FALSE AND (d.`device_token`!='' OR d.`device_token` !=NULL)-->
+
+	<!--</select>-->
+	<select id="selectMessageList" resultMap="ResultMapWithBLOBs" parameterType="Map">
+		select
+		<include refid="Base_Column_List" />
+		,
+		<include refid="Blob_Column_List" />
+		from msg_message
+		where receive_userid = #{receiveUserid,jdbcType=BIGINT}
+		<if test="isRead != null ">
+			and is_read = #{isRead}
+		</if>
+		order by is_read , create_time desc
+		<if test="rowStart != null and rowCount != null">
+			LIMIT #{rowStart}, #{rowCount}
+		</if>
+	</select>
+
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+		delete from msg_message
+		where message_id = #{messageId,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="cn.edu.ccu.model.message.MsgMessageModel">
+		insert into msg_message (message_id, send_userid, receive_userid,
+		is_read, create_time, last_modify_time,
+		msg_type, content,title)
+		values
+		(#{messageId,jdbcType=BIGINT}, #{sendUserid,jdbcType=VARCHAR}, #{receiveUserid,jdbcType=VARCHAR},
+		#{isRead,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP},
+		#{msgType,jdbcType=INTEGER}, #{content,jdbcType=LONGVARCHAR},#{title})
+	</insert>
+	<insert id="insertSelective" parameterType="cn.edu.ccu.model.message.MsgMessageModel">
+		insert into msg_message
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="messageId != null">
+				message_id,
+			</if>
+			<if test="sendUserid != null">
+				send_userid,
+			</if>
+			<if test="receiveUserid != null">
+				receive_userid,
+			</if>
+			<if test="isRead != null">
+				is_read,
+			</if>
+			<if test="createTime != null">
+				create_time,
+			</if>
+			<if test="lastModifyTime != null">
+				last_modify_time,
+			</if>
+			<if test="msgType != null">
+				msg_type,
+			</if>
+			<if test="content != null">
+				content,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="messageId != null">
+				#{messageId,jdbcType=BIGINT},
+			</if>
+			<if test="sendUserid != null">
+				#{sendUserid,jdbcType=VARCHAR},
+			</if>
+			<if test="receiveUserid != null">
+				#{receiveUserid,jdbcType=VARCHAR},
+			</if>
+			<if test="isRead != null">
+				#{isRead,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				#{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastModifyTime != null">
+				#{lastModifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="msgType != null">
+				#{msgType,jdbcType=INTEGER},
+			</if>
+			<if test="content != null">
+				#{content,jdbcType=LONGVARCHAR},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.message.MsgMessageModel">
+		update msg_message
+		<set>
+			<if test="sendUserid != null">
+				send_userid = #{sendUserid,jdbcType=VARCHAR},
+			</if>
+			<if test="receiveUserid != null">
+				receive_userid = #{receiveUserid,jdbcType=VARCHAR},
+			</if>
+			<if test="isRead != null">
+				is_read = #{isRead,jdbcType=BIT},
+			</if>
+			<if test="createTime != null">
+				create_time = #{createTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="lastModifyTime != null">
+				last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="msgType != null">
+				msg_type = #{msgType,jdbcType=INTEGER},
+			</if>
+			<if test="content != null">
+				content = #{content,jdbcType=LONGVARCHAR},
+			</if>
+			
+		</set>
+		where message_id = #{messageId,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.edu.ccu.model.message.MsgMessageModel">
+		update msg_message
+		set send_userid = #{sendUserid,jdbcType=VARCHAR},
+		receive_userid = #{receiveUserid,jdbcType=VARCHAR},
+		is_read =
+		#{isRead,jdbcType=BIT},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+		msg_type = #{msgType,jdbcType=INTEGER},
+		content =
+		#{content,jdbcType=LONGVARCHAR}
+		where message_id = #{messageId,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.edu.ccu.model.message.MsgMessageModel">
+		update msg_message
+		set send_userid = #{sendUserid,jdbcType=VARCHAR},
+		receive_userid = #{receiveUserid,jdbcType=VARCHAR},
+		is_read =
+		#{isRead,jdbcType=BIT},
+		create_time = #{createTime,jdbcType=TIMESTAMP},
+		last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+		msg_type = #{msgType,jdbcType=INTEGER}
+		where message_id =
+		#{messageId,jdbcType=BIGINT}
+	</update>
+
+
+	
+	
+</mapper>

@@ -1,7 +1,9 @@
 package cn.edu.ccu.school.controller;
 
+import cn.edu.ccu.ibusiness.common.*;
 import cn.edu.ccu.ibusiness.student.IStudent;
 import cn.edu.ccu.model.RequestHead;
+import cn.edu.ccu.model.common.NotificationModel;
 import cn.edu.ccu.model.exception.BusinessException;
 import cn.edu.ccu.business.UtilsBusiness;
 import cn.edu.ccu.model.student.*;
@@ -10,6 +12,7 @@ import cn.edu.ccu.school.utils.AuthHelper;
 import cn.edu.ccu.school.utils.AuthMethod;
 import cn.edu.ccu.school.utils.WebProperties;
 import cn.edu.ccu.utils.common.SecurityHelper;
+import cn.edu.ccu.utils.common.extention.StringExtention;
 import cn.edu.ccu.utils.common.web.WebHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,10 +32,21 @@ public class MainController extends BaseController {
 
     @Autowired
     private IStudent iStudent;
+    @Autowired
+    private ISchoolNotification iSchoolNotification;
+
+    @Autowired
+    private INation iNation;
+    @Autowired
+    private IProvince iProvince;
+    @Autowired
+    private ICity iCity;
+    @Autowired
+    private IArea iArea;
 
     @RequestMapping("/login")
     @AuthMethod(mustLogin = false)
-    public ModelAndView Login(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public ModelAndView Login(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception {
         ModelAndView mav = super.getModelAndView("", httpRequest);
 
         mav.addObject("backurl", httpRequest.getParameter("backurl"));
@@ -41,6 +55,17 @@ public class MainController extends BaseController {
                 mav.addObject("userId", SecurityHelper.desDecrypt(WebHelper.getCookie(httpRequest, "rememberUserid"), WebProperties.getSecurityKey()));
             }
         } catch (Exception ex) {
+        }
+
+        //已登录
+        StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
+        if(studentModel!=null){
+            String backUrl = httpRequest.getParameter("backurl");
+            if (!StringExtention.isNullOrEmpty(backUrl)) {
+                httpResponse.sendRedirect(backUrl);
+            } else {
+                httpResponse.sendRedirect(httpRequest.getContextPath() + "/main/index");
+            }
         }
 
         mav.setViewName("main/login");
@@ -63,6 +88,14 @@ public class MainController extends BaseController {
         StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
 
         if (studentModel == null) {
+
+
+            mav.addObject("nationlist", iNation.selectNationList());
+            mav.addObject("provincelist", iProvince.selectProvinceList());
+            mav.addObject("citylist", iCity.selectCityList());
+            mav.addObject("arealist", iArea.selectAreaList());
+
+
             mav.setViewName("main/register");
         } else {
             mav.setViewName("main/login");
@@ -146,6 +179,11 @@ public class MainController extends BaseController {
 
         ModelAndView mav = super.getModelAndView("main/main", httpRequest);
 
+        StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
+
+        NotificationModel notificationModel = iSchoolNotification.getByRoleId(studentModel.getsRoleModel().getRoleId());
+
+        mav.addObject("notify", notificationModel.getContent());
         return mav;
     }
 
@@ -168,6 +206,13 @@ public class MainController extends BaseController {
         if (msg.length() > 0) {
             mav.addObject("msg", msg.toString());
         }
+
+
+        mav.addObject("nationlist", iNation.selectNationList());
+        mav.addObject("provincelist", iProvince.selectProvinceList());
+        mav.addObject("citylist", iCity.selectCityList());
+        mav.addObject("arealist", iArea.selectAreaList());
+
 
         return mav;
     }

@@ -21,6 +21,7 @@ public interface UserModelMapper {
 
     int updateByPrimaryKey(UserModel record);
 
+
     List<UserModel> selectByUserMap(Map map);
 
     int selectCount(Map map);
@@ -28,4 +29,7 @@ public interface UserModelMapper {
     List<UserModel> selectByIds(List<Integer> ids);
 
     UserModel selectByKey(@Param("account") String account, @Param("password") String password);
+
+
+
 }

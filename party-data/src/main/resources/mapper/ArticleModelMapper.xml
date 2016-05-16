@@ -13,7 +13,7 @@
     <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
     <result column="publish_time" property="publishTime" jdbcType="TIMESTAMP" />
     <result column="channel_count" property="channelCount" jdbcType="INTEGER" />
-    <result column="title_index" property="titleIndex" jdbcType="VARCHAR" />
+    <!--<result column="title_index" property="titleIndex" jdbcType="VARCHAR" />-->
   </resultMap>
   <resultMap id="ResultMapWithBLOBs" type="cn.edu.ccu.model.article.ArticleModel" extends="BaseResultMap" >
     <result column="content" property="content" jdbcType="LONGVARCHAR" />

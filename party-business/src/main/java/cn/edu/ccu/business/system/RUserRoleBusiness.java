@@ -7,10 +7,13 @@ import cn.edu.ccu.ibusiness.system.IRole;
 import cn.edu.ccu.ibusiness.system.IUser;
 import cn.edu.ccu.ibusiness.system.IUserRole;
 import cn.edu.ccu.model.RequestHead;
+import cn.edu.ccu.model.exception.BusinessException;
 import cn.edu.ccu.model.system.LogType;
 import cn.edu.ccu.model.system.RUserRoleModel;
 import cn.edu.ccu.model.system.RUserRoleModelKey;
 import cn.edu.ccu.model.user.UserModel;
+import cn.edu.ccu.utils.common.ErrorCodeEnum;
+import cn.edu.ccu.utils.common.extention.IntegerExtention;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,12 +29,6 @@ public class RUserRoleBusiness implements IUserRole {
 
     @Autowired
     private RUserRoleModelMapper rUserRoleModelMapper;
-
-    @Autowired
-    private IUser iUser;
-
-    @Autowired
-    private IRole iRole;
 
     @Autowired
     private ISysLog iLog;
@@ -53,7 +50,7 @@ public class RUserRoleBusiness implements IUserRole {
     @Transactional(value = TransactionManagerName.partyTransactionManager)
     public int editByUserRoleIds(Integer userId, Integer[] roleIds, Byte level, RequestHead requestHead) {
 
-        UserModel model=new UserModel();
+        UserModel model = new UserModel();
         model.setUserId(userId);
 //        iUser.updateUser(model);//更改用户级别
 
@@ -61,7 +58,7 @@ public class RUserRoleBusiness implements IUserRole {
         String logDesc = "";
         Integer createUserId = requestHead.getLoginUserId();
         int result = 0;
-        if (roleIds == null||(roleIds != null && roleIds.length == 0)) {
+        if (roleIds == null || (roleIds != null && roleIds.length == 0)) {
             List<RUserRoleModel> ur = rUserRoleModelMapper.selectRolesByUserId(userId);//如果传过来角色为空,在删除前查询用户之前的角色,用来记录日志
             for (int i = 0; i < ur.size(); i++) {
                 Integer integer = ur.get(i).getRoleId();
@@ -96,6 +93,17 @@ public class RUserRoleBusiness implements IUserRole {
     @Override
     public List<RUserRoleModel> listByUserId(Integer userid) {
         return rUserRoleModelMapper.selectRolesByUserId(userid);
+    }
+
+
+    public List<Integer> getUserIdByRole(Integer roleId) {
+
+        if (IntegerExtention.hasValueAndMaxZero(roleId)) {
+
+            return rUserRoleModelMapper.selectUserIdByRole(roleId);
+        }
+
+        throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
 }

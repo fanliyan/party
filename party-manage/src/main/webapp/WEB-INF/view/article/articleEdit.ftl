@@ -225,7 +225,6 @@
         //编辑器
         $('.wysihtml5').each(function () {
             var ue = UE.getEditor($(this).attr("id"), {
-              //  toolbars: [edittoolbars,'pagebreak'],
                 toolbars:[['fullscreen', 'source', '|',
                     'autotypeset','|',
                     'fontfamily', //字体

@@ -21,6 +21,7 @@ public interface StudentModelMapper {
 
     int updateByPrimaryKey(StudentModel record);
 
+
     StudentModel selectByStudentCode(@Param("code") String code);
 
     StudentModel selectByKey(@Param("account") String account, @Param("password") String password);
@@ -30,5 +31,4 @@ public interface StudentModelMapper {
     int count(Map map);
 
     StudentModel selectDetail(Integer id);
-
 }

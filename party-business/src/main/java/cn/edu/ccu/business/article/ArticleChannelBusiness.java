@@ -88,6 +88,8 @@ public class ArticleChannelBusiness implements IArticleChannel {
                 throw new BusinessException("请先删除其子类");
             }
 
+            //TODO 需要判断其下是否有文章文章 //一般channel固定
+
             return articleChannelModelMapper.deleteByPrimaryKey(id);
         }
 

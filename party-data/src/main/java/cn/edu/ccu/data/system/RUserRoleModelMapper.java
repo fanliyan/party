@@ -24,5 +24,5 @@ public interface RUserRoleModelMapper {
 
     int deleteByUserId(Integer userId);
 
-
+    List<Integer> selectUserIdByRole(Integer id);
 }

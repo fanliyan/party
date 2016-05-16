@@ -12,6 +12,8 @@ public class ExamModel {
 
     private String description;
 
+    private Byte type;
+
     private Integer time;
 
     private Date startTime;
@@ -109,6 +111,14 @@ public class ExamModel {
 
     public void setDescription(String description) {
         this.description = description == null ? null : description.trim();
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
     }
 
     public Integer getTime() {

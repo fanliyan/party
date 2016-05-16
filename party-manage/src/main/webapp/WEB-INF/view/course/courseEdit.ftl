@@ -7,9 +7,16 @@
 <@master.masterFrame pageTitle=title>
 
 <link href="${basePath}/resources/css/video/video-js.css" rel="stylesheet">
-
+<div>
+    <div class="alert-inner">
+        <div class="" style="color: red;text-align: center;">
+            注意：仅支持 MP4格式 视频文件 且 码率为 H.264
+        </div>
+    </div>
+</div>
 <div class="panel panel-default">
     <div class="panel-body">
+
         <form id="formTag" class="form-horizontal no-margin form-border">
 
             <#if course??>

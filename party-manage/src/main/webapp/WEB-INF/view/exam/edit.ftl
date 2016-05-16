@@ -99,6 +99,16 @@
                     </div><!-- /.col -->
                 </div>
                 <div class="form-group">
+                    <label class="col-md-1 control-label">考试类型</label>
+                    <div class="col-md-3">
+                        <select name="type" id="type" class="form-control chzn-select"
+                                data-placeholder="请选择类型">
+                            <option value="0" <#if (exam.type)??&&exam.type=0>selected</#if>>单次考试</option>
+                            <option value="1" <#if (exam.type)??&&exam.type=1>selected</#if>>多次考试</option>
+                        </select>
+                    </div><!-- /.col -->
+                </div>
+                <div class="form-group">
                     <label class="col-md-1 control-label">问题类型</label>
                 </div>
                 <div class="form-group">
@@ -106,7 +116,7 @@
                         <div class="col-xs-4">
                             <button type="button" class="btn btn-info addQuestion" data-type="1" >添加 单选 </button>
                             <div class="col-xs-12" id="singleChoiceBox">
-                                <#if exam.singleChoiceList??&&exam.singleChoiceList?size gt 0>
+                                <#if (exam.singleChoiceList)??&&exam.singleChoiceList?size gt 0>
                                     <#list exam.singleChoiceList as choice>
                                         <div class="input-group">
                                             <input class="form-control" title='${"分数："+choice.score}' value='${choice.name}' readonly >
@@ -120,7 +130,7 @@
                         <div class="col-xs-4">
                             <button type="button" class="btn btn-info addQuestion" data-type="2" >添加 多选 </button>
                             <div class="col-xs-12" id="multipleChoiceBox">
-                                <#if exam.multipleChoiceList??&&exam.multipleChoiceList?size gt 0>
+                                <#if (exam.multipleChoiceList)??&&exam.multipleChoiceList?size gt 0>
                                     <#list exam.multipleChoiceList as choice>
                                         <div class="input-group">
                                             <input class="form-control" title='${"分数："+choice.score}' value='${choice.name}' readonly >
@@ -134,7 +144,7 @@
                         <div class="col-xs-4">
                             <button type="button" class="btn btn-info addQuestion" data-type="3" >添加 判断 </button>
                             <div class="col-xs-12" id="tofBox">
-                                <#if exam.tofList??&&exam.tofList?size gt 0>
+                                <#if (exam.tofList)??&&exam.tofList?size gt 0>
                                     <#list exam.tofList as choice>
                                         <div class="input-group">
                                             <input class="form-control" title='${"分数："+choice.score}' value='${choice.name}' readonly >
@@ -318,6 +328,7 @@ $.submitformTag = function(){
                         },
                         success: function(data) {
                             if(data.success){
+                                $('#selectedBox1').html("");
                                 for(var i=0;i<data.list.length;i++){
 
                                     $("<option value='"+data.list[i].id+"'"+
@@ -352,15 +363,20 @@ $.submitformTag = function(){
                         break;
                 }
                 options.each(function(index,element){
-                    box.append(
-                    "<div class=\"input-group\">"
-                    +"<input class=\"form-control\" "+
-                    +"title='"+$(element).attr("data-title")+"'"
-                    +" value='"+element.text+"' readonly >"
-                    +"<input type=\"hidden\" name='"+name+"' class=\"form-control\" value='"+element.value+"' >"
-                    +"<span class=\"input-group-addon\" onclick='$(this).parent().remove();'>删除</span>"
-                    +"</div>"
-                    );
+                    //判断是否已经存在
+                    var a = box.find("input[value='"+element.value+"']");
+                    if(a.length==0){
+                        box.append(
+                                "<div class=\"input-group\">"
+                                +"<input class=\"form-control\" "+
+                                +"title='"+$(element).attr("data-title")+"'"
+                                +" value='"+element.text+"' readonly >"
+                                +"<input type=\"hidden\" name='"+name+"' class=\"form-control\" value='"+element.value+"' >"
+                                +"<span class=\"input-group-addon\" onclick='$(this).parent().remove();'>删除</span>"
+                                +"</div>"
+                        );
+                    }
+
                 });
                 $("#formModal").modal("hide");
             });

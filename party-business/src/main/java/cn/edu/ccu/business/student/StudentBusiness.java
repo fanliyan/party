@@ -7,9 +7,11 @@ import cn.edu.ccu.data.student.RStudentRoleModelMapper;
 import cn.edu.ccu.data.student.SRoleModelMapper;
 import cn.edu.ccu.ibusiness.student.IStuLog;
 import cn.edu.ccu.ibusiness.student.IStudent;
+import cn.edu.ccu.ibusiness.system.IMessage;
 import cn.edu.ccu.model.RequestHead;
 import cn.edu.ccu.model.SplitPageRequest;
 import cn.edu.ccu.model.exception.BusinessException;
+import cn.edu.ccu.model.message.MsgMessageModel;
 import cn.edu.ccu.model.student.*;
 import cn.edu.ccu.model.system.LogType;
 import cn.edu.ccu.utils.common.ErrorCodeEnum;
@@ -35,6 +37,8 @@ public class StudentBusiness implements IStudent {
 
     @Autowired
     private IStuLog iLog;
+    @Autowired
+    private IMessage iMessage;
 
 
     @Autowired
@@ -117,9 +121,25 @@ public class StudentBusiness implements IStudent {
                 errorMessage = "用户不存在！";
                 errorCode = ErrorCodeEnum.noUserError.getValue();
             } else if (model.getStatus() == -1) {
-                errorMessage = "您帐户已经被锁定，请联系管理员解锁";
+                errorMessage = "您帐户已经被锁定，请联系管理员解锁 ";
             } else if (model.getStatus() == -2) {
                 errorMessage = "帐户已经被禁用，如有疑问请联系管理员";
+            } else if (model.getStatus() == -3) {
+//                errorMessage = "注册后需要审核，审核后即可登录";
+                //发送系统通知 有新用户注册 需要审核
+                try{
+                    MsgMessageModel msgMessageModel = new MsgMessageModel();
+                    msgMessageModel.setCreateTime(new Date());
+                    msgMessageModel.setLastModifyTime(new Date());
+                    msgMessageModel.setIsRead(false);
+                    msgMessageModel.setSendUserid("0");
+                    msgMessageModel.setContent("学生 "+model.getName()+"("+model.getStudentCode()+")"+"进行了注册，请处理。");
+                    msgMessageModel.setTitle("学生注册通知");
+                    msgMessageModel.setMsgType(11);
+                    // TODO 1代表管理员
+                    iMessage.addMessageToRole(msgMessageModel,1);
+                }catch (Exception e){}
+
             } else if (!SecurityHelper.SHA1(password).equals(model.getPassword())) {
                 errorMessage = String.format("您的密码不正确！还有%s次重试机会，超过%s次帐户将被锁定", maxLoginCount - (model.getLoginFailCount() + 1), maxLoginCount);
             } else {
@@ -177,7 +197,7 @@ public class StudentBusiness implements IStudent {
 
         try {
             StudentRegisterResponse response = new StudentRegisterResponse();
-            // 必须有accountID或者有手机号 还得有昵称
+            // 必须有 account 还得有昵称 和 学号
             if (StringExtention.isNullOrEmpty(request.getUsername()))
                 throw new BusinessException(ErrorCodeEnum.registerInfoError);
             if (StringExtention.isNullOrEmpty(request.getPassword()))
@@ -187,14 +207,19 @@ public class StudentBusiness implements IStudent {
             if (StringExtention.isNullOrEmpty(request.getStudentCode()))
                 throw new BusinessException(ErrorCodeEnum.registerInfoError);
 
+            //账号唯一
+            StudentModel model = studentModelMapper.selectByKey(request.getUsername(), null);
+            if(model!=null){
+                throw new BusinessException("账号已存在");
+            }
+
             // 当做ID用户
             StudentModel studentModel = new StudentModel();
-
 
             studentModel.setAccount(request.getUsername());
             studentModel.setPassword(request.getPassword());
             studentModel.setStudentCode(request.getStudentCode());
-
+            studentModel.setName(request.getName());
 
             //学号 唯一标识
             String studentCode = request.getStudentCode();
@@ -256,7 +281,9 @@ public class StudentBusiness implements IStudent {
                 }
 
                 model.setPassword(sha1Password);
-                model.setStatus((byte) 0);
+
+                //TODO 默认锁定状态 需管理员解锁
+                model.setStatus((byte) -3);
 
                 // 设置随机默认头像
 //                    model.setAvatarPic("static/images/default_avatar/" + (new Random().nextInt(6) + 1) + ".png");
@@ -422,5 +449,20 @@ public class StudentBusiness implements IStudent {
         response.setStudentModelList(list);
         return response;
     }
+
+
+    public boolean changeStatus(Integer userId, Byte status) {
+
+        if (IntegerExtention.hasValueAndMaxZero(userId) && status != null) {
+            StudentModel model = new StudentModel();
+
+            model.setId(userId);
+            model.setStatus(status);
+
+            return studentModelMapper.updateByPrimaryKeySelective(model) > 0;
+        }
+        throw new BusinessException(ErrorCodeEnum.requestParamError);
+    }
+
 
 }

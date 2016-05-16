@@ -1,0 +1,19 @@
+/*slider*/
+.unslider li { list-style: none; }
+.unslider ul li { float: left; }
+.unslider ul li img{ width:312px; height:222px;}
+
+/*content*/
+.unslider ul li .banner-content{width: 300px;height: 243px;float: right;margin: 15px;}
+.unslider ul li .banner-content .title{color:#c53232; text-decoration:none; display:block; font-size:16px; font-weight:bold;text-align: center;width: 100%;margin-bottom:5px;}
+.unslider ul li .banner-content p{line-height:21px; color:#545454;text-indent: 2em;padding-top: 5px}
+.unslider ul li .banner-content span{ font-size:12px; float: right;}
+
+
+.unslider{ width:642px; height:222px;float:left;position: relative; overflow: hidden;}
+.unslider-arrow.prev{display: none}
+.unslider-arrow.next{display: none}
+/*几个奇怪的写法 请无视*/
+.unslider-nav{position: relative;bottom:77px;left: 285px;width:5px;height: 10px;}
+.unslider-nav ol{height: 1px;}
+

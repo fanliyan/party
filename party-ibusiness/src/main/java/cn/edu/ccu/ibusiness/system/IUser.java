@@ -110,7 +110,6 @@ public interface IUser {
     UserListResponse listBySplitPage(UserListRequest userRequest);
 
 
-
     /**
      * 发送邮件
      * @date 5:37:04 PM Aug 8, 2015
@@ -119,7 +118,7 @@ public interface IUser {
      */
 //    boolean sendMail(SendMailRequest request,RequestHead requestHead) throws Exception;
 
-//    int addUser(UserModel user)throws Exception;
+    int addUser(UserModel user)throws Exception;
 
 
 }
