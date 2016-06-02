@@ -103,34 +103,57 @@ public class ArticleChannelBusiness implements IArticleChannel {
 
         if (nestableModelList != null && nestableModelList.size() > 0) {
             //都是根节点
-            for (NestableModel nestableModel : nestableModelList) {
 
-                ArticleChannelModel articleChannelModel = new ArticleChannelModel();
-                articleChannelModel.setChannelId(nestableModel.getId());
-                articleChannelModel.setParentId(0);
+            this.updateChild(nestableModelList, 0);
 
-                articleChannelModelMapper.updateByPrimaryKeySelective(articleChannelModel);
-
-                this.updateChild(nestableModel);
-            }
+//            for (NestableModel nestableModel : nestableModelList) {
+//
+//                ArticleChannelModel articleChannelModel = new ArticleChannelModel();
+//                articleChannelModel.setChannelId(nestableModel.getId());
+//                articleChannelModel.setParentId(0);
+//
+//                articleChannelModelMapper.updateByPrimaryKeySelective(articleChannelModel);
+//
+//                this.updateChild(nestableModel);
+//            }
         }
 
         return true;
     }
 
     //修改子节点
-    void updateChild(NestableModel nestableModel) {
+//    void updateChild(NestableModel nestableModel) {
+//
+//        List<NestableModel> nestableModelList = nestableModel.getChildren();
+//
+//        if (nestableModelList != null && nestableModelList.size() > 0) {
+//            for (NestableModel child : nestableModelList) {
+//
+//                ArticleChannelModel articleChannelModel = new ArticleChannelModel();
+//                articleChannelModel.setChannelId(child.getId());
+//                articleChannelModel.setParentId(nestableModel.getId());
+//
+//                articleChannelModelMapper.updateByPrimaryKeySelective(articleChannelModel);
+//
+//                //修改子节点
+//                this.updateChild(child.getChildren(),child.getId());
+//            }
+//        }
+//    }
 
-        List<NestableModel> nestableModelList = nestableModel.getChildren();
+    //修改子节点
+    private void updateChild(List<NestableModel> nestableModelList, Integer parentId) {
 
         if (nestableModelList != null && nestableModelList.size() > 0) {
             for (NestableModel child : nestableModelList) {
 
                 ArticleChannelModel articleChannelModel = new ArticleChannelModel();
                 articleChannelModel.setChannelId(child.getId());
-                articleChannelModel.setParentId(nestableModel.getId());
+                articleChannelModel.setParentId(parentId);
 
                 articleChannelModelMapper.updateByPrimaryKeySelective(articleChannelModel);
+
+                this.updateChild(child.getChildren(), child.getId());
             }
         }
     }
@@ -138,11 +161,30 @@ public class ArticleChannelBusiness implements IArticleChannel {
 
     //根据 父节点ID 获取 TAG子节点
     public List<ArticleChannelModel> selectByFatherId(Integer fatherId) throws Exception {
+        return this.selectByFatherId(fatherId, false);
+    }
+
+    public List<ArticleChannelModel> selectByFatherId(Integer fatherId, boolean isIterator) throws Exception {
 
         if (fatherId != null && fatherId >= 0) {
-            return articleChannelModelMapper.selectByFatherId(fatherId);
-        }
+            if (isIterator) {
+                List<ArticleChannelModel> articleChannelModelList = this.selectByFatherId(fatherId);
 
+                if (articleChannelModelList != null && articleChannelModelList.size() > 0) {
+
+                    for (ArticleChannelModel articleChannelModel : articleChannelModelList) {
+
+                        List<ArticleChannelModel> childList = this.selectByFatherId(articleChannelModel.getChannelId(), true);
+                        articleChannelModel.setChildList(childList);
+                    }
+                }
+
+                return articleChannelModelList;
+
+            } else {
+                return articleChannelModelMapper.selectByFatherId(fatherId);
+            }
+        }
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 

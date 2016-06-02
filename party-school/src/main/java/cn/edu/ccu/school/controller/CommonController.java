@@ -1,8 +1,7 @@
 package cn.edu.ccu.school.controller;
 
 import cn.edu.ccu.ibusiness.common.*;
-import cn.edu.ccu.model.common.CityModel;
-import cn.edu.ccu.model.common.ProvinceModel;
+import cn.edu.ccu.model.common.*;
 import cn.edu.ccu.school.utils.AuthController;
 import cn.edu.ccu.school.utils.AuthMethod;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,6 @@ public class CommonController extends BaseController {
 
     @Autowired
     private INation iNation;
-
     @Autowired
     private IProvince iProvince;
     @Autowired
@@ -36,11 +34,16 @@ public class CommonController extends BaseController {
     @Autowired
     private IArea iArea;
 
-    @Autowired
-    private IDepartment iDepartment;
+
     @Autowired
     private IBranch iBranch;
 
+    @Autowired
+    private IXi iXi;
+    @Autowired
+    private IClass iClass;
+
+    //--------------------------------民族-start
 
     @AuthMethod(mustLogin = false)
     @RequestMapping(value = "/nationlist", method = RequestMethod.GET)
@@ -50,13 +53,17 @@ public class CommonController extends BaseController {
             throws Exception {
         Map<String, Object> map = new HashMap<>();
 
-        map.put("citylist",  iNation.selectNationList());
+        map.put("citylist", iNation.selectNationList());
 
-        map.put("success",true);
+        map.put("success", true);
 
         return map;
     }
 
+    //--------------------------------民族-end
+
+
+    //--------------------------------省市县-start
     @AuthMethod(mustLogin = false)
     @RequestMapping(value = "/citylistbyprovince", method = RequestMethod.GET)
     public
@@ -67,7 +74,7 @@ public class CommonController extends BaseController {
 
         map.put("citylist", iCity.selectCityListByProvinceCode(code));
 
-        map.put("success",true);
+        map.put("success", true);
         return map;
     }
 
@@ -79,9 +86,9 @@ public class CommonController extends BaseController {
             throws Exception {
         Map<String, Object> map = new HashMap<>();
 
-        map.put("arealist",  iArea.selectAreaListByCityCode(code));
+        map.put("arealist", iArea.selectAreaListByCityCode(code));
 
-        map.put("success",true);
+        map.put("success", true);
 
         return map;
     }
@@ -95,16 +102,18 @@ public class CommonController extends BaseController {
 
         Map<String, Object> map = new HashMap<>();
 
-        CityModel cityModel = iCity.getCityByCode(code);
+        AreaModel areaModel = iArea.getAreaByCode(code);
+
+        CityModel cityModel = iCity.getCityByCode(areaModel.getCitycode());
         ProvinceModel provinceModel = iProvince.getProvinceByCode(cityModel.getProvincecode());
 
         map.put("city", cityModel);
         map.put("province", provinceModel);
 
-        map.put("citylist",iCity.selectCityList());
-        map.put("arealist",iArea.selectAreaList());
+        map.put("citylist", iCity.selectCityListByProvinceCode(provinceModel.getCode()));
+        map.put("arealist", iArea.selectAreaListByCityCode(cityModel.getCode()));
 
-        map.put("success",true);
+        map.put("success", true);
         return map;
     }
 
@@ -121,10 +130,10 @@ public class CommonController extends BaseController {
 
         map.put("province", provinceModel);
 
-        map.put("citylist",iCity.selectCityList());
-        map.put("arealist",iArea.selectAreaList());
+        map.put("citylist", iCity.selectCityList());
+        map.put("arealist", iArea.selectAreaList());
 
-        map.put("success",true);
+        map.put("success", true);
         return map;
     }
 
@@ -139,46 +148,163 @@ public class CommonController extends BaseController {
 
         List<CityModel> cityModelList = iCity.selectCityListByProvinceCode(code);
 
-        map.put("citylist",cityModelList);
-        map.put("arealist",iArea.selectAreaList());
+        map.put("citylist", cityModelList);
+        map.put("arealist", iArea.selectAreaList());
 
-        map.put("success",true);
+        map.put("success", true);
         return map;
     }
+    //--------------------------------省市县-end
 
 
-
-
+    //--------------------------------院系班-start
 
     @AuthMethod(mustLogin = false)
-    @RequestMapping(value = "/getdepartment", method = RequestMethod.GET)
+    @RequestMapping(value = "/getxiandclass", method = RequestMethod.GET)
     public
     @ResponseBody
-    Map<String, Object> departmentList(@RequestParam("id") Integer id,HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    Map<String, Object> getxiandclass(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
             throws Exception {
         Map<String, Object> map = new HashMap<>();
 
-        map.put("department",  iDepartment.getById(id));
 
-        map.put("success",true);
+        ClassModel classModel = iClass.getById(id);
+        XiModel xiModel = iXi.getById(classModel.getXiId());
+
+        List<XiModel> xiList = iXi.getByDepartmentId(xiModel.getDepartmentId());
+        List<ClassModel> classList = iClass.getByXiId(xiModel.getId());
+
+
+        map.put("xi", xiModel);
+        map.put("xilist", xiList);
+        map.put("classlist", classList);
+
+        map.put("success", true);
 
         return map;
     }
 
+
+    @AuthMethod(mustLogin = false)
+    @RequestMapping(value = "/getclassbyxi", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> getclassbyxi(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        XiModel xiModel = iXi.getById(id);
+
+        List<XiModel> xiList = iXi.getByDepartmentId(xiModel.getDepartmentId());
+        List<ClassModel> classList = iClass.getByXiId(xiModel.getId());
+
+        map.put("xi", xiModel);
+        map.put("xilist", xiList);
+        map.put("classlist", classList);
+        map.put("success", true);
+
+        return map;
+    }
+
+    @AuthMethod(mustLogin = false)
+    @RequestMapping(value = "/getclassbydepartment", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> getclassbydepartment(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("xilist", iXi.getByDepartmentId(id));
+
+        map.put("success", true);
+
+        return map;
+    }
+
+    @AuthMethod(mustLogin = false)
+    @RequestMapping(value = "/xilistbydepartment", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> xilistbydepartment(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("xilist", iXi.getByDepartmentId(id));
+
+        map.put("success", true);
+
+        return map;
+    }
+
+    @AuthMethod(mustLogin = false)
+    @RequestMapping(value = "/classlistbyxi", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> classlistbyxi(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("classlist", iClass.getByXiId(id));
+
+        map.put("success", true);
+
+        return map;
+    }
+
+    //--------------------------------院系班-end
+
+
+    //--------------------------------院-党支部级联-start
+
+    @AuthMethod(mustLogin = false)
+    @RequestMapping(value = "/getbranch", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> getbranch(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        BranchModel branchModel = iBranch.getById(id);
+
+        map.put("branch", branchModel);
+        map.put("branchlist", iBranch.getByDepartmentId(branchModel.getDepartmentId()));
+
+        map.put("success", true);
+
+        return map;
+    }
+
+    @AuthMethod(mustLogin = false)
+    @RequestMapping(value = "/getbranchbydepartment", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    Map<String, Object> getbranchbydepartment(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws Exception {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("branchlist", iBranch.getByDepartmentId(id));
+
+        map.put("success", true);
+
+        return map;
+    }
 
     @AuthMethod(mustLogin = false)
     @RequestMapping(value = "/branchlistbydepartment", method = RequestMethod.GET)
     public
     @ResponseBody
-    Map<String, Object> branchlistbydepartment(@RequestParam("id") Integer id,HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+    Map<String, Object> branchlistbydepartment(@RequestParam("id") Integer id, HttpServletRequest httpRequest, HttpServletResponse httpResponse)
             throws Exception {
         Map<String, Object> map = new HashMap<>();
 
-        map.put("department",  iBranch.get(id));
+        map.put("branchlist", iBranch.getByDepartmentId(id));
 
-        map.put("success",true);
+        map.put("success", true);
 
         return map;
     }
 
+    //--------------------------------院-党支部级联-end
+
 }
+

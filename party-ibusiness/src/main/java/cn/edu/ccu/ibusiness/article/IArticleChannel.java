@@ -39,5 +39,6 @@ public interface IArticleChannel {
     //根据 父节点ID 获取 TAG子节点
     List<ArticleChannelModel> selectByFatherId(Integer fatherId) throws Exception;
 
+    List<ArticleChannelModel> selectByFatherId(Integer fatherId,boolean isIterator) throws Exception;
 
 }

@@ -35,12 +35,14 @@ public class CourseController extends BaseController {
 
     @AuthMethod
     @RequestMapping(value = "mycourselist", method = RequestMethod.GET)
-    public ModelAndView mycourselist(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    public ModelAndView mycourselist(HttpServletRequest httpRequest, HttpServletResponse httpResponse,SplitPageRequest splitPageRequest) {
 
         ModelAndView mav = super.getModelAndView("course/myCourseList", httpRequest);
 
         StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
-        CourseListResponse response = iCourse.myCourseList(studentModel.getId());
+
+        splitPageRequest.setReturnCount(true);
+        CourseListResponse response = iCourse.myCourseList(studentModel.getId(),splitPageRequest);
 
         mav.addObject("response", response);
         return mav;
@@ -54,7 +56,7 @@ public class CourseController extends BaseController {
         ModelAndView mav = super.getModelAndView("course/chooseCourseList", httpRequest);
 
         StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
-        CourseListResponse myCourseList = iCourse.myCourseList(studentModel.getId());
+        CourseListResponse myCourseList = iCourse.myCourseList(studentModel.getId(),null);
 
         //所有课程
         CourseListRequest courseListRequest = new CourseListRequest();

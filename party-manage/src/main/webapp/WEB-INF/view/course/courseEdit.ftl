@@ -39,6 +39,7 @@
                         <div class="col-md-10">
                     <textarea class="form-control parsley-validated"
                               placeholder="输入描述"
+                              data-parsley-maxlength="300"
                               name="description">${(course.description)!}</textarea>
                         </div>
                     </div>
@@ -72,6 +73,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-md-2 control-label">教师描述</label>
+                        <div class="col-md-10">
+                            <textarea  class="form-control parsley-validated"
+                                       placeholder="请输入教师描述"
+                                       name="teacherDescription"
+                                       data-parsley-maxlength="300"
+                            >${(course.teacherDescription)!}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-md-2 control-label">分数</label>
                         <div class="col-md-10">
                             <input  class="form-control parsley-validated"
@@ -94,7 +105,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="col-md-12">
-                        <label class="col-md-2 control-label">课件列表</label>
+                        <label class="col-md-4 control-label">课件列表</label>
                         <input name="bannerImg" id="addware" class="form-control insertFile" placeholder="点击上传课件"
                                maxfile="5" acceptedFile=".mp4"/>
                         <#--<button class="btn btn-info" id="addware" type="button">添加课件</button>-->

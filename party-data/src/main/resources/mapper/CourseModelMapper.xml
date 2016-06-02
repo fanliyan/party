@@ -6,6 +6,7 @@
     <result column="course_name" property="courseName" jdbcType="VARCHAR" />
     <result column="description" property="description" jdbcType="VARCHAR" />
     <result column="teacher" property="teacher" jdbcType="VARCHAR" />
+    <result column="teacher_description" property="teacherDescription" jdbcType="VARCHAR" />
     <result column="score" property="score" jdbcType="DOUBLE" />
     <result column="time" property="time" jdbcType="VARCHAR" />
     <result column="course_type" property="courseType" jdbcType="INTEGER" />
@@ -19,11 +20,11 @@
         </association>
     </resultMap>
   <sql id="Base_Column_List" >
-    course_id, course_name, description, teacher, score, time, course_type, create_time, 
+    course_id, course_name, description, teacher, teacher_description, score, time, course_type, create_time,
     last_modify_time
   </sql>
     <sql id="Base_Column_List_with_type" >
-        course_id, course_name, description, teacher, score, time, course_type, c.create_time,
+        course_id, course_name, description, teacher, teacher_description, score, time, course_type, c.create_time,
         c.last_modify_time,t.id type_id, t.name type_name
     </sql>
 
@@ -81,11 +82,11 @@
   </delete>
   <insert id="insert" parameterType="cn.edu.ccu.model.course.CourseModel" >
     insert into course (course_id, course_name, description, 
-      teacher, score, time, 
+      teacher, teacher_description, score, time,
       course_type, create_time, last_modify_time
       )
     values (#{courseId,jdbcType=INTEGER}, #{courseName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{teacher,jdbcType=VARCHAR}, #{score,jdbcType=DOUBLE}, #{time,jdbcType=VARCHAR},
+      #{teacher,jdbcType=VARCHAR}, #{teacherDescription}, #{score,jdbcType=DOUBLE}, #{time,jdbcType=VARCHAR},
       #{courseType,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastModifyTime,jdbcType=TIMESTAMP}
       )
   </insert>
@@ -103,6 +104,9 @@
       </if>
       <if test="teacher != null" >
         teacher,
+      </if>
+      <if test="teacherDescription != null">
+          teacher_description,
       </if>
       <if test="score != null" >
         score,
@@ -133,6 +137,9 @@
       <if test="teacher != null" >
         #{teacher,jdbcType=VARCHAR},
       </if>
+      <if test="teacherDescription != null">
+          #{teacherDescription},
+      </if>
       <if test="score != null" >
         #{score,jdbcType=DOUBLE},
       </if>
@@ -162,6 +169,9 @@
       <if test="teacher != null" >
         teacher = #{teacher,jdbcType=VARCHAR},
       </if>
+      <if test="teacherDescription != null">
+          teacher_description = #{teacherDescription},
+      </if>
       <if test="score != null" >
         score = #{score,jdbcType=DOUBLE},
       </if>
@@ -185,6 +195,7 @@
     set course_name = #{courseName,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       teacher = #{teacher,jdbcType=VARCHAR},
+      teacher_description = #{teacherDescription},
       score = #{score,jdbcType=DOUBLE},
       time = #{time,jdbcType=VARCHAR},
       course_type = #{courseType,jdbcType=INTEGER},

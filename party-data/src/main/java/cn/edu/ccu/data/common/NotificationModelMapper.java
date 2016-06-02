@@ -2,6 +2,8 @@ package cn.edu.ccu.data.common;
 
 import cn.edu.ccu.data.PartyDB;
 import cn.edu.ccu.model.common.NotificationModel;
+import cn.edu.ccu.model.common.NotificationModelWithBLOBs;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -9,20 +11,20 @@ import java.util.List;
 public interface NotificationModelMapper {
     int deleteByPrimaryKey(Integer id);
 
-    int insert(NotificationModel record);
+    int insert(NotificationModelWithBLOBs record);
 
-    int insertSelective(NotificationModel record);
+    int insertSelective(NotificationModelWithBLOBs record);
 
-    NotificationModel selectByPrimaryKey(Integer id);
+    NotificationModelWithBLOBs selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(NotificationModel record);
+    int updateByPrimaryKeySelective(NotificationModelWithBLOBs record);
 
-    int updateByPrimaryKeyWithBLOBs(NotificationModel record);
+    int updateByPrimaryKeyWithBLOBs(NotificationModelWithBLOBs record);
 
     int updateByPrimaryKey(NotificationModel record);
 
-    NotificationModel getByRoleId(Integer roleId);
 
-    List<NotificationModel> select();
+    NotificationModelWithBLOBs getByRoleAndDepartment(@Param("roleId")Integer roleId,@Param("departmentId") Integer departmentId);
 
+    List<NotificationModelWithBLOBs> select(Integer id);
 }

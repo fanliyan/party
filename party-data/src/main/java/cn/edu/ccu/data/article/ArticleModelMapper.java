@@ -81,4 +81,13 @@ public interface ArticleModelMapper {
     int selectTitleByIndex(@Param("title") String title, @Param("notIncludeId") Integer includeThis);
 
 
+    List<ArticleModel> selectArticleByIds(@Param("list") List<Integer> list, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize);
+
+    int selectArticleByIdsCount(List<Integer> list);
+
+
+
+    List<ArticleModel> selectArticleByLike(@Param("name") String name, @Param("pageNo") Integer pageNo, @Param("pageSize") Integer pageSize);
+
+    int selectArticleByLikeCount(String name);
 }

@@ -3,6 +3,7 @@ package cn.edu.ccu.school.controller;
 import cn.edu.ccu.ibusiness.common.*;
 import cn.edu.ccu.ibusiness.student.IStudent;
 import cn.edu.ccu.model.RequestHead;
+import cn.edu.ccu.model.common.BranchModel;
 import cn.edu.ccu.model.common.NotificationModel;
 import cn.edu.ccu.model.exception.BusinessException;
 import cn.edu.ccu.business.UtilsBusiness;
@@ -23,7 +24,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/main")
@@ -40,9 +44,11 @@ public class MainController extends BaseController {
     @Autowired
     private IProvince iProvince;
     @Autowired
-    private ICity iCity;
+    private IDepartment iDepartment;
     @Autowired
-    private IArea iArea;
+    private IBranch iBranch;
+
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     @RequestMapping("/login")
     @AuthMethod(mustLogin = false)
@@ -89,12 +95,9 @@ public class MainController extends BaseController {
 
         if (studentModel == null) {
 
-
             mav.addObject("nationlist", iNation.selectNationList());
             mav.addObject("provincelist", iProvince.selectProvinceList());
-            mav.addObject("citylist", iCity.selectCityList());
-            mav.addObject("arealist", iArea.selectAreaList());
-
+            mav.addObject("departmentlist", iDepartment.select());
 
             mav.setViewName("main/register");
         } else {
@@ -109,7 +112,8 @@ public class MainController extends BaseController {
     public
     @ResponseBody
     Map<String, Object>
-    registerDo(HttpServletRequest httpRequest, HttpServletResponse httpResponse, StudentModel user) throws Exception {
+    registerDo(HttpServletRequest httpRequest, HttpServletResponse httpResponse, StudentModel user,String birthdayString,
+               Integer branchId1) throws Exception {
 
         Map<String, Object> map = new HashMap<>();
         map.put("success", false);
@@ -118,13 +122,37 @@ public class MainController extends BaseController {
             httpResponse.sendRedirect(httpRequest.getContextPath() + "main/register");
         } else {
 
+            if(!StringExtention.isTrimNullOrEmpty(birthdayString))
+                user.setBirthday(sdf.parse(birthdayString));
+
+
             StudentRegisterRequest studentRegisterRequest = new StudentRegisterRequest();
             studentRegisterRequest.setUsername(user.getAccount());
             studentRegisterRequest.setPassword(user.getPassword());
             studentRegisterRequest.setName(user.getName());
             studentRegisterRequest.setStudentCode(user.getStudentCode());
 
-            StudentRegisterResponse studentRegisterResponse = iStudent.register(studentRegisterRequest, super.getRequestHead(httpRequest));
+
+            studentRegisterRequest.setIdCard(user.getIdCard());
+            studentRegisterRequest.setBirthday(user.getBirthday());
+            studentRegisterRequest.setNationId(user.getNationId());
+            studentRegisterRequest.setAreaCode(user.getAreaCode());
+            studentRegisterRequest.setBranchId(user.getBranchId());
+            studentRegisterRequest.setGender(user.getGender());
+            studentRegisterRequest.setPhone(user.getPhone());
+
+
+            StudentRegisterResponse studentRegisterResponse;
+            //教师 注册
+            if(user.getType()!=null&&user.getType()==1){
+                studentRegisterRequest.setBranchId(branchId1);
+                studentRegisterRequest.setType((byte)1);
+
+                studentRegisterResponse = iStudent.registerTeacher(studentRegisterRequest, super.getRequestHead(httpRequest));
+            }else{
+                studentRegisterResponse = iStudent.register(studentRegisterRequest, super.getRequestHead(httpRequest));
+            }
+
 
             if (studentRegisterResponse.getRegisterResult() > 0) {
                 map.put("success", true);
@@ -181,37 +209,39 @@ public class MainController extends BaseController {
 
         StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
 
-        NotificationModel notificationModel = iSchoolNotification.getByRoleId(studentModel.getsRoleModel().getRoleId());
+       BranchModel branchModel = iBranch.getById(studentModel.getBranchId());
 
-        mav.addObject("notify", notificationModel.getContent());
+        NotificationModel notificationModel = iSchoolNotification.getByRoleAndDepartment(studentModel.getsRoleModel().getRoleId(),branchModel.getDepartmentId());
+
+        mav.addObject("notify", notificationModel);
         return mav;
     }
 
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
-    public ModelAndView profile(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Boolean relName, Boolean nikeName, Boolean interiorEmail) throws Exception {
+    public ModelAndView profile(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+                                Boolean relName, Boolean nikeName, Boolean interiorEmail) throws Exception {
 
         ModelAndView mav = super.getModelAndView("main/profile", httpRequest);
 
         mav.addObject("loginUser", AuthHelper.getLoginUserModel(httpRequest));
-        StringBuffer msg = new StringBuffer("");
-        if (relName != null && !relName) {
-            msg.append("请输入您的真实姓名      ");
-        }
-        if (nikeName != null && !nikeName) {
-        }
-        if (interiorEmail != null && !interiorEmail) {
-            msg.append("请绑定您的公司内部邮箱");
-        }
-        if (msg.length() > 0) {
-            mav.addObject("msg", msg.toString());
-        }
+//        StringBuffer msg = new StringBuffer("");
+//        if (relName != null && !relName) {
+//            msg.append("请输入您的真实姓名      ");
+//        }
+//        if (nikeName != null && !nikeName) {
+//        }
+//        if (interiorEmail != null && !interiorEmail) {
+//            msg.append("请绑定您的公司内部邮箱");
+//        }
+//        if (msg.length() > 0) {
+//            mav.addObject("msg", msg.toString());
+//        }
 
 
         mav.addObject("nationlist", iNation.selectNationList());
         mav.addObject("provincelist", iProvince.selectProvinceList());
-        mav.addObject("citylist", iCity.selectCityList());
-        mav.addObject("arealist", iArea.selectAreaList());
+        mav.addObject("departmentlist", iDepartment.select());
 
 
         return mav;
@@ -418,25 +448,30 @@ public class MainController extends BaseController {
     @RequestMapping(value = "/updateprofile", method = RequestMethod.POST)
     public
     @ResponseBody
-    Map<String, Object> updateprofile(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception {
+    Map<String, Object> updateprofile(HttpServletRequest httpRequest, HttpServletResponse httpResponse,StudentModel studentModel) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
 
 //        YmbUserModel userModel = AuthHelper.getLoginUserModel(httpRequest);
-//        Pattern pattern = Pattern.compile("[\u4E00-\u9FA5]{2,5}");
-//        Matcher matcher = pattern.matcher(RequestParamHelper.getString(httpRequest, "userName"));
-//        if (matcher.matches()) {
+        if(StringExtention.isTrimNullOrEmpty(studentModel.getName())){
+            map.put("success", false);
+            map.put("message", "请输入您的真实姓名");
+        }
+
+        Pattern pattern = Pattern.compile("[\u4E00-\u9FA5]{2,10}");
+        Matcher matcher = pattern.matcher(studentModel.getName());
+        if (matcher.matches()) {
 //
 //            userModel.setNickName(RequestParamHelper.getString(httpRequest, "nickName"));
 //            userModel.setBirthday(RequestParamHelper.getDate(httpRequest, "brithDay"));
 //            userModel.setUserName(RequestParamHelper.getString(httpRequest, "userName"));
 //            userModel.setGender(RequestParamHelper.getString(httpRequest, "gender"));
-//            iUser.updateUser(userModel);
-//            AuthHelper.refreshLoginUser(userModel.getUserid(), httpRequest, httpResponse);
-//            map.put("success", true);
-//        } else {
-//            map.put("success", false);
-//            map.put("message", "请输入您的真实姓名");
-//        }
+            iStudent.updateStudent(studentModel);
+            AuthHelper.refreshLoginUser(studentModel.getId(), httpRequest, httpResponse);
+            map.put("success", true);
+        } else {
+            map.put("success", false);
+            map.put("message", "请输入您的真实姓名");
+        }
         return map;
     }
 

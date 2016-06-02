@@ -143,7 +143,7 @@ public class ScoreBusiness implements IScore {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
-    public ScoreListResponse scoreList(StudentModel studentModel, SplitPageRequest splitPageRequest) {
+    public ScoreListResponse scoreList(String examName,StudentModel studentModel, SplitPageRequest splitPageRequest) {
 
 
         ScoreListResponse response = new ScoreListResponse();
@@ -151,6 +151,8 @@ public class ScoreBusiness implements IScore {
         Map<String, Object> map = new HashMap<>();
         if (IntegerExtention.hasValueAndMaxZero(studentModel.getId()))
             map.put("userId", studentModel.getId());
+        if (!StringExtention.isTrimNullOrEmpty(studentModel.getName()))
+            map.put("studentName", studentModel.getName());
         if (!StringExtention.isTrimNullOrEmpty(studentModel.getName()))
             map.put("studentName", studentModel.getName());
 

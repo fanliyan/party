@@ -8,12 +8,15 @@ import cn.edu.ccu.data.student.SRoleModelMapper;
 import cn.edu.ccu.ibusiness.student.IStuLog;
 import cn.edu.ccu.ibusiness.student.IStudent;
 import cn.edu.ccu.ibusiness.system.IMessage;
+import cn.edu.ccu.ibusiness.system.IUser;
 import cn.edu.ccu.model.RequestHead;
 import cn.edu.ccu.model.SplitPageRequest;
 import cn.edu.ccu.model.exception.BusinessException;
 import cn.edu.ccu.model.message.MsgMessageModel;
 import cn.edu.ccu.model.student.*;
 import cn.edu.ccu.model.system.LogType;
+import cn.edu.ccu.model.user.DepartmentType;
+import cn.edu.ccu.model.user.UserModel;
 import cn.edu.ccu.utils.common.ErrorCodeEnum;
 import cn.edu.ccu.utils.common.SecurityHelper;
 import cn.edu.ccu.utils.common.constants.SRoleConstant;
@@ -39,6 +42,8 @@ public class StudentBusiness implements IStudent {
     private IStuLog iLog;
     @Autowired
     private IMessage iMessage;
+    @Autowired
+    private IUser iUser;
 
 
     @Autowired
@@ -127,18 +132,19 @@ public class StudentBusiness implements IStudent {
             } else if (model.getStatus() == -3) {
 //                errorMessage = "注册后需要审核，审核后即可登录";
                 //发送系统通知 有新用户注册 需要审核
-                try{
+                try {
                     MsgMessageModel msgMessageModel = new MsgMessageModel();
                     msgMessageModel.setCreateTime(new Date());
                     msgMessageModel.setLastModifyTime(new Date());
                     msgMessageModel.setIsRead(false);
                     msgMessageModel.setSendUserid("0");
-                    msgMessageModel.setContent("学生 "+model.getName()+"("+model.getStudentCode()+")"+"进行了注册，请处理。");
+                    msgMessageModel.setContent("学生 " + model.getName() + "(" + model.getStudentCode() + ")" + "进行了注册，请处理。");
                     msgMessageModel.setTitle("学生注册通知");
                     msgMessageModel.setMsgType(11);
                     // TODO 1代表管理员
-                    iMessage.addMessageToRole(msgMessageModel,1);
-                }catch (Exception e){}
+                    iMessage.addMessageToRole(msgMessageModel, 1);
+                } catch (Exception e) {
+                }
 
             } else if (!SecurityHelper.SHA1(password).equals(model.getPassword())) {
                 errorMessage = String.format("您的密码不正确！还有%s次重试机会，超过%s次帐户将被锁定", maxLoginCount - (model.getLoginFailCount() + 1), maxLoginCount);
@@ -207,9 +213,23 @@ public class StudentBusiness implements IStudent {
             if (StringExtention.isNullOrEmpty(request.getStudentCode()))
                 throw new BusinessException(ErrorCodeEnum.registerInfoError);
 
+            if (StringExtention.isNullOrEmpty(request.getIdCard()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (!IntegerExtention.hasValueAndMaxZero(request.getBranchId()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (!IntegerExtention.hasValueAndMaxZero(request.getNationId()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (StringExtention.isTrimNullOrEmpty(request.getAreaCode()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (request.getBirthday() == null)
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (request.getGender() == null)
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+
+
             //账号唯一
             StudentModel model = studentModelMapper.selectByKey(request.getUsername(), null);
-            if(model!=null){
+            if (model != null) {
                 throw new BusinessException("账号已存在");
             }
 
@@ -221,6 +241,15 @@ public class StudentBusiness implements IStudent {
             studentModel.setStudentCode(request.getStudentCode());
             studentModel.setName(request.getName());
 
+            studentModel.setIdCard(request.getIdCard());
+            studentModel.setBirthday(request.getBirthday());
+            studentModel.setGender(request.getGender());
+            studentModel.setPhone(request.getPhone());
+
+            studentModel.setAreaCode(request.getAreaCode());
+            studentModel.setNationId(request.getNationId());
+            studentModel.setBranchId(request.getBranchId());
+
             //学号 唯一标识
             String studentCode = request.getStudentCode();
 
@@ -229,6 +258,66 @@ public class StudentBusiness implements IStudent {
             if (isOccupied)
                 throw new BusinessException("学号已存在");
 
+
+            int executeResult = this.register(studentModel);
+
+            response.setRegisterResult(executeResult);
+
+            // 注册成功 默认取登录态
+            if (executeResult > 0) {
+
+                StudentLoginRequest loginRequest = new StudentLoginRequest();
+                loginRequest.setAccount(request.getUsername());
+                loginRequest.setPassword(request.getPassword());
+
+                StudentLoginResponse loginResponse = this.login(loginRequest, requestHead);
+                if (loginResponse.getLoginResult() > 0) {
+                    response.setStudentModel(loginResponse.getStudentModel());
+                }
+            }
+
+            return response;
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    //老师注册
+    @Transactional(value = TransactionManagerName.partyTransactionManager)
+    public StudentRegisterResponse registerTeacher(StudentRegisterRequest request, RequestHead requestHead) throws Exception {
+
+        try {
+            StudentRegisterResponse response = new StudentRegisterResponse();
+            // 必须有 account 还得有昵称 和 学号
+            if (StringExtention.isNullOrEmpty(request.getUsername()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (StringExtention.isNullOrEmpty(request.getPassword()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (StringExtention.isNullOrEmpty(request.getName()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+
+            if (!IntegerExtention.hasValueAndMaxZero(request.getBranchId()))
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+            if (request.getGender() == null)
+                throw new BusinessException(ErrorCodeEnum.registerInfoError);
+
+
+            //账号唯一
+            StudentModel model = studentModelMapper.selectByKey(request.getUsername(), null);
+            if (model != null) {
+                throw new BusinessException("账号已存在");
+            }
+
+            // 当做ID用户
+            StudentModel studentModel = new StudentModel();
+
+            studentModel.setAccount(request.getUsername());
+            studentModel.setPassword(request.getPassword());
+            studentModel.setName(request.getName());
+
+            studentModel.setGender(request.getGender());
+
+            studentModel.setBranchId(request.getBranchId());
 
             int executeResult = this.register(studentModel);
 
@@ -266,8 +355,6 @@ public class StudentBusiness implements IStudent {
             } else if (StringExtention.isNullOrEmpty(model.getPassword())) {
                 throw new BusinessException(ErrorCodeEnum.registerInfoError);
             } else if (StringExtention.isNullOrEmpty(model.getName())) {
-                throw new BusinessException(ErrorCodeEnum.registerInfoError);
-            } else if (StringExtention.isNullOrEmpty(model.getStudentCode())) {
                 throw new BusinessException(ErrorCodeEnum.registerInfoError);
             } else {
 
@@ -352,6 +439,8 @@ public class StudentBusiness implements IStudent {
 
             studentModel = studentModelMapper.selectDetail(id);
 
+            this.getStudentRole(studentModel);
+
             return studentModel;
         }
 
@@ -412,41 +501,150 @@ public class StudentBusiness implements IStudent {
 
         Map<String, Object> map = new HashMap<>();
         StudentModel studentModel = studentListRequest.getStudentModel();
-        if (!StringExtention.isTrimNullOrEmpty(studentModel.getName())) {
-            map.put("name", studentModel.getName());
+
+        if (studentModel != null) {
+            if (!StringExtention.isTrimNullOrEmpty(studentModel.getName())) {
+                map.put("name", studentModel.getName());
+            }
+            if (IntegerExtention.hasValueAndMaxZero(studentModel.getId())) {
+                map.put("userId", studentModel.getId());
+            }
+            if (!StringExtention.isTrimNullOrEmpty(studentModel.getStudentCode())) {
+                map.put("studentCode", studentModel.getStudentCode());
+            }
+            if (studentModel.getType() != null) {
+                map.put("type", studentModel.getType());
+            }
+
+            if (studentModel.getsRoleModel() != null
+                    && IntegerExtention.hasValueAndMaxZero(studentModel.getsRoleModel().getRoleId())) {
+                map.put("roleId", studentModel.getsRoleModel().getRoleId());
+            }
+
+            if (!StringExtention.isTrimNullOrEmpty(studentModel.getAreaCode())) {
+                map.put("areaCode", studentModel.getAreaCode());
+            }
+            if (!StringExtention.isTrimNullOrEmpty(studentListRequest.getCityCode())) {
+                map.put("cityCode", studentListRequest.getCityCode());
+            }
+            if (!StringExtention.isTrimNullOrEmpty(studentListRequest.getProvinceCode())) {
+                map.put("provinceCode", studentListRequest.getProvinceCode());
+            }
+
+            if (IntegerExtention.hasValueAndMaxZero(studentModel.getNationId())) {
+                map.put("nationId", studentModel.getNationId());
+            }
+            if (IntegerExtention.hasValueAndMaxZero(studentModel.getBranchId())) {
+                map.put("branchId", studentModel.getBranchId());
+            }
+            if (IntegerExtention.hasValueAndMaxZero(studentListRequest.getDepartmentId())) {
+                map.put("departmentId", studentListRequest.getDepartmentId());
+            }
+
+            if (studentModel.getStatus() != null) {
+                map.put("status", studentModel.getStatus());
+            }
         }
-        if (IntegerExtention.hasValueAndMaxZero(studentModel.getId())) {
-            map.put("userId", studentModel.getId());
-        }
-        if (!StringExtention.isTrimNullOrEmpty(studentModel.getStudentCode())) {
-            map.put("studentCode", studentModel.getStudentCode());
-        }
-        if (studentModel.getsRoleModel() != null
-                && IntegerExtention.hasValueAndMaxZero(studentModel.getsRoleModel().getRoleId())) {
-            map.put("roleId", studentModel.getsRoleModel().getRoleId());
-        }
-        if (studentModel.getAreaModel() != null
-                && StringExtention.isTrimNullOrEmpty(studentModel.getAreaModel().getCode())) {
-            map.put("areaCode", studentModel.getAreaModel().getCode());
-        }
-        if (studentModel.getCityModel() != null
-                && StringExtention.isTrimNullOrEmpty(studentModel.getCityModel().getCode())) {
-            map.put("cityCode", studentModel.getCityModel().getCode());
-        }
-        if (studentModel.getProvinceModel() != null
-                && StringExtention.isTrimNullOrEmpty(studentModel.getProvinceModel().getCode())) {
-            map.put("provinceCode", studentModel.getProvinceModel().getCode());
-        }
+
 
         SplitPageRequest pageRequest = studentListRequest.getSplitPageRequest();
-        UtilsBusiness.pubMapforSplitPage(pageRequest, map);
-
-        int totalSize = studentModelMapper.count(map);
-        List<StudentModel> list = studentModelMapper.select(map);
 
         StudentListResponse response = new StudentListResponse();
-        response.setSplitPageResponse(UtilsBusiness.getSplitPageResponse(totalSize, pageRequest.getPageSize(), pageRequest.getPageNo()));
+
+        if (pageRequest != null && pageRequest.isReturnCount()) {
+            UtilsBusiness.pubMapforSplitPage(pageRequest, map);
+            int totalSize = studentModelMapper.count(map);
+            response.setSplitPageResponse(UtilsBusiness.getSplitPageResponse(totalSize, pageRequest.getPageSize(), pageRequest.getPageNo()));
+        }
+
+        List<StudentModel> list = studentModelMapper.select(map);
+
         response.setStudentModelList(list);
+
+        return response;
+    }
+
+    public StudentListResponse listByPage(StudentListRequest studentListRequest, Integer id) {
+
+        Map<String, Object> map = new HashMap<>();
+        StudentModel studentModel = studentListRequest.getStudentModel();
+
+        if (studentModel != null) {
+            if (!StringExtention.isTrimNullOrEmpty(studentModel.getName())) {
+                map.put("name", studentModel.getName());
+            }
+            if (IntegerExtention.hasValueAndMaxZero(studentModel.getId())) {
+                map.put("userId", studentModel.getId());
+            }
+            if (!StringExtention.isTrimNullOrEmpty(studentModel.getStudentCode())) {
+                map.put("studentCode", studentModel.getStudentCode());
+            }
+            if (studentModel.getType() != null) {
+                map.put("type", studentModel.getType());
+            }
+
+            if (studentModel.getsRoleModel() != null
+                    && IntegerExtention.hasValueAndMaxZero(studentModel.getsRoleModel().getRoleId())) {
+                map.put("roleId", studentModel.getsRoleModel().getRoleId());
+            }
+
+            if (!StringExtention.isTrimNullOrEmpty(studentModel.getAreaCode())) {
+                map.put("areaCode", studentModel.getAreaCode());
+            }
+            if (!StringExtention.isTrimNullOrEmpty(studentListRequest.getCityCode())) {
+                map.put("cityCode", studentListRequest.getCityCode());
+            }
+            if (!StringExtention.isTrimNullOrEmpty(studentListRequest.getProvinceCode())) {
+                map.put("provinceCode", studentListRequest.getProvinceCode());
+            }
+
+            if (IntegerExtention.hasValueAndMaxZero(studentModel.getNationId())) {
+                map.put("nationId", studentModel.getNationId());
+            }
+            if (IntegerExtention.hasValueAndMaxZero(studentModel.getBranchId())) {
+                map.put("branchId", studentModel.getBranchId());
+            }
+            if (IntegerExtention.hasValueAndMaxZero(studentListRequest.getDepartmentId())) {
+                map.put("departmentId", studentListRequest.getDepartmentId());
+            }
+
+            if (studentModel.getStatus() != null) {
+                map.put("status", studentModel.getStatus());
+            }
+        }
+
+
+        //权限限制
+        UserModel userModel = iUser.getUserDetailById(id);
+        byte type = userModel.getDepartmentType();
+        Integer branchId = userModel.getBranchId();
+        Integer departmentId = userModel.getDepartmentModel().getId();
+
+        //支部  //机关
+        if (DepartmentType.BRANCH == type || DepartmentType.OFFICE == type) {
+            map.put("branchId", branchId);
+            map.put("departmentId", departmentId);
+        }
+        //院
+        if (DepartmentType.DEPARTMENT == type) {
+            map.put("departmentId", departmentId);
+        }
+
+
+        SplitPageRequest pageRequest = studentListRequest.getSplitPageRequest();
+
+        StudentListResponse response = new StudentListResponse();
+
+        if (pageRequest != null && pageRequest.isReturnCount()) {
+            UtilsBusiness.pubMapforSplitPage(pageRequest, map);
+            int totalSize = studentModelMapper.count(map);
+            response.setSplitPageResponse(UtilsBusiness.getSplitPageResponse(totalSize, pageRequest.getPageSize(), pageRequest.getPageNo()));
+        }
+
+        List<StudentModel> list = studentModelMapper.select(map);
+
+        response.setStudentModelList(list);
+
         return response;
     }
 
@@ -460,6 +658,56 @@ public class StudentBusiness implements IStudent {
             model.setStatus(status);
 
             return studentModelMapper.updateByPrimaryKeySelective(model) > 0;
+        }
+        throw new BusinessException(ErrorCodeEnum.requestParamError);
+    }
+
+
+    public boolean updateStudent(StudentModel studentModel) {
+        if (studentModel != null && IntegerExtention.hasValueAndMaxZero(studentModel.getId())) {
+
+            StudentModel model = new StudentModel();
+            model.setId(studentModel.getId());
+
+            model.setName(studentModel.getName());
+            model.setGender(studentModel.getGender());
+            model.setBirthday(studentModel.getBirthday());
+
+            model.setIdCard(studentModel.getIdCard());
+            model.setNationId(studentModel.getNationId());
+            model.setPhone(studentModel.getPhone());
+
+            model.setAreaCode(studentModel.getAreaCode());
+
+            model.setStudentCode(studentModel.getStudentCode());
+            model.setBranchId(studentModel.getBranchId());
+
+            model.setClassId(studentModel.getClassId());
+
+            model.setType(studentModel.getType());
+
+            model.setKeyActiveMemberTime(studentModel.getKeyActiveMemberTime());
+            model.setProbationaryMemberTime(studentModel.getProbationaryMemberTime());
+            model.setCardCarryingMemberTime(studentModel.getCardCarryingMemberTime());
+
+            return studentModelMapper.updateByPrimaryKeySelective(model) > 0;
+        }
+        return false;
+    }
+
+
+    public boolean del(Integer id) {
+
+        if (IntegerExtention.hasValueAndMaxZero(id)) {
+            StudentModel studentModel = studentModelMapper.selectByPrimaryKey(id);
+
+            if (studentModel != null) {
+
+                if (studentModel.getStatus() == -3) {
+                    return studentModelMapper.deleteByPrimaryKey(id) > 0;
+                }
+            }
+            throw new BusinessException("无发删除已存在用户");
         }
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }

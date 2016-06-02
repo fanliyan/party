@@ -15,6 +15,14 @@
                            value="${(studentModel.name)!}"/>
                 </div>
             </div>
+            <div class="form-group" style="margin-right:10px;">
+                <label class="control-label">考试名</label>
+                <div>
+                    <input name="examName" type="text" class="form-control input-sm"
+                           value="${(examName)!}"/>
+                </div>
+            </div>
+            <!-- /form-group -->
 
 
             <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-search" style="font-size:16px;"></i>

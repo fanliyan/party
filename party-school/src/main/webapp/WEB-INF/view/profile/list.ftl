@@ -80,27 +80,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="formModal" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <#--<div class="modal-header">-->
-                <#--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>-->
-                <#--<h4>题目</h4>-->
-            <#--</div>-->
-            <div class="modal-body">
-                <div class="form-group">
-                    <div class="panel-body relative">
-                        <div class="form-group" id="modal-body">
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group text-right">
-                    <a href="#" data-dismiss="modal" class="btn btn-default">关闭</a>
-                </div>
-            </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div>
 
 </@master.masterFrame>
 <script>
@@ -113,79 +92,4 @@
 
         $('.nav').localScroll({duration:800});
     });
-</script>
-<script>
-    $.watch = function (id) {
-        $.ajax({
-            cache: true,
-            type: "POST",
-            url: "${basePath}/question/watch/"+id,
-            data:null,
-            async: false,
-            error: function (request) {
-                alertify.alert("错误：服务器异常！");
-            },
-            success: function (data) {
-                if (data.success) {
-                    var choiceString="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-                    var type;
-                    var rightAnswer=new Array();
-                    switch (data.question.type){
-                        case 1:
-                            type="单选题";
-                            rightAnswer.push(data.question.rightAnswerList[0]);
-                            break;
-                        case 2:
-                            type="多选题";
-                            for(i in data.question.rightAnswerList){
-                                rightAnswer.push(data.question.rightAnswerList[i]);
-                            }
-                            break;
-                        case 3:
-                            type="判断题";
-                            rightAnswer.push(data.question.rightAnswerList[0]);
-                            break;
-                    }
-                    var choice=new Array();
-                    var html="";
-                    var rightIndex=new Array();
-                    for(i in data.question.choiceModelList){
-                        //String[] rightAnswer
-                        if($.inArray(data.question.choiceModelList[i].value+"",rightAnswer)>=0){
-                            rightIndex.push(i);
-                        }
-                        html+="<span class=\"label col-xs-1\"> "+choiceString.charAt(i)+"：</span><div class=\"col-xs-11\">"+data.question.choiceModelList[i].name+"</div>";
-                    }
-                    var rightString="";
-                    for(i in rightIndex){
-                        rightString+=choiceString.charAt(rightIndex[i])+" ";
-                    }
-
-                    $("#modal-body").html(
-                            "<div class='col-xs-12'>" +
-                            "<h4><span class='label label-info'>题目：</span></h4>"+
-                            "<p>"+data.question.question+"</p>"+
-                            "</div>"+
-                            "<div class='col-xs-12'>" +
-                            "<span class='label label-info'>题型：</span>"+
-                            "<span class='label label-default'> "+type+" </span>"+
-                            "</div>"+
-                            "<div class='col-xs-12'>" +
-                            "<span class='label label-info'>选项：</span><div class='separator'></div>"+html+
-                            "</div>"+
-                            "<div class='col-xs-12'>" +
-                            "<span class='label label-info'>正确答案：</span>"+
-                            "<span class='label label-default'> "+rightString+" </span>"+
-                            "</div>"
-
-                    );
-
-
-                    $("#formModal").modal();
-                }else {
-                    alertify.alert("错误:" + data.message);
-                }
-            }
-        });
-    };
 </script>

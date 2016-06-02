@@ -1,11 +1,11 @@
-<#macro areaSelect provinceList provinceControlName="provinceId" cityControlName="cityId" areaControlName="areaId"  selectedProvinceId=0  selectedCityId=0 selectedAreaId=0>
+<#macro areaSelect provinceList provinceControlName="provinceId" cityControlName="cityId" areaControlName="areaCode"  selectedProvinceId=""  selectedCityId="" selectedAreaId="">
 <div class="col-md-4">
     <label class="control-label">省份</label>
     <select class="form-control chzn-select" name="${provinceControlName}" data-placeholder="选择省份" id="${provinceControlName}"
         data-parsley-required="true" data-parsley-required-message="省份不可为空"  data-parsley-errors-container="#countryError">
-        <option>请选择</option>
+        <option value="">请选择</option>
         <#list provinceList as model>
-            <#if selectedProvinceId gt 0 && model.id==selectedProvinceId>
+            <#if selectedProvinceId?string != "" && model.code==selectedProvinceId?string>
                 <option value="${model.code}" selected>${model.name}</option>
             <#else>
                 <option value="${model.code}">${model.name}</option>
@@ -18,7 +18,7 @@
     <label class="control-label">城市</label>
     <select class="form-control chzn-select" name="${cityControlName}" data-placeholder="选择城市" id="${cityControlName}"
             data-parsley-required="true" data-parsley-required-message="城市不可为空"  data-parsley-errors-container="#cityError">
-        <option>请选择</option>
+        <option value="">请选择</option>
     </select>
     <ul class="parsley-errors-list filled" id="cityError"><li class="parsley-required"></li></ul>
 </div>
@@ -26,12 +26,12 @@
     <label class="control-label">地区</label>
     <select class="form-control chzn-select" name="${areaControlName}" data-placeholder="选择地区" id="${areaControlName}"
         data-parsley-required="true" data-parsley-required-message="地区不可为空"  data-parsley-errors-container="#areaError">
-        <option>请选择</option>
+        <option value="">请选择</option>
     </select>
     <ul class="parsley-errors-list filled" id="areaError"><li class="parsley-required"></li></ul>
 </div>
 <script language="javascript">
-        <#if selectedAreaId != 0>
+        <#if selectedAreaId != "">
         $(function(){
             $.ajax({
                 cache: true,
@@ -44,7 +44,7 @@
                 success: function(data) {
                     if(data.success){
                         var option = [];
-                        option.push('<option></option>');
+                        option.push('<option value=\"\">请选择</option>');
                         $.each(data.citylist,function(index,item){
                             option.push('<option value="' + item.code + '">',item.name,'</option>');
                         });
@@ -53,7 +53,7 @@
                         $('#${cityControlName}').trigger('chosen:updated');
 
                         option = [];
-                        option.push('<option></option>');
+                        option.push('<option value=\"\">请选择</option>');
                         $.each(data.arealist,function(index,item){
                             option.push('<option value="' + item.code + '">',item.name,'</option>');
                         });
@@ -70,7 +70,7 @@
                 }
             });
         });
-        <#elseif selectedCityId!=0>
+        <#elseif selectedCityId!="">
         $(function(){
             $.ajax({
                 cache: true,
@@ -83,7 +83,7 @@
                 success: function(data) {
                     if(data.success){
                         var option = [];
-                        option.push('<option></option>');
+                        option.push('<option value=\"\"></option>');
                         $.each(data.citylist,function(index,item){
                             option.push('<option value="' + item.code + '">',item.name,'</option>');
                         });
@@ -92,7 +92,7 @@
                         $('#${cityControlName}').trigger('chosen:updated');
 
                         option = [];
-                        option.push('<option></option>');
+                        option.push('<option value=\"\"></option>');
                         $.each(data.arealist,function(index,item){
                             option.push('<option value="' + item.code + '">',item.name,'</option>');
                         });
@@ -107,7 +107,7 @@
                 }
             });
         });
-        <#elseif selectedProvinceId!=0>
+        <#elseif selectedProvinceId!="">
         $(function(){
             $.ajax({
                 cache: true,
@@ -120,7 +120,7 @@
                 success: function(data) {
                     if(data.success){
                         var option = [];
-                        option.push('<option></option>');
+                        option.push('<option value=\"\"></option>');
                         $.each(data.citylist,function(index,item){
                             option.push('<option value="' + item.code + '">',item.name,'</option>');
                         });
@@ -152,7 +152,7 @@
             success: function(data) {
                 if(data.success){
                     var option = [];
-                    option.push('<option></option>');
+                    option.push('<option value=\"\">请选择</option>');
                     $.each(data.citylist,function(index,item){
                         option.push('<option value="' + item.code + '">',item.name,'</option>');
                     });
@@ -182,7 +182,7 @@
             success: function(data) {
                 if(data.success){
                     var option = [];
-                    option.push('<option></option>');
+                    option.push('<option value=\"\">请选择</option>');
                     $.each(data.arealist,function(index,item){
                         option.push('<option value="' + item.code + '">',item.name,'</option>');
                     });

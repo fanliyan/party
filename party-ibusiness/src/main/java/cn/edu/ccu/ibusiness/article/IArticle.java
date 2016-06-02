@@ -26,6 +26,10 @@ public interface IArticle {
     ArticleListResponse articleList(ArticleListRequest request) throws Exception;
 
 
+    ArticleListResponse searchArticleList(String words,SplitPageRequest splitPageRequest) throws Exception;
+
+
+
     /**
      * 根据ID查询完整文章信息
      *
@@ -53,11 +57,11 @@ public interface IArticle {
 
     //添加文章
     boolean addArticle(
-            ArticleModel ArticleModel, Byte[] channels) throws Exception;
+            ArticleModel ArticleModel, byte[] channels) throws Exception;
 
     //修改文章
     boolean updateArticle(
-            ArticleModel ArticleModel, Byte[] channels, boolean update, Integer userId) throws Exception;
+            ArticleModel ArticleModel, byte[] channels, boolean update, Integer userId) throws Exception;
 
     //删除文章
     boolean delArticle(Integer id, Integer userId) throws Exception;

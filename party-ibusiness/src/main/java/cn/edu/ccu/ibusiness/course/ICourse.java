@@ -1,5 +1,6 @@
 package cn.edu.ccu.ibusiness.course;
 
+import cn.edu.ccu.model.SplitPageRequest;
 import cn.edu.ccu.model.course.CourseListRequest;
 import cn.edu.ccu.model.course.CourseListResponse;
 import cn.edu.ccu.model.course.CourseModel;
@@ -20,7 +21,7 @@ public interface ICourse {
 
     CourseListResponse listByPage(CourseListRequest courseListRequest,boolean withCourseWare);
 
-    CourseListResponse myCourseList(Integer id);
+    CourseListResponse myCourseList(Integer id, SplitPageRequest splitPageRequest);
 
     boolean addCourse(CourseModel courseModel,String[] courseWare);
 

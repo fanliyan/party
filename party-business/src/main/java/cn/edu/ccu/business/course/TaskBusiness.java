@@ -178,7 +178,7 @@ public class TaskBusiness implements ITask {
                         new Date());
 
                 //获取我的课程
-                List<CourseModel> courseModelList = iCourse.myCourseList(studentId).getCourseModelList();
+                List<CourseModel> courseModelList = iCourse.myCourseList(studentId,null).getCourseModelList();
 
                 //计算每个任务完成情况
                 if (taskModelList != null) {

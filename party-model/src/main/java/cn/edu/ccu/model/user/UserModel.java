@@ -40,6 +40,15 @@ public class UserModel {
     private Byte departmentType;
 
 
+    private Integer departmentId;
+
+    public Integer getDepartmentId() {
+        return departmentId;
+    }
+
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
+    }
 
     /**
      * 用户所包含的模块
@@ -53,6 +62,17 @@ public class UserModel {
 
 
     private BranchModel branchModel;
+
+
+    private DepartmentModel departmentModel;
+
+    public DepartmentModel getDepartmentModel() {
+        return departmentModel;
+    }
+
+    public void setDepartmentModel(DepartmentModel departmentModel) {
+        this.departmentModel = departmentModel;
+    }
 
     public BranchModel getBranchModel() {
         return branchModel;

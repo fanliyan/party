@@ -82,7 +82,7 @@
                     <div class="panel panel-default table-responsive">
                         <div class="panel-body  content-padding">
                             <div class="separator"></div>
-                        <#assign i=1><#-- 题种类计数 -->
+                        <#assign i=0><#-- 题种类计数 -->
                         <#assign j=0><#-- 题目计数 -->
                         <#assign numString=["一","二","三"]>
                         <#assign abcString="ABCDEFGHIJKLMNOPQRSTUVWXYZ">

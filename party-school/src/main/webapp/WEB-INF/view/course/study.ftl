@@ -64,13 +64,10 @@
                                                 <div class="media-heading">
                                                 ${(course.teacher)!}
                                                     <br>
-                                                    <small class="text-muted">Web Designer</small>
+                                                    <#--<small class="text-muted">Web Designer</small>-->
                                                 </div>
                                                 <div class="media-body">
-                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam eros
-                                                    nibh,
-                                                    viverra a dui a, gravida varius velit. Nunc vel tempor nisi. Aenean id
-                                                    pellentesque mi, non placerat mi.
+                                                ${(course.teacherDescription)!}
                                                 </div>
                                             </div>
                                         </div>
@@ -102,7 +99,7 @@
                                 <ul class="category">
                                     <li>
                                         <a href="javascript:;"> <i class="fa fa-chevron-right"></i>
-                                            时长：${(courseWare.time)!}
+                                            时长：${(courseWare.time/60?int)!"00"+"分"}${(courseWare.time%60?int)!"00"+"秒"}
                                         </a>
                                     </li>
                                     <li>

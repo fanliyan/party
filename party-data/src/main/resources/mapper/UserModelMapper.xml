@@ -18,12 +18,35 @@
     <result column="branch_id" property="branchId" jdbcType="INTEGER" />
     <result column="department_type" property="departmentType" jdbcType="TINYINT" />
   </resultMap>
+
+    <resultMap id="BaseResultMapWithDetail" type="cn.edu.ccu.model.user.UserModel" extends="BaseResultMap">
+        <association property="branchModel" javaType="cn.edu.ccu.model.common.BranchModel">
+            <result column="branch_id" property="id"/>
+            <result column="branch_name" property="name"/>
+        </association>
+        <association property="departmentModel" javaType="cn.edu.ccu.model.common.DepartmentModel">
+            <result column="department_id" property="id"/>
+            <result column="department_name" property="name"/>
+        </association>
+    </resultMap>
+
   <sql id="Base_Column_List" >
     user_id, account, password, name, gender, birthday, last_login_ip, last_login_time, 
     login_count, login_fail_count, status, create_time, last_modify_time, branch_id, 
     department_type
   </sql>
 
+
+    <select id="getDetailById" resultMap="BaseResultMapWithDetail" parameterType="int">
+     SELECT u.user_id, u.account, u.name, u.gender, u.birthday,
+        u.status, u.create_time, u.last_modify_time, u.branch_id, u.department_type,
+        u. last_login_ip, u.last_login_time, u.login_count, u.login_fail_count,
+        b.`name` branch_name,d.`id` department_id,d.`name` department_name
+        FROM `user` u
+        LEFT JOIN `branch` b ON b.`id`=u.`branch_id`
+        LEFT JOIN `department` d ON d.`id`=b.`department_id`
+        where u.user_id = #{id}
+    </select>
 
 
     <select id="selectByKey" resultMap="BaseResultMap">
@@ -36,16 +59,20 @@
         </if>
     </select>
 
-    <select id="selectByUserMap" parameterType="Map" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
-        from user
+    <select id="selectByUserMap" parameterType="Map" resultMap="BaseResultMapWithDetail">
+        SELECT u.user_id, u.account, u.name, u.gender, u.birthday,
+        u.status, u.create_time, u.last_modify_time, u.branch_id, u.department_type,
+        u. last_login_ip, u.last_login_time, u.login_count, u.login_fail_count,
+        b.`name` branch_name,d.`id` department_id,d.`name` department_name
+        FROM `user` u
+        LEFT JOIN `branch` b ON b.`id`=u.`branch_id`
+        LEFT JOIN `department` d ON d.`id`=b.`department_id`
         <where>
             <if test="name != null">
-                AND name = #{name}
+                AND u.name = #{name}
             </if>
             <if test="userId != null">
-                AND user_id = #{userId}
+                AND u.user_id = #{userId}
             </if>
         </where>
         <!-- split page -->

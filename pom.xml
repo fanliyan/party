@@ -14,6 +14,7 @@
         <module>party-business</module>
         <module>party-manage</module>
         <module>party-index</module>
+        <module>party-school-index</module>
     </modules>
     <dependencies>
     </dependencies>

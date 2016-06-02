@@ -80,8 +80,8 @@ public class NoteBusiness implements INote {
         if (IntegerExtention.hasValueAndMaxZero(id)) {
             StudyNoteModel studyNoteModel = studyNoteModelMapper.selectByPrimaryKey(id);
             //前台文章会转义
-            if (studyNoteModel != null)
-                studyNoteModel.setContent(StringEscapeUtils.unescapeHtml4(studyNoteModel.getContent()));
+//            if (studyNoteModel != null)
+//                studyNoteModel.setContent(StringEscapeUtils.unescapeHtml4(studyNoteModel.getContent()));
 
             return studyNoteModel;
         }
@@ -221,7 +221,8 @@ public class NoteBusiness implements INote {
                         return studyNoteModelMapper.updateByPrimaryKeySelective(studyNoteModel) > 0;
                     case NoteStatus.OWNED:
                         // 发布的可以撤回
-                        if (model.getStatus().equals(NoteStatus.PUBLISH)) {
+                        if (model.getStatus().equals(NoteStatus.PUBLISH)
+                                ||model.getStatus().equals(NoteStatus.REVIEW)) {
 
                             return studyNoteModelMapper.updateByPrimaryKeySelective(studyNoteModel) > 0;
                         } else {

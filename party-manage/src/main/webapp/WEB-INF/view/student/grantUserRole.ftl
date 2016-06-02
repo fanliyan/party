@@ -23,12 +23,11 @@
                         </div>
                     </div>
                 </div>
+                <div class="panel-footer text-center">
+                    <button type="button" class="btn btn-success" onclick="submitRole();">保存</button>
+                    <button type="button" class="btn btn-default" onclick="javascript:history.go(-1);">返回</button>
+                </div>
             </div>
-        </div>
-
-        <div class="panel-footer text-center">
-            <button type="button" class="btn btn-success" onclick="submitRole();">保存</button>
-            <button type="button" class="btn btn-default" onclick="javascript:history.go(-1);">返回</button>
         </div>
     </form>
 </div>

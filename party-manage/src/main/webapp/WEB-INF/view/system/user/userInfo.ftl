@@ -1,6 +1,6 @@
 <#import "/master/master-frame.ftl" as master />
 <@master.masterFrame pageTitle=["客户","用户管理","用户详情"]>
-<div class="padding-md col-md-6 col-md-offset-3">
+<div class="padding-md col-md-10 col-md-offset-1">
 	<div class="row">
 		<div class="panel panel-default">
 			<div class="panel-heading">基本资料</div>
@@ -32,35 +32,26 @@
                     </div><!-- /.col -->
 				</div>
 				
-				<#--<div class="row">-->
-
-					<#--<div class="col-md-12">-->
-						<#--<div class="form-group">-->
-							<#--<label class="col-md-4 control-label text-right">生日</label>-->
-							<#--<div class="col-md-8">-->
-								<#--<p class="form-control-static">${user.birthday!}</p>-->
-							<#--</div><!-- /.col &ndash;&gt;-->
-						<#--</div><!-- /form-group &ndash;&gt;-->
-					<#--</div><!-- /.col &ndash;&gt;-->
-				<#--</div>-->
-				<#--<div class="row">-->
-					<#--<div class="col-md-6">-->
-						<#--<div class="form-group">-->
-							<#--<label class="col-md-4 control-label text-right">手机</label>-->
-							<#--<div class="col-md-8">-->
-								<#--<p class="form-control-static">${user.phone!}</p>-->
-							<#--</div><!-- /.col &ndash;&gt;-->
-						<#--</div><!-- /form-group &ndash;&gt;-->
-					<#--</div><!-- /.col &ndash;&gt;-->
-					<#--<div class="col-md-6">-->
-						<#--<div class="form-group">-->
-							<#--<label class="col-md-4 control-label text-right">邮箱</label>-->
-							<#--<div class="col-md-8">-->
-								<#--<p class="form-control-static">${user.email!}</p>-->
-							<#--</div><!-- /.col &ndash;&gt;-->
-						<#--</div><!-- /form-group &ndash;&gt;-->
-					<#--</div><!-- /.col &ndash;&gt;-->
-				<#--</div>-->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="form-group">
+							<label class="col-md-4 control-label text-right">组织</label>
+							<div class="col-md-8">
+								<p class="form-control-static">
+                                    <#if user.departmentType==0>
+                                    ${(user.branchModel.name)!}-${(user.departmentModel.name)!}
+                                    <#elseif user.departmentType==1>
+                                    ${(user.departmentModel.name)!}
+                                    <#elseif user.departmentType==2>
+                                        校
+                                    <#else>
+                                        机关
+                                    </#if>
+                                </p>
+							</div><!-- /.col -->
+						</div><!-- /form-group -->
+					</div><!-- /.col -->
+				</div>
 				
 				<div class="row">
 					<div class="col-md-6">

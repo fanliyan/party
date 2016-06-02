@@ -1,7 +1,5 @@
 package cn.edu.ccu.manage.utils;
 
-import com.sun.org.apache.xpath.internal.operations.Equals;
-
 /**
  * Created by kuangye on 2016/4/12.
  */

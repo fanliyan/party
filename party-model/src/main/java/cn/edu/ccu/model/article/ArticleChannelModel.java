@@ -1,6 +1,7 @@
 package cn.edu.ccu.model.article;
 
 import java.util.Date;
+import java.util.List;
 
 public class ArticleChannelModel {
     private Integer channelId;
@@ -14,6 +15,17 @@ public class ArticleChannelModel {
     private Date createTime;
 
     private Date lastModifyTime;
+
+
+    List<ArticleChannelModel> childList;
+
+    public List<ArticleChannelModel> getChildList() {
+        return childList;
+    }
+
+    public void setChildList(List<ArticleChannelModel> childList) {
+        this.childList = childList;
+    }
 
     public Integer getChannelId() {
         return channelId;

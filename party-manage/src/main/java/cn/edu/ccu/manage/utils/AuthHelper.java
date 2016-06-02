@@ -53,7 +53,7 @@ public class AuthHelper {
                         } else {
                             RequestHead requestHead = new RequestHead();
                             requestHead.setUserIp(WebHelper.getIp(request));
-                            userModel = iUser.getUserById(Integer.parseInt(cookies[0]));
+                            userModel = iUser.getUserDetailById(Integer.parseInt(cookies[0]));
                         }
                     }
                 }

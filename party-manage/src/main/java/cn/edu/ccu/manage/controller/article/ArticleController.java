@@ -144,7 +144,7 @@ public class ArticleController extends BaseController {
     @ResponseBody
     Map<String, Object> addOrUpdateArticleCategoriesType(
             HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-            ArticleModel model, Byte[] channels) throws Exception {
+            ArticleModel model, byte[] channels) throws Exception {
 
         Map<String, Object> map = new HashMap<>();
         boolean i;

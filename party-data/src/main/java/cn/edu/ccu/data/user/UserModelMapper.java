@@ -30,6 +30,6 @@ public interface UserModelMapper {
 
     UserModel selectByKey(@Param("account") String account, @Param("password") String password);
 
-
+    UserModel getDetailById(Integer id);
 
 }

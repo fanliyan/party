@@ -3,6 +3,7 @@ package cn.edu.ccu.business.common;
 import cn.edu.ccu.data.common.NotificationModelMapper;
 import cn.edu.ccu.ibusiness.common.ISchoolNotification;
 import cn.edu.ccu.model.common.NotificationModel;
+import cn.edu.ccu.model.common.NotificationModelWithBLOBs;
 import cn.edu.ccu.model.exception.BusinessException;
 import cn.edu.ccu.utils.common.ErrorCodeEnum;
 import cn.edu.ccu.utils.common.extention.IntegerExtention;
@@ -21,27 +22,30 @@ public class SchoolNotificationBusiness implements ISchoolNotification {
     private NotificationModelMapper notificationModelMapper;
 
 
-    public List<NotificationModel> getNotification() {
+    public List<NotificationModelWithBLOBs> getNotificationByDepartment(Integer id) {
 
-        List<NotificationModel> notificationModelList = notificationModelMapper.select();
+        List<NotificationModelWithBLOBs> notificationModelList = notificationModelMapper.select(id);
 
         return notificationModelList;
     }
 
-    public NotificationModel getByRoleId(Integer roleId) {
+    public NotificationModelWithBLOBs getByRoleAndDepartment(Integer roleId, Integer departmentId) {
 
-        if (IntegerExtention.hasValueAndMaxZero(roleId)) {
-            return notificationModelMapper.getByRoleId(roleId);
+        if (IntegerExtention.hasValueAndMaxZero(roleId)
+                && IntegerExtention.hasValueAndMaxZero(departmentId)) {
+            return notificationModelMapper.getByRoleAndDepartment(roleId, departmentId);
         }
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
 
-    public boolean updateNotification(NotificationModel notificationModel) {
+    public boolean updateNotification(NotificationModelWithBLOBs notificationModel) {
 
-        if (notificationModel != null && IntegerExtention.hasValueAndMaxZero(notificationModel.getRoleId())) {
+        if (notificationModel != null
+                && IntegerExtention.hasValueAndMaxZero(notificationModel.getRoleId())
+                && IntegerExtention.hasValueAndMaxZero(notificationModel.getDepartmentId())) {
 
-            NotificationModel model = notificationModelMapper.getByRoleId(notificationModel.getRoleId());
+            NotificationModel model = notificationModelMapper.getByRoleAndDepartment(notificationModel.getRoleId(), notificationModel.getDepartmentId());
 
             if (model == null) {
                 return notificationModelMapper.insertSelective(notificationModel) > 0;

@@ -3,12 +3,14 @@ package cn.edu.ccu.manage.controller.note;
 import cn.edu.ccu.ibusiness.note.INote;
 import cn.edu.ccu.manage.controller.BaseController;
 import cn.edu.ccu.manage.utils.AuthController;
+import cn.edu.ccu.manage.utils.AuthHelper;
 import cn.edu.ccu.manage.utils.Common;
 import cn.edu.ccu.model.SplitPageRequest;
 import cn.edu.ccu.model.note.NoteListRequest;
 import cn.edu.ccu.model.note.NoteListResponse;
 import cn.edu.ccu.model.note.NoteStatus;
 import cn.edu.ccu.model.note.StudyNoteModel;
+import cn.edu.ccu.model.student.StudentModel;
 import cn.edu.ccu.utils.common.extention.IntegerExtention;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,25 +52,25 @@ public class NoteController extends BaseController {
 
         NoteListResponse response = iNote.listByPage(request);
         mav.addObject("response", response);
-        mav.addObject("studyNoteModel",studyNoteModel);
+        mav.addObject("studyNoteModel", studyNoteModel);
 
         mav.setViewName("/note/noteList");
         return mav;
     }
 
 
-    @RequestMapping(value = "/getnote/{id}",method = RequestMethod.GET)
-    public
-    @ResponseBody
-    Map<String, Object>  addArticleCategoriesType(
-            HttpServletRequest httpRequest, HttpServletResponse httpResponse,@PathVariable("id")Integer id)
-            throws Exception {
-
-        Map<String, Object> map = new HashMap<>();
-        map.put("note", iNote.getById(id));
-        map.put("success",true);
-        return map;
-    }
+//    @RequestMapping(value = "/getnote/{id}", method = RequestMethod.GET)
+//    public
+//    @ResponseBody
+//    Map<String, Object> addArticleCategoriesType(
+//            HttpServletRequest httpRequest, HttpServletResponse httpResponse, @PathVariable("id") Integer id)
+//            throws Exception {
+//
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("note", iNote.getById(id));
+//        map.put("success", true);
+//        return map;
+//    }
 
 
     @RequestMapping(value = "/changeStatus/{id}/{status}", method = RequestMethod.POST)
@@ -98,5 +100,34 @@ public class NoteController extends BaseController {
 
         return map;
     }
+
+
+    @RequestMapping(value = "/edit")
+    public ModelAndView edit(
+            HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+            Integer id) throws Exception {
+
+        ModelAndView mav = Common.getLoginModelAndView(httpRequest);
+
+        mav.addObject("note", iNote.getById(id));
+
+        mav.setViewName("/note/noteEdit");
+        return mav;
+    }
+
+    @RequestMapping(value = "/addOrUpdate", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    Map<String, Object> addOrUpdate(
+            HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+            StudyNoteModel model) throws Exception {
+
+        Map<String, Object> map = new HashMap<>();
+
+        boolean i = iNote.updateNote(model);
+        map.put("success", i);
+        return map;
+    }
+
 
 }

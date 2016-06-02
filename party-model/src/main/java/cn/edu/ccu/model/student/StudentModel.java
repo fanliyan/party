@@ -52,7 +52,25 @@ public class StudentModel {
     private Integer loginCount;
 
 
+    private Byte type;
 
+    private Integer classId;
+
+    public Integer getClassId() {
+        return classId;
+    }
+
+    public void setClassId(Integer classId) {
+        this.classId = classId;
+    }
+
+    public Byte getType() {
+        return type;
+    }
+
+    public void setType(Byte type) {
+        this.type = type;
+    }
 
     private SRoleModel sRoleModel;
 
@@ -63,6 +81,35 @@ public class StudentModel {
     private NationModel nationModel;
 
     private BranchModel branchModel;
+    private DepartmentModel departmentModel;
+
+
+    private XiModel xiModel;
+    private ClassModel classModel;
+
+    public XiModel getXiModel() {
+        return xiModel;
+    }
+
+    public void setXiModel(XiModel xiModel) {
+        this.xiModel = xiModel;
+    }
+
+    public ClassModel getClassModel() {
+        return classModel;
+    }
+
+    public void setClassModel(ClassModel classModel) {
+        this.classModel = classModel;
+    }
+
+    public DepartmentModel getDepartmentModel() {
+        return departmentModel;
+    }
+
+    public void setDepartmentModel(DepartmentModel departmentModel) {
+        this.departmentModel = departmentModel;
+    }
 
     public BranchModel getBranchModel() {
         return branchModel;

@@ -38,6 +38,7 @@ private ISensitiveWords iSensitiveWords;
         pageRequest.setReturnCount(true);
         SensitiveWordListResponse listResponse=iSensitiveWords.list(pageRequest,name);
 
+        mav.addObject("name",name);
         mav.addObject("response", listResponse);
 
         mav.setViewName("word/list");

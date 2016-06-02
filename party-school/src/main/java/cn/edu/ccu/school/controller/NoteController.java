@@ -126,7 +126,7 @@ public class NoteController extends BaseController {
     @RequestMapping(value = "/addOrUpdate", method = RequestMethod.POST)
     public
     @ResponseBody
-    Map<String, Object> addOrUpdateArticleCategoriesType(
+    Map<String, Object> addOrUpdate(
             HttpServletRequest httpRequest, HttpServletResponse httpResponse,
             StudyNoteModel model) throws Exception {
 

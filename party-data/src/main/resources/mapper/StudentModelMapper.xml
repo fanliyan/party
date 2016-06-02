@@ -25,12 +25,14 @@
     <result column="card_carrying_member_time" property="cardCarryingMemberTime" jdbcType="TIMESTAMP" />
     <result column="student_code" property="studentCode" jdbcType="VARCHAR" />
     <result column="login_count" property="loginCount" jdbcType="INTEGER" />
+    <result column="type" property="type" jdbcType="TINYINT" />
+    <result column="class_id" property="classId" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, account, password, name, gender, birthday, nation_id, status, area_code, login_fail_count, 
     last_login_ip, last_login_time, create_time, last_modify_time, id_card, branch_id, 
     phone, introducer, key_active_member_time, probationary_member_time, card_carrying_member_time, 
-    student_code, login_count
+    student_code, login_count,type,class_id
   </sql>
 
     <resultMap extends="BaseResultMap" id="baseWithRole" type="cn.edu.ccu.model.student.StudentModel">
@@ -55,6 +57,24 @@
         <association property="nationModel" javaType="cn.edu.ccu.model.common.NationModel">
             <id column="nation_id" property="id" />
             <result column="nation_name" property="nation" />
+        </association>
+
+        <association property="branchModel" javaType="cn.edu.ccu.model.common.BranchModel">
+            <id column="branch_id" property="id" />
+            <result column="branch_name" property="name" />
+        </association>
+        <association property="departmentModel" javaType="cn.edu.ccu.model.common.DepartmentModel">
+            <id column="department_id" property="id" />
+            <result column="department_name" property="name" />
+        </association>
+
+        <association property="xiModel" javaType="cn.edu.ccu.model.common.XiModel">
+            <id column="xi_id" property="id" />
+            <result column="xi_name" property="name" />
+        </association>
+        <association property="classModel" javaType="cn.edu.ccu.model.common.ClassModel">
+            <id column="class_id" property="id" />
+            <result column="class_name" property="name" />
         </association>
     </resultMap>
 
@@ -81,59 +101,99 @@
 
     <select id="selectDetail"  resultMap="baseWithRole" parameterType="java.lang.Integer">
         SELECT
-        s.id, s.account, s.name, s.gender, s.birthday, s.nation_id, s.last_login_time, s.status,s.area_code, s.student_code,
+        s.id, s.account, s.name,s.phone,s.id_card, s.gender, s.birthday, s.nation_id, s.last_login_time, s.status,s.area_code, s.student_code,
+        s.create_time,s.last_login_time,
+        s.introducer, s.key_active_member_time, s.probationary_member_time, s.card_carrying_member_time,s.type,s.class_id,
         sr.role_id,sr.name role_name,
         n.id nation_id,n.nation nation_name,
         a.code area_code_1,a.name area_name,
         c.code city_code,c.name city_name,
-        p.code province_code,p.name province_name
+        p.code province_code,p.name province_name,
+        b.`id` branch_id,b.`name` branch_name,
+        d.`id` department_id, d.`name` department_name,
+        x.id xi_id,x.name xi_name,
+        cls.id class_id,cls.name class_name
         FROM student s LEFT JOIN `r_student_role` rsr ON rsr.`student_id`=s.`id`
         LEFT JOIN `s_role` sr ON sr.`role_id`=rsr.`role_id`
         LEFT JOIN `nation` n ON n.`id`=s.`nation_id`
         LEFT JOIN `area` a ON a.`code`=s.`area_code`
         LEFT JOIN `city` c ON c.`code`=a.`citycode`
         LEFT JOIN `province` p ON p.`code`=c.`provincecode`
-        where s.id = #{id}
+        LEFT JOIN `branch` b ON b.`id`=s.`branch_id`
+        LEFT JOIN `department` d ON d.`id` = b.`department_id`
+        LEFT JOIN `class` cls ON cls.`id` = s.`class_id`
+        LEFT JOIN `xi` x ON x.`id` = cls.`xi_id`
+        WHERE s.id = #{id}
     </select>
     <select id="select" parameterType="Map" resultMap="baseWithRole">
         SELECT
-        s.id, s.account, s.name, s.gender, s.birthday, s.nation_id, s.last_login_time, s.status,s.area_code, s.student_code,
+        s.id, s.account, s.name, s.phone,s.id_card, s.gender, s.birthday, s.nation_id, s.last_login_time, s.status,s.area_code, s.student_code,
+        s.introducer, s.key_active_member_time, s.probationary_member_time, s.card_carrying_member_time,s.type,
         sr.role_id,sr.name role_name,
         n.id nation_id,n.nation nation_name,
         a.code area_code_1,a.name area_name,
         c.code city_code,c.name city_name,
-        p.code province_code,p.name province_name
+        p.code province_code,p.name province_name,
+        b.`id` branch_id,b.`name` branch_name,
+        d.`id` department_id, d.`name` department_name,
+        x.id xi_id,x.name xi_name,
+        cls.id class_id,cls.name class_name
         FROM student s LEFT JOIN `r_student_role` rsr ON rsr.`student_id`=s.`id`
         LEFT JOIN `s_role` sr ON sr.`role_id`=rsr.`role_id`
         LEFT JOIN `nation` n ON n.`id`=s.`nation_id`
         LEFT JOIN `area` a ON a.`code`=s.`area_code`
         LEFT JOIN `city` c ON c.`code`=a.`citycode`
         LEFT JOIN `province` p ON p.`code`=c.`provincecode`
+        LEFT JOIN `branch` b ON b.`id`=s.`branch_id`
+        LEFT JOIN `department` d ON d.`id` = b.`department_id`
+        LEFT JOIN `class` cls ON cls.`id` = s.`class_id`
+        LEFT JOIN `xi` x ON x.`id` = cls.`xi_id`
 
         <where>
             <if test="name != null">
-                s.name like concat("%",#{name},"%")
+              and  s.name like concat("%",#{name},"%")
             </if>
             <if test="userId != null">
-                s.id = #{userId}
+                and  s.id = #{userId}
             </if>
             <if test="studentCode != null">
-                s.student_code = #{studentCode}
+                and  s.student_code = #{studentCode}
             </if>
             <if test="roleId != null">
-                sr.`role_id` = #{roleId}
+                and  sr.`role_id` = #{roleId}
             </if>
             <if test="gender != null">
-                s.`gender` = #{gender}
+                and s.`gender` = #{gender}
             </if>
             <if test="areaCode != null">
-                a.`area_code` = #{areaCode}
+                and  a.`code` = #{areaCode}
             </if>
             <if test="cityCode != null">
-                sr.`city_code` = #{cityCode}
+                and  c.`code` = #{cityCode}
             </if>
             <if test="provinceCode != null">
-                sr.`province_code` = #{provinceCode}
+                and  p.`code` = #{provinceCode}
+            </if>
+            <if test="nationId != null">
+                and  n.`id` = #{nationId}
+            </if>
+            <if test="branchId != null">
+                and  b.`id` = #{branchId}
+            </if>
+            <if test="departmentId != null">
+                and d.`id` = #{departmentId}
+            </if>
+            <if test="type != null">
+                and s.`type` = #{type}
+            </if>
+            <if test="classId != null">
+                and cls.`id` = #{classId}
+            </if>
+            <if test="xiId != null">
+                and x.`id` = #{xiId}
+            </if>
+            <if test="status != null">
+                and s.`status` = #{status}
             </if>
         </where>
         order by student_code
@@ -144,31 +204,61 @@
     <select id="count" parameterType="Map" resultType="int">
         select
         count(1)
-        from student
+        FROM student s LEFT JOIN `r_student_role` rsr ON rsr.`student_id`=s.`id`
+        LEFT JOIN `nation` n ON n.`id`=s.`nation_id`
+        LEFT JOIN `area` a ON a.`code`=s.`area_code`
+        LEFT JOIN `city` c ON c.`code`=a.`citycode`
+        LEFT JOIN `province` p ON p.`code`=c.`provincecode`
+        LEFT JOIN `branch` b ON b.`id`=s.`branch_id`
+        LEFT JOIN `department` d ON d.`id` = b.`department_id`
+        LEFT JOIN `class` cls ON cls.`id` = s.`class_id`
+        LEFT JOIN `xi` x ON x.`id` = cls.`xi_id`
+
         <where>
             <if test="name != null">
-                name like concat("%",#{name},"%")
+                and  s.name like concat("%",#{name},"%")
             </if>
             <if test="userId != null">
-                id = #{userId}
+                and  s.id = #{userId}
             </if>
             <if test="studentCode != null">
-                student_code = #{studentCode}
+                and s.student_code = #{studentCode}
             </if>
             <if test="roleId != null">
-                sr.`role_id` = #{roleId}
+                and  rsr.`role_id` = #{roleId}
             </if>
             <if test="gender != null">
-                s.`gender` = #{gender}
+                and  s.`gender` = #{gender}
             </if>
             <if test="areaCode != null">
-                a.`area_code` = #{areaCode}
+                and a.`code` = #{areaCode}
             </if>
             <if test="cityCode != null">
-                sr.`city_code` = #{cityCode}
+                and c.`code` = #{cityCode}
             </if>
             <if test="provinceCode != null">
-                sr.`province_code` = #{provinceCode}
+                and  p.`code` = #{provinceCode}
+            </if>
+            <if test="nationId != null">
+                and  n.`id` = #{nationId}
+            </if>
+            <if test="branchId != null">
+                and  b.`id` = #{branchId}
+            </if>
+            <if test="departmentId != null">
+                and d.`id` = #{departmentId}
+            </if>
+            <if test="type != null">
+                and s.`type` = #{type}
+            </if>
+            <if test="classId != null">
+                and cls.`id` = #{classId}
+            </if>
+            <if test="xiId != null">
+                and x.`id` = #{xiId}
+            </if>
+            <if test="status != null">
+                and s.`status` = #{status}
             </if>
         </where>
     </select>
@@ -193,7 +283,7 @@
       branch_id, phone, introducer, 
       key_active_member_time, probationary_member_time, 
       card_carrying_member_time, student_code, 
-      login_count)
+      login_count,type,class_id)
     values (#{id,jdbcType=INTEGER}, #{account,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
       #{name,jdbcType=VARCHAR}, #{gender,jdbcType=BIT}, #{birthday,jdbcType=TIMESTAMP}, 
       #{nationId,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, #{areaCode,jdbcType=VARCHAR}, 
@@ -202,7 +292,7 @@
       #{branchId,jdbcType=INTEGER}, #{phone,jdbcType=VARCHAR}, #{introducer,jdbcType=VARCHAR}, 
       #{keyActiveMemberTime,jdbcType=TIMESTAMP}, #{probationaryMemberTime,jdbcType=TIMESTAMP}, 
       #{cardCarryingMemberTime,jdbcType=TIMESTAMP}, #{studentCode,jdbcType=VARCHAR}, 
-      #{loginCount,jdbcType=INTEGER})
+      #{loginCount,jdbcType=INTEGER},#{type},#{classId})
   </insert>
   <insert id="insertSelective" parameterType="cn.edu.ccu.model.student.StudentModel" useGeneratedKeys="true" keyProperty="id">
     insert into student
@@ -276,6 +366,12 @@
       <if test="loginCount != null" >
         login_count,
       </if>
+        <if test="type != null">
+           type,
+        </if>
+        <if test="classId != null">
+            class_id
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -347,6 +443,12 @@
       <if test="loginCount != null" >
         #{loginCount,jdbcType=INTEGER},
       </if>
+        <if test="type != null">
+           #{type},
+        </if>
+        <if test="classId != null">
+            #{classId}
+        </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.edu.ccu.model.student.StudentModel" >
@@ -418,6 +520,12 @@
       <if test="loginCount != null" >
         login_count = #{loginCount,jdbcType=INTEGER},
       </if>
+        <if test="type != null">
+            type = #{type},
+        </if>
+        <if test="classId != null">
+            class_id=#{classId}
+        </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -444,7 +552,9 @@
       probationary_member_time = #{probationaryMemberTime,jdbcType=TIMESTAMP},
       card_carrying_member_time = #{cardCarryingMemberTime,jdbcType=TIMESTAMP},
       student_code = #{studentCode,jdbcType=VARCHAR},
-      login_count = #{loginCount,jdbcType=INTEGER}
+      login_count = #{loginCount,jdbcType=INTEGER},
+      type=#{type},
+      class_id=#{classId}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

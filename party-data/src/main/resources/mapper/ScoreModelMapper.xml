@@ -59,6 +59,9 @@
              <if test="studentName != null">
                  and st.name like concat("%",#{studentName},"%")
              </if>
+             <if test="name != null">
+                 and e.name = #{name}
+             </if>
          </where>
         order by s.create_time  desc
      </select>
@@ -73,6 +76,9 @@
             </if>
             <if test="studentName != null">
                 and st.name like concat("%",#{studentName},"%")
+            </if>
+            <if test="name != null">
+                and e.name = #{name}
             </if>
         </where>
     </select>

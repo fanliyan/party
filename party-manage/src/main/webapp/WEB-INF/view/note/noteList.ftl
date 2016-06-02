@@ -127,8 +127,10 @@
                         </#if>
                     </td>
                     <td>
-                        <button class="btn btn-xs btn-warning" title="查 看" onclick="$.check(${note.id});">
-                            审 核</button>
+                        <a class="btn btn-xs btn-info" title="编 辑" href="${basePath}/note/edit?id=${note.id}">
+                            审 核</a>
+                        <#--<button class="btn btn-xs btn-warning" title="查 看" onclick="$.check(${note.id});">-->
+                            <#--审 核</button>-->
 
                         <style>
                             .dropdown-menu{min-width: 5em;max-width: 7em;}

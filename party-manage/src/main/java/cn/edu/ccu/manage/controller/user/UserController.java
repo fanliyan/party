@@ -1,5 +1,6 @@
 package cn.edu.ccu.manage.controller.user;
 
+import cn.edu.ccu.ibusiness.common.IDepartment;
 import cn.edu.ccu.ibusiness.system.IRole;
 import cn.edu.ccu.ibusiness.system.IUser;
 import cn.edu.ccu.ibusiness.system.IUserRole;
@@ -39,16 +40,19 @@ public class UserController extends BaseController {
 
     @Autowired
     private IUser iUser;
-
     @Autowired
     private IRole iRole;
-
     @Autowired
     private IUserRole iUserRole;
 
+
+    @Autowired
+    private IDepartment iDepartment;
+
     @AuthMethod
     @RequestMapping("/list")
-    public ModelAndView Index(HttpServletRequest httpRequest, HttpServletResponse httpResponse, UserModel user, SplitPageRequest pageRequest) throws Exception {
+    public ModelAndView Index(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+                              UserModel user, SplitPageRequest pageRequest) throws Exception {
         ModelAndView mav = Common.getLoginModelAndView(httpRequest);
 
         UserModel loginUser = (UserModel) mav.getModel().get("loginUserModel");
@@ -63,6 +67,9 @@ public class UserController extends BaseController {
         UserListResponse listResponse = iUser.listBySplitPage(listRequest);
         mav.addObject("listResponse", listResponse);
         mav.addObject("user", user);
+
+        mav.addObject("departmentlist", iDepartment.select());
+
         mav.setViewName("system/user/userList");
         return mav;
     }
@@ -71,7 +78,7 @@ public class UserController extends BaseController {
     @RequestMapping("/info")
     public ModelAndView info(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Integer userId) throws Exception {
         ModelAndView mav = Common.getLoginModelAndView(httpRequest);
-        UserModel user = iUser.getUserById(userId);
+        UserModel user = iUser.getUserDetailById(userId);
         mav.addObject("user", user);
         mav.setViewName("system/user/userInfo");
         return mav;
@@ -144,12 +151,8 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/saveUser", method = RequestMethod.POST)
     public @ResponseBody Map<String, Object> save(HttpServletRequest request, UserModel user) throws Exception {
         Map<String, Object> map = new HashMap<>();
-        int result = 0;
-//        if (IntegerExtention.hasValueAndMaxZero(user.getUserId())) {
-//            iUser.editUser(user);
-//        } else {
-            result = iUser.addUser(user);
-//        }
+
+        int result = iUser.addUser(user);
         if (result > 0) {
             map.put("success", true);
         } else {

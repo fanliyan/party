@@ -15,4 +15,9 @@ public interface IDepartment {
     DepartmentModel getById(Integer id);
 
 
+    boolean add(DepartmentModel departmentModel);
+
+    boolean edit(DepartmentModel departmentModel);
+
+    boolean delete(Integer id);
 }

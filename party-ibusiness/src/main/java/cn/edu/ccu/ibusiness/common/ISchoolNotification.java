@@ -1,6 +1,6 @@
 package cn.edu.ccu.ibusiness.common;
 
-import cn.edu.ccu.model.common.NotificationModel;
+import cn.edu.ccu.model.common.NotificationModelWithBLOBs;
 
 import java.util.List;
 
@@ -9,9 +9,9 @@ import java.util.List;
  */
 public interface ISchoolNotification {
 
-    List<NotificationModel> getNotification();
+    List<NotificationModelWithBLOBs> getNotificationByDepartment(Integer id);
 
-    NotificationModel getByRoleId(Integer roleId);
+    NotificationModelWithBLOBs getByRoleAndDepartment(Integer roleId,Integer departmentId);
 
-    boolean updateNotification(NotificationModel notificationModel);
+    boolean updateNotification(NotificationModelWithBLOBs notificationModel);
 }

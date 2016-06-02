@@ -1,6 +1,7 @@
 package cn.edu.ccu.manage.controller;
 
 import cn.edu.ccu.business.UtilsBusiness;
+import cn.edu.ccu.ibusiness.common.IDepartment;
 import cn.edu.ccu.ibusiness.student.IStudent;
 import cn.edu.ccu.ibusiness.system.IUser;
 import cn.edu.ccu.manage.utils.*;
@@ -33,6 +34,9 @@ public class MainController extends BaseController {
 
     @Autowired
     private IUser iUser;
+
+    @Autowired
+    private IDepartment iDepartment;
 
 
     @RequestMapping("/login")
@@ -177,6 +181,9 @@ public class MainController extends BaseController {
     public ModelAndView profile(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception {
         ModelAndView mav = Common.getLoginModelAndView(httpRequest);
         mav.addObject("loginUser", AuthHelper.getLoginUserModel(httpRequest));
+
+        mav.addObject("departmentlist", iDepartment.select());
+
         mav.setViewName("main/profile");
         return mav;
     }
@@ -383,13 +390,17 @@ public class MainController extends BaseController {
         Map<String, Object> map = new HashMap<>();
 
         UserModel userModel = AuthHelper.getLoginUserModel(httpRequest);
-        Pattern pattern = Pattern.compile("[\u4E00-\u9FA5]{2,5}");
+        Pattern pattern = Pattern.compile("[\u4E00-\u9FA5]{2,7}");
         Matcher matcher = pattern.matcher(RequestParamHelper.getString(httpRequest, "userName"));
         if (matcher.matches()) {
 
-            userModel.setName(RequestParamHelper.getString(httpRequest, "nickName"));
+            userModel.setName(RequestParamHelper.getString(httpRequest, "userName"));
             userModel.setBirthday((RequestParamHelper.getString(httpRequest, "birthDay")));
             userModel.setGender(RequestParamHelper.getString(httpRequest, "gender"));
+
+            userModel.setBranchId(RequestParamHelper.getInteger(httpRequest, "branchId"));
+            userModel.setDepartmentType(RequestParamHelper.getByte(httpRequest, "departmentType"));
+
             iUser.updateUser(userModel);
             AuthHelper.refreshLoginUser(userModel.getUserId(), httpRequest, httpResponse);
             map.put("success", true);

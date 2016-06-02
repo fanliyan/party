@@ -34,7 +34,7 @@
                                     <#--非自己 -->
                                     <#--<option value="${tagModel.tagId}" selected>${tagModel.tagName}</option>-->
                                     <#else>
-                                        <option value="${channelModel.channelId}">${channelModel.name}</option>
+                                        <option value="${channelModel.channelId}" <#if channel??&&channelModel.channelId==channel.parentId>selected</#if>>${channelModel.name}</option>
                                     </#if>
                                 </#list>
                             </#if>

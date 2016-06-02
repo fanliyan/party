@@ -1,7 +1,5 @@
 package cn.edu.ccu.model.common;
 
-import cn.edu.ccu.model.student.SRoleModel;
-
 import java.util.Date;
 
 public class NotificationModel {
@@ -13,18 +11,7 @@ public class NotificationModel {
 
     private Date lastModifyTime;
 
-    private String content;
-
-
-    private SRoleModel sRoleModel;
-
-    public SRoleModel getsRoleModel() {
-        return sRoleModel;
-    }
-
-    public void setsRoleModel(SRoleModel sRoleModel) {
-        this.sRoleModel = sRoleModel;
-    }
+    private Integer departmentId;
 
     public Integer getId() {
         return id;
@@ -58,11 +45,11 @@ public class NotificationModel {
         this.lastModifyTime = lastModifyTime;
     }
 
-    public String getContent() {
-        return content;
+    public Integer getDepartmentId() {
+        return departmentId;
     }
 
-    public void setContent(String content) {
-        this.content = content == null ? null : content.trim();
+    public void setDepartmentId(Integer departmentId) {
+        this.departmentId = departmentId;
     }
 }

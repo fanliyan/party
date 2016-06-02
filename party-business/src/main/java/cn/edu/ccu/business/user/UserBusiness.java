@@ -77,16 +77,9 @@ public class UserBusiness implements IUser {
 
     public UserModel getUserDetailById(int userId) {
 
-        UserModel userModel = userModelMapper.selectByPrimaryKey(userId);
-        if (userModel != null) {
-            // 所含模块
-            List<ModuleModel> moduleModelList = iModule.listByUserId(userModel.getUserId());
-            userModel.setHasModules(moduleModelList);
+        UserModel userModel = userModelMapper.getDetailById(userId);
 
-            // 所有角色
-            List<RoleModel> rolesModelList = iRole.listRolesByUserId(userModel.getUserId());
-            userModel.setHasRoles(rolesModelList);
-        }
+        this.getUserDetail(userModel);
 
         return userModel;
     }
@@ -956,18 +949,6 @@ public class UserBusiness implements IUser {
         return response;
     }
 
-    /**
-     * @param avatarPic
-     * @param userid
-     * @return
-     * @throws
-     * @Title: updateAvatarPic
-     * @Description: 更新用户头像
-     * @author yinqiang
-     */
-//    public int updateAvatarPic(String avatarPic, Integer userid) {
-//        return userModelMapper.updateAvatarPic(avatarPic, userid);
-//    }
     @Override
     public int addUser(UserModel user) throws Exception {
         if (StringExtention.isNullOrEmpty(user.getAccount()))
@@ -981,6 +962,9 @@ public class UserBusiness implements IUser {
         if (model != null) {
             throw new BusinessException("相同账号已经存在");
         }
+
+
+        user.setPassword(SecurityHelper.SHA1(user.getPassword()));
 
         return userModelMapper.insertSelective(user);
     }

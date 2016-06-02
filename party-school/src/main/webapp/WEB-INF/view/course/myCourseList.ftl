@@ -15,21 +15,21 @@
                 <span class="label label-info pull-right">${(response.courseModelList?size)!"0"} 门</span>
             </div>
             <form id="searchForm">
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-4 col-sm-4">
-                        <select class="input-sm form-control inline" style="width:130px;">
-                            <option value="0">课程名</option>
-                            <option value="1">介绍</option>
-                            <option value="2">Women</option>
-                            <option value="3">Accessary</option>
-                        </select>
-                        <a class="btn btn-default btn-sm" onclick="$('searchForm').submit()">搜索</a>
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-            </div>
+            <#--<div class="panel-body">-->
+                <#--<div class="row">-->
+                    <#--<div class="col-md-4 col-sm-4">-->
+                        <#--<select class="input-sm form-control inline" style="width:130px;">-->
+                            <#--<option value="0">课程名</option>-->
+                            <#--<option value="1">介绍</option>-->
+                            <#--<option value="2">Women</option>-->
+                            <#--<option value="3">Accessary</option>-->
+                        <#--</select>-->
+                        <#--<a class="btn btn-default btn-sm" onclick="$('searchForm').submit()">搜索</a>-->
+                    <#--</div>-->
+                    <#--<!-- /.col &ndash;&gt;-->
+                <#--</div>-->
+                <#--<!-- /.row &ndash;&gt;-->
+            <#--</div>-->
             </form>
             <table class="table table-striped" id="responsiveTable">
                 <thead>

@@ -12,6 +12,8 @@ public class CourseModel {
 
     private String teacher;
 
+    private String teacherDescription;
+
     private Double score;
 
     private String time;
@@ -87,6 +89,14 @@ public class CourseModel {
 
     public void setTeacher(String teacher) {
         this.teacher = teacher == null ? null : teacher.trim();
+    }
+
+    public String getTeacherDescription() {
+        return teacherDescription;
+    }
+
+    public void setTeacherDescription(String teacherDescription) {
+        this.teacherDescription = teacherDescription;
     }
 
     public Double getScore() {

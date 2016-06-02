@@ -17,7 +17,7 @@
     <select id="select" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
-        from article_channel ORDER by weight desc
+        from article_channel ORDER by parent_id,weight desc
     </select>
 
     <select id="count" resultType="int">

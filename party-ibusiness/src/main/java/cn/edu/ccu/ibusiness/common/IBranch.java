@@ -11,7 +11,15 @@ public interface IBranch {
 
     List<BranchModel> select();
 
-    BranchModel getByDepartmentId(Integer id);
+    List<BranchModel> getByDepartmentId(Integer id);
 
     BranchModel getById(Integer id);
+
+
+
+    boolean add(BranchModel branchModel);
+
+    boolean edit(BranchModel branchModel);
+
+    boolean delete(Integer id);
 }

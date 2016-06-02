@@ -110,7 +110,7 @@ public class CourseBusiness implements ICourse {
 
     }
 
-    public CourseListResponse myCourseList(Integer id,boolean splitPage) {
+    public CourseListResponse myCourseList(Integer id,SplitPageRequest splitPageRequest) {
 
         if (IntegerExtention.hasValueAndMaxZero(id)) {
             List<Integer> ids = rCourseStudentModelMapper.selectCourseByStudentId(id);
@@ -119,10 +119,6 @@ public class CourseBusiness implements ICourse {
                 CourseListRequest courseListRequest = new CourseListRequest();
                 courseListRequest.setIds(ids);
 
-                SplitPageRequest splitPageRequest = null;
-                if(splitPage){
-                    splitPageRequest=  new SplitPageRequest();
-                }
                 courseListRequest.setSplitPageRequest(splitPageRequest);
 
                 return this.listByPage(courseListRequest, true);
@@ -133,10 +129,6 @@ public class CourseBusiness implements ICourse {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
-    public CourseListResponse myCourseList(Integer id) {
-
-        return this.myCourseList(id,true);
-    }
 
     @Transactional(TransactionManagerName.partyTransactionManager)
     public boolean addCourse(CourseModel courseModel, String[] courseWare) {

@@ -32,9 +32,13 @@ import java.util.Map;
 @Service
 public class SensitiveWordsBusiness implements ISensitiveWords {
 
-    // Field
+    // Field 总要改？？？？ TODO
+    private static SensitiveWordsModelMapper wordsModelMapper;
+
     @Autowired
-    private SensitiveWordsModelMapper wordsModelMapper;
+    public void setWordsModelMapper(SensitiveWordsModelMapper wordsModelMapper) {
+        this.wordsModelMapper = wordsModelMapper;
+    }
 
     // endField
     private static List<String> words = new ArrayList<>();
@@ -44,13 +48,26 @@ public class SensitiveWordsBusiness implements ISensitiveWords {
         words = wordsModelMapper.getAllSensitiveWords();
     }
 
+    private static void list() {
+        int rowCount = wordsModelMapper.count(new HashMap());
+        if (rowCount != words.size()) {
+            words = wordsModelMapper.getAllSensitiveWords();
+        }
+    }
+
     /**
      * 验证内容中是否存在敏感词,如果存在则返回true,不存在返回false
      */
     public static boolean wordsIsSensitive(String content) {
+        if (StringExtention.isTrimNullOrEmpty(content))
+            return false;
+
         boolean flag = false;
         if (content == null || content.length() == 0)
             return flag;
+
+        SensitiveWordsBusiness.list();
+
         try {
             StringReader re = new StringReader(content);
             IKSegmenter ik = new IKSegmenter(re, false);

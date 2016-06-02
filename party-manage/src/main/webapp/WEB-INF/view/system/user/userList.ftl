@@ -1,5 +1,6 @@
 <#import "/master/master-frame.ftl" as master />
 <#import "/control/common/splitPage.ftl" as splitPage1 />
+<#import "/control/common/branchSelect.ftl" as branchSelect />
 
 <#include "/function.ftl"> 
 <@master.masterFrame pageTitle=["系统管理","用户管理","用户列表"]>
@@ -10,18 +11,40 @@
 		<div class="panel-heading">条件搜索</div>
 		<div class="panel-body">
 			<form id="searchForm" class="form-inline no-margin" action="${basePath}/users/list" method="post">
-				<div class="form-group" style="margin-right:10px;">
-					<label class="control-label">姓名</label>
-					<div>
-					<input name="userName" type="text" class="form-control input-sm" value="<#if user ??>${user.name! }</#if>"/>
-					</div>
-				</div><!-- /form-group -->
-				<div class="form-group" style="margin-right:10px;">
-					<label class="control-label">登录名</label>
-					<div>
-					<input name="accountId" type="text" class="form-control input-sm" value="<#if user ??>${user.account! }</#if>"/>
-					</div>
-				</div><!-- /form-group -->
+                <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="form-group" style="margin-right:10px;">
+                            <label class="control-label">姓名</label>
+                            <div>
+                            <input name="userName" type="text" class="form-control input-sm" value="${(user.name)!}"/>
+                            </div>
+                        </div><!-- /form-group -->
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group" style="margin-right:10px;">
+                            <label class="control-label">登录名</label>
+                            <div>
+                            <input name="accountId" type="text" class="form-control input-sm" value="${(user.account)!}"/>
+                            </div>
+                        </div><!-- /form-group -->
+                    </div>
+                    <div class="col-md-4">
+                        <label class="control-label">教师级别</label>
+                        <select class="form-control" name="departmentType">
+                            <option value="">请选择</option>
+                            <option value="0">系</option>
+                            <option value="1">院</option>
+                            <option value="2">校</option>
+                            <option value="3">机关</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <@branchSelect.branchSelect departmentList=departmentlist  departmentControlName="departmentId" branchControlName="branchId"
+                    selectedDepartmentId=(user.departmentId)!0  selectedBranchId=(user.branchId)!0 ></@branchSelect.branchSelect>
+                </div>
+
 				<#--<div class="form-group" style="margin-right:10px;">-->
 					<#--<label class="control-label">手机号码</label>-->
 					<#--<div>-->
@@ -34,7 +57,9 @@
 					<#--<input name="email" type="text" class="form-control input-sm" value="<#if user ??>${user.email! }</#if>"/>-->
 					<#--</div>-->
 				<#--</div><!-- /form-group &ndash;&gt;-->
-				<button type="submit" class="btn btn-sm btn-success"><i class="fa fa-search" style="font-size:16px;"></i></button>
+                <div class="col-md-12">
+                    <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-search" style="font-size:16px;"></i></button>
+                </div>
 			</form>
 		</div>
 		<table class="table table-bordered table-condensed table-hover table-striped" id="responsiveTable">
@@ -46,9 +71,11 @@
 					<#--<th>手机</th>-->
 					<#--<th>邮箱</th>-->
 					<th>性别</th>
-					<th>生日</th>
-					<th>最后登录时间</th>
-					<#--<th>用户级别</th>-->
+					<#--<th>出生年月</th>-->
+
+                    <th>院系</th>
+					<th>类型</th>
+                    <th>最后登录时间</th>
 					<th>状态</th>
 					<th>操作</th>
 				</tr>
@@ -63,10 +90,23 @@
 							<#--<td>${user.phone!}</td>-->
 							<#--<td>${user.email!}</td>-->
 							<td><#if user.gender?? && user.gender=="M">男<#else>女</#if></td>
-							<td><#if user.birthday??>${user.birthday!}</#if></td>
-							<td><#if user.lastLoginTime??>${user.lastLoginTime?string('yyyy-MM-dd HH:mm')}</#if></td>
-							<#--<td><#if user.level==30>内部用户<#elseif user.level==10>云平台用户<#else>网站用户</#if></td>-->
-							<td>
+							<#--<td><#if user.birthday??>${user.birthday!}</#if></td>-->
+                            <td>
+                                <#if user.departmentType==0>
+                                     ${(user.branchModel.name)!}-${(user.departmentModel.name)!""}
+                                <#elseif user.departmentType==1>
+                                    ${(user.deparmentModel.name)!}
+                                <#elseif user.departmentType==2>
+                                    校
+                                <#else>
+                                    机关
+                                </#if>
+                            </td>
+                            <td>
+                                <#if user.departmentType==0>系<#elseif user.departmentType==1>院<#elseif user.departmentType==2>校<#else>机关</#if>
+                            </td>
+                            <td><#if user.lastLoginTime??>${user.lastLoginTime?string('yyyy-MM-dd HH:mm')}</#if></td>
+                            <td>
 								<#if user.status==0>
 									<span class="label label-success">正常</span>
 								<#else>

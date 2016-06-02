@@ -10,15 +10,14 @@
 
         <div class="col-md-12">
             <form id="searchForm" class="form-inline no-margin" action="${basePath}/sensitiveword/list" method="post">
-                <div class="col-md-2">
+                <div class="col-md-4">
                     <div class="form-group" style="margin-right:10px;">
-                        <label class="control-label">任务名称</label>
+                        <label class="control-label">敏感词</label>
                         <input name="name" type="text" class="form-control input-sm" value="${name!}"/>
                     </div>
                 </div>
-                <div class="col-md-1">
-                    <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-search"
-                                                                            style="font-size:16px;"></i></button>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-sm btn-success"><i class="fa fa-search"></i></button>
                 </div>
             </form>
         </div>
@@ -61,23 +60,22 @@
         </#if>
     </div><!-- /.padding-md -->
 </div><!-- /panel -->
-
-
 <div  id="review-modal" class="modal fade" style="display: none;" aria-hidden="true">
-    <div class="modal-content">
-        <div class="modal-header">
-            <a class="close" data-dismiss="modal">×</a>
-            <h3 id="modal-title">添加关键词</h3>
-        </div>
-        <div class="modal-body" id="modal-content">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <a class="close" data-dismiss="modal">×</a>
+                <h3 id="modal-title">添加关键词</h3>
+            </div>
+            <div class="modal-body" id="modal-content">
                 <input class="form-control" id="addName">
-        </div>
-        <div class="modal-footer">
-            <button onclick="$.adddo()" class="btn btn-success" >添加</button>
+            </div>
+            <div class="modal-footer">
+                <button onclick="$.adddo()" class="btn btn-success" >添加</button>
+            </div>
         </div>
     </div>
 </div>
-
 <script language="javascript">
     $.del = function (id) {
         alertify.confirm("注意，一经删除，无法恢复！是否继续？", function (e) {

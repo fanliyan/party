@@ -32,7 +32,7 @@
                 <!-- /.col -->
             </div>
             <div class="form-group">
-                <label class="col-lg-1 control-label"><span style="color: red">*</span>摘要</label>
+                <label class="col-lg-1 control-label">摘要</label>
 
                 <div class="col-lg-8">
                         <textarea class="form-control parsley-validated"
@@ -40,8 +40,6 @@
                                   placeholder="输入摘要"
                                   data-parsley-maxlength="500"
                                   data-parsley-maxlength-message="摘要不能超过500字"
-                                  data-parsley-required="true"
-                                  data-parsley-required-message="摘要不可为空"
                                 ><#if article??>${article.summary!}</#if></textarea>
                 </div>
                 <!-- /.col -->

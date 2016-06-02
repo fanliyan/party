@@ -27,21 +27,23 @@ import javax.servlet.http.HttpServletResponse;
 public class ScoreController extends BaseController {
 
 
-
     @Autowired
     private IScore iScore;
 
     @AuthMethod
     @RequestMapping(value = "/list")
     public ModelAndView list(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-                             SplitPageRequest splitPageRequest,StudentModel studentModel) throws Exception{
+                             SplitPageRequest splitPageRequest, String examName, StudentModel studentModel) throws Exception {
 
         ModelAndView mav = Common.getLoginModelAndView(httpRequest);
 
         splitPageRequest.setReturnCount(true);
-        ScoreListResponse response = iScore.scoreList(studentModel, splitPageRequest);
+        ScoreListResponse response = iScore.scoreList(examName, studentModel, splitPageRequest);
 
         mav.addObject("response", response);
+
+        mav.addObject("examName",examName);
+
         mav.setViewName("score/list");
         return mav;
     }
