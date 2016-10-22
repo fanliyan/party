@@ -58,7 +58,7 @@
                     'indent', '|',
                     'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
                     'link', 'unlink', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
-                    'searchreplace']],
+                    'searchreplace', '|', 'simpleupload', 'insertimage']],
                 elementPathEnabled: false,
                 autoHeightEnabled: false,
                 initialFrameHeight: 200,
@@ -68,6 +68,7 @@
                 scaleEnabled:true,
                 enableAutoSave:false,
                 iframeCssUrl :"${basePath}/resources/css/manage-article-ueditor-a.css",
+                serverUrl: "${basePath}/main/ueditorUpload"
             });
 
         });

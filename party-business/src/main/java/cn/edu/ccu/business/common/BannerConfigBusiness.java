@@ -75,4 +75,5 @@ public class BannerConfigBusiness implements IBannerConfig {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
+
 }

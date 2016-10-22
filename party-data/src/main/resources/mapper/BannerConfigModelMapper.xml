@@ -15,7 +15,9 @@
   <sql id="Base_Column_List" >
     id, name, description, pic, url, type, weight, create_time, last_modify_time
   </sql>
-
+  <select id="selectBannerByURL" parameterType="String" resultType="map">
+       select url from banner_config where url = #{url};
+  </select>
     <select id="getByType" resultMap="BaseResultMap" parameterType="int">
         select
         <include refid="Base_Column_List" />
@@ -36,6 +38,9 @@
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from banner_config
     where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteBannerByURL" parameterType="String">
+       delete from banner_config where url = #{url}
   </delete>
   <insert id="insert" parameterType="cn.edu.ccu.model.common.BannerConfigModel" >
     insert into banner_config (id, name, description, pic,

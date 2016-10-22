@@ -22,4 +22,5 @@ public interface IBannerConfig {
 
     boolean delete(Integer id);
 
+
 }
