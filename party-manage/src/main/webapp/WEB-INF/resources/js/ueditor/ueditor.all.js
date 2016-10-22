@@ -8066,7 +8066,7 @@ UE.Editor.defaultOptions = function(editor){
                 /* 发出ajax请求 */
                 me._serverConfigLoaded = false;
 
-                /*configUrl && UE.ajax.request(configUrl,{
+                configUrl && UE.ajax.request(configUrl,{
                     'method': 'GET',
                     'dataType': isJsonp ? 'jsonp':'',
                     'onsuccess':function(r){
@@ -8082,7 +8082,7 @@ UE.Editor.defaultOptions = function(editor){
                     'onerror':function(){
                         showErrorMsg(me.getLang('loadconfigHttpError'));
                     }
-                });*/
+                });
             } catch(e){
                 showErrorMsg(me.getLang('loadconfigError'));
             }
@@ -29423,4 +29423,7 @@ UE.registerUI('autosave', function(editor) {
     })
 
 });
+
+
+
 })();
