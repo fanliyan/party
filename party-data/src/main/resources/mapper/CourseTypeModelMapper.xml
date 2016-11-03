@@ -104,4 +104,8 @@
       last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectCourseType" parameterType="int" resultType="CourseTypeModel">
+        select * from course_type where id = #{id};
+  </select>
 </mapper>

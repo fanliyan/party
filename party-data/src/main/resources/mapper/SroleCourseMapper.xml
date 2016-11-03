@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.ccu.data.srolecourse.SroleCourseMapper">
+        <select id="selectCoruseId" parameterType="int" resultType="map">
+            select course_id from s_role_course where role_id = #{sroleId};
+        </select>
+
+        <delete id="deleteSroleCourse" parameterType="int">
+            delete from s_role_course where role_Id = #{sroleId};
+        </delete>
+
+        <insert id="insertSroleCourse" parameterType="SroleCourse">
+            insert into s_role_course VALUES (
+              #{roleId},
+              #{courseId}
+            );
+        </insert>
+</mapper>

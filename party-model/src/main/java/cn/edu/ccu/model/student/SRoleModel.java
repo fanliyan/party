@@ -1,6 +1,9 @@
 package cn.edu.ccu.model.student;
 
+import cn.edu.ccu.model.course.CourseModel;
+
 import java.util.Date;
+import java.util.List;
 
 public class SRoleModel {
     private Integer roleId;
@@ -10,6 +13,16 @@ public class SRoleModel {
     private Date createTime;
 
     private Date lastModifyTime;
+
+    private List<CourseModel> courseList;
+
+    public List<CourseModel> getCourseList() {
+        return courseList;
+    }
+
+    public void setCourseList(List<CourseModel> courseList) {
+        this.courseList = courseList;
+    }
 
     public Integer getRoleId() {
         return roleId;

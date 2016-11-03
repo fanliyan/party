@@ -86,4 +86,5 @@
       last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
     where role_id = #{roleId,jdbcType=INTEGER}
   </update>
+
 </mapper>

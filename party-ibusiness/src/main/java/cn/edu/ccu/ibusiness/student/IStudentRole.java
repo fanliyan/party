@@ -13,4 +13,6 @@ public interface IStudentRole {
 
 
     boolean updateRole(Integer userId, Integer roleId,Integer oldRole);
+
+
 }

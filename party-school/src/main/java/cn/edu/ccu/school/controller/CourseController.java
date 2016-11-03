@@ -19,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -99,5 +100,20 @@ public class CourseController extends BaseController {
         return map;
     }
 
+    @AuthMethod
+    @RequestMapping(value="/requiredCourses")
+    public ModelAndView requiredCourses(HttpServletRequest httpRequest, SplitPageRequest splitPageRequest){
+        ModelAndView mav = super.getModelAndView("course/requiredCourses", httpRequest);
+        StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
+        splitPageRequest.setReturnCount(true);
+        try {
+            Map map = iCourse.selectCourse(studentModel.getId());
+            List courseList = (List) map.get("courseList");
+            mav.addObject("courseList", courseList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return  mav;
+    }
 
 }

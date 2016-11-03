@@ -98,4 +98,7 @@
     where student_id = #{studentId,jdbcType=INTEGER}
       and role_id = #{roleId,jdbcType=INTEGER}
   </update>
+  <select id="selectSRoleId" parameterType="int" resultType="int">
+     select role_id from r_student_role where student_id = #{studentId};
+  </select>
 </mapper>

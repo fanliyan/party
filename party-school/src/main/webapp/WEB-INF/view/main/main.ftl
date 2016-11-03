@@ -52,6 +52,15 @@
                 <p></p>
             </div><!-- /.col -->
             <div class="col-sm-3 content-padding">
+                <div class="feature-icon text-center" onclick="location.href='${basePath}/course/requiredCourses'">
+                    <i class="fa fa-book fa-4x"></i>
+                </div>
+                <div class="text-center font-lg">
+                    <h3>要学课程</h3>
+                </div>
+                <p></p>
+            </div><!-- /.col -->
+            <div class="col-sm-3 content-padding">
                 <div class="feature-icon text-center" onclick="location.href='${basePath}/course/mycourselist'">
                     <i class="fa fa-book fa-4x"></i>
                 </div>

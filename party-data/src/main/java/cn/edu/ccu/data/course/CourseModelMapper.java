@@ -2,6 +2,7 @@ package cn.edu.ccu.data.course;
 
 import cn.edu.ccu.data.PartyDB;
 import cn.edu.ccu.model.course.CourseModel;
+import cn.edu.ccu.model.course.CourseModel1;
 
 import java.util.List;
 import java.util.Map;
@@ -24,4 +25,8 @@ public interface CourseModelMapper {
     List<CourseModel> select(Map map);
 
     int count(Map map);
+
+    public CourseModel1 selectCourse(Map courseId);
+
+
 }

@@ -17,7 +17,7 @@ public class SRoleBusiness implements ISRole {
     @Autowired
     private SRoleModelMapper sRoleModelMapper;
 
-    public List<SRoleModel> list(){
+    public List<SRoleModel> list() throws Exception{
         return sRoleModelMapper.select();
     }
 

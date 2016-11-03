@@ -87,4 +87,8 @@
     where course_id = #{courseId,jdbcType=INTEGER}
       and student_id = #{studentId,jdbcType=INTEGER}
   </update>
+
+  <select id="selectCourseId" parameterType="int" resultType="map">
+      select course_id from r_course_student where student_id = #{studentId};
+  </select>
 </mapper>

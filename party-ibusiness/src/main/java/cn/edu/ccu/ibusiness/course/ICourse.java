@@ -8,6 +8,7 @@ import cn.edu.ccu.model.course.CourseWareModel;
 import cn.edu.ccu.utils.common.extention.IntegerExtention;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kuangye on 2016/4/18.
@@ -41,4 +42,6 @@ public interface ICourse {
 
 
     List<CourseWareModel> getWareListByCourseId(Integer courseId);
+
+    public Map selectCourse(int studentId) throws Exception;
 }

@@ -23,4 +23,6 @@ public interface CourseTypeModelMapper {
     List<CourseTypeModel> select(Map map);
 
     int count(Map map);
+
+    public CourseTypeModel selectCourseType(int courseId) throws Exception;
 }

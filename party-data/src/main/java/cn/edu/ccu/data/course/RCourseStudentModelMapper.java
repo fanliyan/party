@@ -22,4 +22,6 @@ public interface RCourseStudentModelMapper {
 
 
     List<Integer> selectCourseByStudentId(Integer id);
+
+    public List selectCourseId(int studentId);
 }

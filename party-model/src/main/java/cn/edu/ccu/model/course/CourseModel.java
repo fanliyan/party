@@ -1,5 +1,7 @@
 package cn.edu.ccu.model.course;
 
+import cn.edu.ccu.model.student.SRoleModel;
+
 import java.util.Date;
 import java.util.List;
 
@@ -28,7 +30,23 @@ public class CourseModel {
 
     private List<CourseWareModel> courseWareModelList;
 
+    private List<SRoleModel> sroleList;
 
+    public List<SRoleModel> getSroleList() {
+        return sroleList;
+    }
+
+    public void setSroleList(List<SRoleModel> sroleList) {
+        this.sroleList = sroleList;
+    }
+
+    public boolean isChoose() {
+        return isChoose;
+    }
+
+    public void setChoose(boolean choose) {
+        isChoose = choose;
+    }
     //========================================================================
 
     private boolean isChoose;

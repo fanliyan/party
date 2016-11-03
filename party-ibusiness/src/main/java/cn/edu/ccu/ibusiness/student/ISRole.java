@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ISRole {
 
-    List<SRoleModel> list();
+    List<SRoleModel> list() throws Exception;
 }

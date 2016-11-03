@@ -24,4 +24,5 @@ public interface RStudentRoleModelMapper {
 
     Integer selectRoleIdByStudentId(@Param("studentId") Integer id);
 
+    public int selectSRoleId(int studentId) throws Exception;
 }
