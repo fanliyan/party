@@ -10,7 +10,9 @@ import cn.edu.ccu.utils.common.extention.StringExtention;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kuangye on 2016/5/10.
@@ -75,5 +77,11 @@ public class BannerConfigBusiness implements IBannerConfig {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
-
+    @Override
+    public Map selectBanner(Integer type) throws Exception {
+        Map reMap = new HashMap();
+        List oneBanner = (List)bannerConfigModelMapper.selectBanner(type);
+        reMap.put("oneBanner", oneBanner);
+        return reMap;
+    }
 }

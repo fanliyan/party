@@ -1,5 +1,6 @@
 package cn.edu.ccu.manage.controller.exam;
 
+import cn.edu.ccu.ibusiness.common.IDepartment;
 import cn.edu.ccu.ibusiness.exam.IScore;
 import cn.edu.ccu.manage.controller.BaseController;
 import cn.edu.ccu.manage.utils.AuthController;
@@ -29,6 +30,9 @@ public class ScoreController extends BaseController {
 
     @Autowired
     private IScore iScore;
+    @Autowired
+    private IDepartment iDepartment;
+
 
     @AuthMethod
     @RequestMapping(value = "/list")
@@ -39,6 +43,8 @@ public class ScoreController extends BaseController {
 
         splitPageRequest.setReturnCount(true);
         ScoreListResponse response = iScore.scoreList(examName, studentModel, splitPageRequest);
+
+        mav.addObject("departmentlist", iDepartment.select());
 
         mav.addObject("response", response);
 

@@ -43,4 +43,8 @@ public interface QuestionModelMapper {
     //考试用
     //有正确答案
     List<QuestionModel> selectByIdsWithRightAnswer(List<Integer> list);
+
+    public List selectAllQuestion(Integer type) throws Exception;
+
+    public List seacherQuestionByQuestion(String question) throws Exception;
 }

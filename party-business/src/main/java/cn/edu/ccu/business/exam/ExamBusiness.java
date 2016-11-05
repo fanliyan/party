@@ -2,6 +2,7 @@ package cn.edu.ccu.business.exam;
 
 import cn.edu.ccu.business.UtilsBusiness;
 import cn.edu.ccu.data.exam.ExamModelMapper;
+import cn.edu.ccu.data.exam.QuestionModelMapper;
 import cn.edu.ccu.ibusiness.exam.IExam;
 import cn.edu.ccu.ibusiness.exam.IQuestion;
 import cn.edu.ccu.ibusiness.exam.IScore;
@@ -34,6 +35,8 @@ public class ExamBusiness implements IExam {
 
     @Autowired
     private ExamModelMapper examModelMapper;
+    @Autowired
+    private QuestionModelMapper questionModelMapper;
 
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -604,4 +607,19 @@ public class ExamBusiness implements IExam {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
+    @Override
+    public Map selectAllQuestion(Integer type) throws Exception {
+        Map reMap = new HashMap();
+        List questionList = questionModelMapper.selectAllQuestion(type);
+        reMap.put("questionList", questionList);
+        return reMap;
+    }
+
+    @Override
+    public Map seacherQuestionByQuestion(String question) throws Exception {
+        Map reMap = new HashMap();
+        List questionList = questionModelMapper.seacherQuestionByQuestion(question);
+        reMap.put("questionList", questionList);
+        return reMap;
+    }
 }

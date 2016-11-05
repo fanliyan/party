@@ -64,7 +64,7 @@
                     <!-- /.col -->
                 </div>
                 <div class="form-group">
-                    <label class="col-md-1 control-label">考试学生类型</label>
+                    <label class="col-md-1 control-label">题目类型</label>
                     <div class="col-md-3">
                         <select name="roleId" id="roleId" class="form-control chzn-select"
                                 data-placeholder="请选择标签类别">
@@ -166,7 +166,7 @@
 </div><!-- /panel -->
 
 <div class="modal fade" id="formModal" aria-hidden="true" style="display: none;">
-    <div class="modal-dialog">
+    <div class="modal-dialog" id="marsk">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -175,13 +175,13 @@
             <div class="modal-body">
                 <form>
                     <div class="form-group">
-                        搜索题目 （标题 或 ID）
+                        搜索题目 （标题）
                     </div>
                     <div class="form-group">
                         <input class="form-control" id="search-question">
                     </div>
                     <div class="form-group">
-                        <div class="panel-body relative">
+                        <div class="panel-body relative" id="panelText">
                             <select multiple="multiple" id="selectedBox1" class="select-box pull-left form-control">
                             </select>
                             <div class="select-box-option">
@@ -312,37 +312,50 @@ $.submitformTag = function(){
                 $("#search-question").val("");
 
                 $("#formModal").modal();
-
+                $.ajax({
+                    cache: true,
+                    data:{type:type},
+                    type: "POST",
+                    url:"${basePath}/exam/selectAllQuestion",
+                    async: false,
+                    error: function(request) {
+                        alertify.alert("错误：服务器异常！");
+                    },
+                    success: function(data) {
+                       for(var i = 0; i < data.questionList.length; i++){
+                           $("<option value='"+data.questionList[i].id+"'"+
+                                   +"data-title='分数："+data.questionList[i].score+"'"
+                                   +">"
+                                   +data.questionList[i].question
+                                   +"</option>").appendTo('#selectedBox1');
+                       }
+                    }
+                });
             });
             $("#search-question").on("keyup",function(){
-                var text = $(this).val();
-                if(text&&text!=''){
+                var question = $(this).val();
                     $.ajax({
                         cache: false,
                         type: "POST",
-                        url:"${basePath}/exam/searchQuestion",
-                        data:{text:text,type:type},
+                        url:"${basePath}/exam/seacherQuestionByQuestion",
+                        data:{question:question, type:type},
                         async: false,
                         error: function(request) {
                             alertify.alert("错误：服务器异常！");
                         },
                         success: function(data) {
-                            if(data.success){
-                                $('#selectedBox1').html("");
-                                for(var i=0;i<data.list.length;i++){
 
-                                    $("<option value='"+data.list[i].id+"'"+
-                                            +"data-title='分数："+data.list[i].score+"'"
+                             $('#selectedBox1').html("");
+                                for(var i=0;i<data.questionList.length;i++){
+                                    $("<option value='"+data.questionList[i].id+"'"+
+                                            +"data-title='分数："+data.questionList[i].score+"'"
                                             +">"
-                                            +data.list[i].name
+                                            +data.questionList[i].question
                                             +"</option>").appendTo('#selectedBox1');
                                 }
-                            }else{
-                                alertify.alert("错误:" + data.message);
-                            }
+
                         }
                     });
-                }
             });
             $("#modal-confirm").on("click",function(){
                 var options = $('#selectedBox2 option');

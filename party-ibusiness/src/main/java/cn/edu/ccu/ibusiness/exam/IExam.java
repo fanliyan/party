@@ -31,4 +31,8 @@ public interface IExam {
     Map<String,Object> startExam(Integer userId, Integer roleId, Integer examId);
 
     boolean examEnd(Integer userId, Integer roleId, Integer examId,HttpServletRequest httpRequest);
+
+    public Map selectAllQuestion(Integer type) throws Exception;
+
+    public Map seacherQuestionByQuestion(String question) throws Exception;
 }

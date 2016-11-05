@@ -6,7 +6,10 @@
   -moz-user-select: none;
   user-select: none;
 }
-
+#panelText{ height:300px;}
+#marsk .select-box{ height:280px !important; }
+#selectedBox1 option,#selectedBox2 option{ height:22px;}
+#marsk{ width:1000px; height:550px;}
 .pace-inactive {
   display: none;
 }

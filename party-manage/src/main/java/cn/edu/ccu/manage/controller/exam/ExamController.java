@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -162,4 +163,36 @@ public class ExamController extends BaseController {
         return map;
     }
 
+    @RequestMapping(value="selectAllQuestion")
+    @ResponseBody
+   public Map selectAllQuestion(@RequestParam(value="type") Integer type){
+        Map reMap = new HashMap();
+        try {
+            Map map = iExam.selectAllQuestion(type);
+            List questionList = (List)map.get("questionList");
+            reMap.put("questionList", questionList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reMap;
+    }
+
+    @RequestMapping(value="/seacherQuestionByQuestion")
+    @ResponseBody
+    public Map seacherQuestionByQuestion(@RequestParam(value="question") String question, @RequestParam(value="type") Integer type){
+        Map reMap = new HashMap();
+        Map map = null;
+        try {
+            if(question != null && !question.equals("")) {
+                map = iExam.seacherQuestionByQuestion(question);
+            }else{
+                map = iExam.selectAllQuestion(type);
+            }
+            List questionList = (List)map.get("questionList");
+            reMap.put("questionList", questionList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return reMap;
+    }
 }

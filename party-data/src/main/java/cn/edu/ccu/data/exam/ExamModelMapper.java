@@ -40,4 +40,6 @@ public interface ExamModelMapper {
 
     //查询 某考试 某角色 学生 分数排名
     List<TableModel> getAExamTop(Map map);
+
+   
 }

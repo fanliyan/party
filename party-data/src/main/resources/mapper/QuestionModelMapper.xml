@@ -412,4 +412,12 @@
       score = #{score}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+    <select id="selectAllQuestion" parameterType="Integer"  resultType="map">
+        select id, question, score from question where type = #{type};
+    </select>
+
+    <select id="seacherQuestionByQuestion" parameterType="string"  resultType="map">
+        select id, question, score from question where question like #{question}"%";
+    </select>
 </mapper>

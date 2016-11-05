@@ -3,6 +3,7 @@ package cn.edu.ccu.ibusiness.common;
 import cn.edu.ccu.model.common.BannerConfigModel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by kuangye on 2016/5/10.
@@ -22,5 +23,5 @@ public interface IBannerConfig {
 
     boolean delete(Integer id);
 
-
+    public Map selectBanner(Integer type) throws Exception;
 }

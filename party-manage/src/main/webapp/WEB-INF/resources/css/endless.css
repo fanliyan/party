@@ -12,6 +12,10 @@
   right: 0;
   z-index: 1000;
 }
+
+/* selectBox */
+
+/*#marsk{ width:1000px;}*/
 @media (max-width: 767px) {
   #top-nav.fixed {
     left: -194px;

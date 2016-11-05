@@ -153,4 +153,7 @@
       last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectBanner" parameterType="Integer" resultType="map">
+        select name, description, url from banner_config where type = #{type} order by create_time desc;
+  </select>
 </mapper>

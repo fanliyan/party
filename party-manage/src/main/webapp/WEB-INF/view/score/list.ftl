@@ -1,5 +1,6 @@
 <#import "/master/master-frame.ftl" as master />
 <#import "/control/common/splitPage.ftl" as splitPage1 />
+<#import "/control/common/departmentSelect.ftl" as departmentSelect />
 
 <@master.masterFrame pageTitle=["考试管理","成绩","成绩列表"]>
 
@@ -22,6 +23,10 @@
                            value="${(examName)!}"/>
                 </div>
             </div>
+          <div class="col-md-6">
+                <@departmentSelect.departmentSelect departmentList=departmentlist departmentControlName="departmentId" xiControlName="xiId" classControlName="classId"
+                selectedDepartmentId=0  selectedXiId=0 selectedClassId=0 ></@departmentSelect.departmentSelect>
+            </div>
             <!-- /form-group -->
 
 
@@ -39,6 +44,9 @@
                 <th>ID</th>
                 <th>考试名</th>
                 <th>分数</th>
+                <th>学院</th>
+                <th>系</th>
+                <th>班</th>
                 <th>学生</th>
                 <th>创建时间</th>
             </tr>
@@ -57,7 +65,9 @@
                         <#else>
                             <td><span class="label label-warning">${(score.score)!}/${(score.examModel.score)!}</span></td>
                         </#if>
-
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td>
                         ${(score.studentModel.name)!}
                         </td>
