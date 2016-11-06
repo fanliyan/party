@@ -26,7 +26,7 @@ public interface IScore {
 
     ScoreListResponse myScoreList(Integer userId, SplitPageRequest splitPageRequest);
 
-    ScoreListResponse scoreList(String examName, StudentModel studentModel, SplitPageRequest splitPageRequest);
+    ScoreListResponse scoreList(Integer departmentId, Integer xiId, Integer classId, String examName, StudentModel studentModel, SplitPageRequest splitPageRequest);
 
 
 }

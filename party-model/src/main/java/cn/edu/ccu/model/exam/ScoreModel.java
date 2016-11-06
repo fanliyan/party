@@ -1,5 +1,8 @@
 package cn.edu.ccu.model.exam;
 
+import cn.edu.ccu.model.common.ClassModel;
+import cn.edu.ccu.model.common.DepartmentModel;
+import cn.edu.ccu.model.common.XiModel;
 import cn.edu.ccu.model.student.StudentModel;
 
 import java.util.Date;
@@ -27,6 +30,34 @@ public class ScoreModel {
     private ExamModel examModel;
 
     private StudentModel studentModel;
+
+    private ClassModel classModel;
+    private XiModel xiModel;
+    private DepartmentModel departmentModel;
+
+    public ClassModel getClassModel() {
+        return classModel;
+    }
+
+    public void setClassModel(ClassModel classModel) {
+        this.classModel = classModel;
+    }
+
+    public XiModel getXiModel() {
+        return xiModel;
+    }
+
+    public void setXiModel(XiModel xiModel) {
+        this.xiModel = xiModel;
+    }
+
+    public DepartmentModel getDepartmentModel() {
+        return departmentModel;
+    }
+
+    public void setDepartmentModel(DepartmentModel departmentModel) {
+        this.departmentModel = departmentModel;
+    }
 
     public ExamModel getExamModel() {
         return examModel;

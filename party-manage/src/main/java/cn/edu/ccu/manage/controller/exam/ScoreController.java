@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,18 +38,22 @@ public class ScoreController extends BaseController {
     @AuthMethod
     @RequestMapping(value = "/list")
     public ModelAndView list(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-                             SplitPageRequest splitPageRequest, String examName, StudentModel studentModel) throws Exception {
+                             SplitPageRequest splitPageRequest, Integer departmentId, Integer xiId, Integer classId,
+                                         String examName, StudentModel studentModel) throws Exception {
 
         ModelAndView mav = Common.getLoginModelAndView(httpRequest);
 
         splitPageRequest.setReturnCount(true);
-        ScoreListResponse response = iScore.scoreList(examName, studentModel, splitPageRequest);
+        ScoreListResponse response = iScore.scoreList(departmentId, xiId, classId, examName, studentModel, splitPageRequest);
 
         mav.addObject("departmentlist", iDepartment.select());
 
         mav.addObject("response", response);
 
         mav.addObject("examName",examName);
+        mav.addObject("classId", classId);
+        mav.addObject("departmentId", departmentId);
+        mav.addObject("xiId", xiId);
 
         mav.setViewName("score/list");
         return mav;

@@ -65,9 +65,9 @@
                         <#else>
                             <td><span class="label label-warning">${(score.score)!}/${(score.examModel.score)!}</span></td>
                         </#if>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td>${(score.departmentModel.name)!}</td>
+                        <td>${(score.xiModel.name)!}</td>
+                        <td>${(score.classModel.name)!}</td>
                         <td>
                         ${(score.studentModel.name)!}
                         </td>

@@ -83,10 +83,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-md-2 control-label">分数</label>
+                        <label class="col-md-2 control-label">学分</label>
                         <div class="col-md-10">
                             <input  class="form-control parsley-validated"
-                                    placeholder="请输入分数"
+                                    placeholder="请输入学分"
                                     data-parsley-range="[0,500]"
                                     name="score" value="${(course.score)!}"
                                     data-parsley-required="true" />

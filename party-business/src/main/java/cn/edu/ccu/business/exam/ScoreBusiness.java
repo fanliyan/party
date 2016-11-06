@@ -143,12 +143,16 @@ public class ScoreBusiness implements IScore {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
-    public ScoreListResponse scoreList(String examName,StudentModel studentModel, SplitPageRequest splitPageRequest) {
+    public ScoreListResponse scoreList(Integer departmentId, Integer xiId, Integer classId,String examName,StudentModel studentModel, SplitPageRequest splitPageRequest) {
 
 
         ScoreListResponse response = new ScoreListResponse();
 
         Map<String, Object> map = new HashMap<>();
+        map.put("examName", examName);
+        map.put("departmentId", departmentId);
+        map.put("xiId", xiId);
+        map.put("classId", classId);
         if (IntegerExtention.hasValueAndMaxZero(studentModel.getId()))
             map.put("userId", studentModel.getId());
         if (!StringExtention.isTrimNullOrEmpty(studentModel.getName()))

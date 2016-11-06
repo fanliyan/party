@@ -418,6 +418,6 @@
     </select>
 
     <select id="seacherQuestionByQuestion" parameterType="string"  resultType="map">
-        select id, question, score from question where question like #{question}"%";
+        select id, question, score from question where question like concat("%",#{question},"%");
     </select>
 </mapper>
