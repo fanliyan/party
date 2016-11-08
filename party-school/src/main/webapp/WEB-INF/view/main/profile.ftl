@@ -52,7 +52,7 @@
                                     <label class="control-label col-md-2">出生年月</label>
                                     <div class="col-md-10">
                                         <input type="text" class="form-control input-sm" data-parsley-pattern="\d{4}-\d{2}-\d{2}"
-                                               data-parsley-pattern-message="生日必须是yyyy-MM-dd的格式" name="birthday" id="birthDay"
+                                               data-parsley-pattern-message="生日必须是yyyy-MM-dd的格式" name="birthdayString" id="birthDay"
                                                placeholder="格式：yyyy-MM-dd"  value="${(loginUser.birthday?string('yyyy-MM-dd'))!}">
                                     </div><!-- /.col -->
                                 </div>

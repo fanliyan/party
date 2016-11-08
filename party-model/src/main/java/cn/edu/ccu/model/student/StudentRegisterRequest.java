@@ -27,7 +27,15 @@ public class StudentRegisterRequest {
     private String phone;
 
     private Byte type;
+    private Integer classId;
 
+    public Integer getClassId() {
+        return classId;
+    }
+
+    public void setClassId(Integer classId) {
+        this.classId = classId;
+    }
 
     public Byte getType() {
         return type;

@@ -140,6 +140,7 @@ public class MainController extends BaseController {
             studentRegisterRequest.setBranchId(user.getBranchId());
             studentRegisterRequest.setGender(user.getGender());
             studentRegisterRequest.setPhone(user.getPhone());
+            studentRegisterRequest.setClassId(user.getClassId());
 
 
             StudentRegisterResponse studentRegisterResponse;
@@ -448,10 +449,12 @@ public class MainController extends BaseController {
     @RequestMapping(value = "/updateprofile", method = RequestMethod.POST)
     public
     @ResponseBody
-    Map<String, Object> updateprofile(HttpServletRequest httpRequest, HttpServletResponse httpResponse,StudentModel studentModel) throws Exception {
+    Map<String, Object> updateprofile(HttpServletRequest httpRequest, HttpServletResponse httpResponse,StudentModel studentModel, String birthdayString) throws Exception {
         Map<String, Object> map = new HashMap<String, Object>();
 
 //        YmbUserModel userModel = AuthHelper.getLoginUserModel(httpRequest);
+        if(!StringExtention.isTrimNullOrEmpty(birthdayString))
+            studentModel.setBirthday(sdf.parse(birthdayString));
         if(StringExtention.isTrimNullOrEmpty(studentModel.getName())){
             map.put("success", false);
             map.put("message", "请输入您的真实姓名");
