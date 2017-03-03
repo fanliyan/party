@@ -21,7 +21,7 @@
     <select id="getByType" resultMap="BaseResultMap" parameterType="int">
         select
         <include refid="Base_Column_List" />
-        from banner_config where type = #{type} order by weight desc
+        from banner_config where type = #{type} order by weight desc, last_modify_time desc, id
     </select>
     <select id="select" resultMap="BaseResultMap" >
         select

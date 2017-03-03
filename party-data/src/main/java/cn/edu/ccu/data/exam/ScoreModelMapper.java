@@ -31,4 +31,6 @@ public interface ScoreModelMapper {
     List<ScoreModel> select(Map map);
 
     int count(Map map);
+
+    int deleteByExamId(int id) throws Exception;
 }

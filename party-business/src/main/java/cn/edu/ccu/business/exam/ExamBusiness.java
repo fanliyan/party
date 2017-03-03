@@ -3,6 +3,7 @@ package cn.edu.ccu.business.exam;
 import cn.edu.ccu.business.UtilsBusiness;
 import cn.edu.ccu.data.exam.ExamModelMapper;
 import cn.edu.ccu.data.exam.QuestionModelMapper;
+import cn.edu.ccu.data.exam.ScoreModelMapper;
 import cn.edu.ccu.ibusiness.exam.IExam;
 import cn.edu.ccu.ibusiness.exam.IQuestion;
 import cn.edu.ccu.ibusiness.exam.IScore;
@@ -37,6 +38,8 @@ public class ExamBusiness implements IExam {
     private ExamModelMapper examModelMapper;
     @Autowired
     private QuestionModelMapper questionModelMapper;
+    @Autowired
+    private ScoreModelMapper scoreModelMapper;
 
 
     private static ObjectMapper objectMapper = new ObjectMapper();
@@ -249,8 +252,11 @@ public class ExamBusiness implements IExam {
         throw new BusinessException(ErrorCodeEnum.requestParamError);
     }
 
-    public boolean deleteExam(Integer id) {
-        return false;
+    public int deleteExam(Integer id) throws Exception {
+      int i  =  examModelMapper.deleteByPrimaryKey(id);
+         scoreModelMapper.deleteByExamId(id);
+            return i;
+
     }
 
 

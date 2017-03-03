@@ -132,13 +132,12 @@ public class ExamController extends BaseController {
             HttpServletRequest httpRequest, HttpServletResponse httpResponse,
             Integer id) throws Exception {
 
-        boolean i = false;
+     //   boolean i = false;
         Map<String, Object> map = new HashMap<>();
         if (IntegerExtention.hasValueAndMaxZero(id)) {
-            i = iExam.deleteExam(id);
+          int   i = iExam.deleteExam(id);
+            map.put("success", i);
         }
-        map.put("success", i);
-
         return map;
     }
 

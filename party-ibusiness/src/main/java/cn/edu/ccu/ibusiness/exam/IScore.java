@@ -29,4 +29,5 @@ public interface IScore {
     ScoreListResponse scoreList(Integer departmentId, Integer xiId, Integer classId, String examName, StudentModel studentModel, SplitPageRequest splitPageRequest);
 
 
+
 }

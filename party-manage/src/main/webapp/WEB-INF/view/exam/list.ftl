@@ -151,7 +151,7 @@
                         alertify.alert("错误：服务器异常！");
                     },
                     success: function (data) {
-                        if (data.success) {
+                        if (data.success = 1) {
                             location.reload();
                         }
                         else {

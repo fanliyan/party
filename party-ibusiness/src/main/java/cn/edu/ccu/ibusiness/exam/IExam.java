@@ -24,7 +24,7 @@ public interface IExam {
     boolean updateExam(ExamModelWithBLOBs examModelWithBLOBs,
                        String[] singleChoiceArray, String[] multipleChoiceArray, String[] tofArray);
 
-    boolean deleteExam(Integer id);
+    int deleteExam(Integer id) throws Exception;
 
 
 

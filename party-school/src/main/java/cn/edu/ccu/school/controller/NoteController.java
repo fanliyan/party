@@ -155,7 +155,7 @@ public class NoteController extends BaseController {
            @PathVariable("id") Integer id) throws Exception {
 
         StudentModel studentModel = AuthHelper.getLoginUserModel(httpRequest);
-
+        System.out.println();
         boolean i = false;
         Map<String, Object> map = new HashMap<>();
         if (IntegerExtention.hasValueAndMaxZero(id)) {

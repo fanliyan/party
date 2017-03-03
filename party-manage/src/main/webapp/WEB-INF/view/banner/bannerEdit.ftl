@@ -38,14 +38,14 @@
                 <label class="col-lg-1 control-label">标题</label>
                 <div class="col-lg-5">
                     <textarea name="name" class="form-control "
-                           placeholder="输入标题">${(banner.name)!}</textarea>
+                              data-parsley-required="true"    placeholder="输入标题">${(banner.name)!}</textarea>
                 </div><!-- /.col -->
             </div>
             <div class="form-group">
                 <label class="col-lg-1 control-label">内容</label>
                 <div class="col-lg-5">
                     <textarea name="description" class="form-control "
-                              placeholder="输入内容">${(banner.description)!}</textarea>
+                              data-parsley-required="true"     placeholder="输入内容">${(banner.description)!}</textarea>
                 </div><!-- /.col -->
             </div>
             <div class="form-group">
