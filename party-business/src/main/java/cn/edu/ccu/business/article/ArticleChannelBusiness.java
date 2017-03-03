@@ -175,7 +175,7 @@ public class ArticleChannelBusiness implements IArticleChannel {
                     for (ArticleChannelModel articleChannelModel : articleChannelModelList) {
 
                         List<ArticleChannelModel> childList = this.selectByFatherId(articleChannelModel.getChannelId(), true);
-                        articleChannelModel.setChildList(childList);
+                        articleChannelModel.setChildList(childList);;
                     }
                 }
 
